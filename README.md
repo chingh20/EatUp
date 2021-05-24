@@ -81,9 +81,9 @@ We hope to make a social media platform that allows people to conveniently share
     - Try Now: Recommend one random food place where the user marked as want to go.
     - Cuisine Mix: Recommend three new food places weekly, based on users’ preferences.
     - Eat Again: Recommend three food places that users’ have been before.
-    - Tagging Insights: 
-          - Recommend new food places to go with friends(friends that have been tagged in their previous posts).
-          - Recommend friends to go to a food place together (notify users that their friends also frequently visit a certain food place, but the user has not been there together with them).
+    - Tagging Insights:
+         - Recommend new food places to go with friends (friends that have been tagged in their previous posts).
+         - Recommend friends to go to a food place together (notify users that their friends also frequently visit a certain food place, but the user has not been there together with them).
 
 5. Competition system
     - Two types of Challenge of the Week:
