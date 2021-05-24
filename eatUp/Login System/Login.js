@@ -2,10 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
+export default function Login() {
   return (
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     <View style={styles.container}>
-      <Text>JanChing Afterfood! 123</Text>
+      <Text>Login Page 123</Text>
       <StatusBar style="auto" />
     </View>
   );
