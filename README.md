@@ -3,6 +3,7 @@
 
 - [1. Introduction](#introducton)
 - [2. User Stories](#user-stories)
+- [3. Scope of Project](#scope-of-project)
 
 
 
@@ -33,7 +34,6 @@ We hope to make a social media platform that allows people to conveniently share
 
 
 ## <a name="user-stories"></a>2. User Stories
-
 **Core**
 
 1. Users will have their personalized food maps, where each saved destination contains their reviews/memories (posts) of food places. They will also be able to share their food maps with their friends.
@@ -47,4 +47,52 @@ We hope to make a social media platform that allows people to conveniently share
 6. Users can enter competitions or complete quests by visiting food places. (Eg. conquering food maps or eating foods with certain themes.)
 7. Users can help and obtain help from other users about where to get certain kinds of food. 
 
+
+
+## <a name="scope-of-project"></a>3. Scope of Project
+
+**Core Features**
+
+1. Food map
+    - Map is placed under the user's homepage. 
+    - Users can choose their own color of the map and types of labels, and make their map/account public, private, or friends only. 
+    - Each flag on the map would encapsulate/link to the user’s posts regarding that food place.
+    - Users can save places they want to go on their food map. They can filter out their posts’ flags from the saved places’ flags.
+    - Users can zoom in and out of their maps. 
+    - Users can visit their friends’ maps.
+
+2. Posts/ Feeds
+    - Users can post images and reviews of food/ food places. Once they post about a food, their food map will be updated. 
+    - Users can tag friends, include tags for type of cuisines or their own personalized tags.
+    - Users will see individual posts from friends/public in their feeds.
+    - Users can like others’ posts and save it as food places they want to go.
+    *(Extension) Users will be redirected to a modal window that shows: location of that food place, reviews of that place(from their friends/ public), and other basic information when they tap on the post.*
+
+3. Search engine
+    - Keywords: Types of cuisine, Locations, Type of places (cafe/ restaurant/ hawker center), User names
+    - Return a list of matching food places and users. Indicate if their friends have been there before. 
+    *(Extension) Results can come in order of: Ratings, Price, Distance from user’s location.*
+
+
+**Extensions Features**
+
+4. Recommendations
+    - Love of the Day: Recommend food places based on the Top public feed for three random types of cuisines.
+    - Try Now: Recommend one random food place where the user marked as want to go.
+    - Cuisine Mix: Recommend three new food places weekly, based on users’ preferences.
+    - Eat Again: Recommend three food places that users’ have been before.
+    - Tagging Insights: 
+          -- Recommend new food places to go with friends(friends that have been tagged in their previous posts).
+          -- Recommend friends to go to a food place together (notify users that their friends also frequently visit a certain food place, but the user has not been there together with them).
+
+5. Competition system
+    - Two types of Challenge of the Week:
+        -- Conquer a food map.
+        -- Try as many food places of a certain cuisine as possible.
+    - Users will be able to see how they compete with other users/friends.
+    - Users will be awarded points for their participation, which they can change to food coupons later.
+
+6. Lost & Found Section
+    - Users can post images or descriptions to search for certain food, other users and web owners will help to respond. 
+    - Users are able to vote for answers they think are correct.
 
