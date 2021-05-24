@@ -111,7 +111,7 @@ We hope to make a social media platform that allows people to conveniently share
 
 
 ## <a name="program-flow"></a>4. Program Flow
-![EatUp-basic-program-flow](https://github.com/chingh20/EatUp/blob/a9cf9b4e0cccac8345a7f8a60ebf4ea72bc1de43/Flow%20chart.jpg)
+![EatUp-basic-program-flow](https://github.com/chingh20/EatUp/blob/45451ac7522bfb81830ef3faffdd5e3b274d6ec1/Images/Flow%20chart.jpg)
 
 
 ## <a name="project-log"></a>5. Project Log
