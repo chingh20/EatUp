@@ -11,12 +11,14 @@
 Apollo 11
 
 **Deployed EatUp Andriod Phone Application**
+
 Link to our application:
 
 Recommended to use on Android Mobile Phone.
 
 
 **Motivation**
+
 As food lovers, we like to explore new foods and share food that we love with other people. 
 
 Oftentimes, we are unable to decide on where to go for our meals, or we cannot remember where to get certain types of food. For the first problem, we can only google search "food near me" to let google list out all the foods available nearby and see if there’s anything that suits our tastes. For the latter problem, our current options are to search google on the limited information we have on that specific food as well as to ask our friends and families, hoping that they know what food we are looking for. We are also keen to share good food places with our loved ones, but to keep recommending the same food over and over again to different people… it takes a long time to do that.
@@ -25,17 +27,21 @@ It is not uncommon for us to get unsatisfactory recommendations from the list of
 
 
 **Aim**
+
 We hope to make a social media platform that allows people to conveniently share and get food recommendations based on their tastes and preferences.
 
 
 
 ## <a name="user-stories"></a>2. User Stories
+
 **Core**
+
 1. Users will have their personalized food maps, where each saved destination contains their reviews/memories (posts) of food places. They will also be able to share their food maps with their friends.
 2. Users can post and share the food places they visited. 
 3. Users can follow people and see their posts in the feed.
 
 **Possible Extensions**
+
 4. Users will be able to get food recommendations that are similar to their tastes from the app’s algorithm or from public feeds.
 5. Users can conveniently search and check basic info about restaurants and food.
 6. Users can enter competitions or complete quests by visiting food places. (Eg. conquering food maps or eating foods with certain themes.)
