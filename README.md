@@ -5,7 +5,7 @@
 - [2. User Stories](#user-stories)
 - [3. Scope of Project](#scope-of-project)
 - [4. Program Flow](#program-flow)
-- [3. Project Log](#project-log)
+- [5. Project Log](#project-log)
 
 
 ## <a name="introducton"></a>1. Introduction
