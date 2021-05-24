@@ -17,7 +17,7 @@ Apollo 11
 Link to our application:
 
 Recommended to use on Android Mobile Phone.
-
+![Poster](https://github.com/chingh20/EatUp/issues/1#issuecomment-847010270)
 
 **Motivation**
 
@@ -111,7 +111,7 @@ We hope to make a social media platform that allows people to conveniently share
 
 
 ## <a name="program-flow"></a>4. Program Flow
-
+![EatUp-basic-program-flow](https://github.com/chingh20/EatUp/issues/1#issue-899613393)
 
 
 ## <a name="project-log"></a>5. Project Log
