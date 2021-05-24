@@ -7,7 +7,7 @@ import Login from './Login';
 const Start = ({navigation}) => {
   return (
      <View style={styles.container}>
-     <Image style={styles.image} source = {require("./Logo/logo-coloured.png")}/>
+     <Image style={styles.image} source = {require("./Logo/logo.png")}/>
      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
      <Text style={styles.btnText}>Log In</Text>
      </TouchableOpacity>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
    },
    image: {
         height: 250,
-        width: 350
+        width: 350,
    },
    textInput: {
          color: "black",
@@ -50,3 +50,5 @@ const styles = StyleSheet.create({
          height: 30,
        },
 });
+
+

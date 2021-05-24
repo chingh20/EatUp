@@ -25,5 +25,19 @@
   "devDependencies": {
     "@babel/core": "^7.9.0"
   },
-  "private": true
+  "private": true,
+  "name": "eatup",
+  "description": "- [1. Introduction](#introducton)\r - [2. User Stories](#user-stories)\r - [3. Scope of Project](#scope-of-project)\r - [4. Program Flow](#program-flow)\r - [5. Project Log](#project-log)",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chingh20/EatUp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chingh20/EatUp/issues"
+  },
+  "homepage": "https://github.com/chingh20/EatUp#readme",
+  "keywords": []
 }
