@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-const Login = () => {
+const Login = ({ navigation })=> {
 
 //  const [email, setEmail] = useState('')
 //  const [password, setPassword] = useState('')

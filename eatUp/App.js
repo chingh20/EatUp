@@ -1,32 +1,36 @@
-import 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
+
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import Login from './src/Functional/Login System/Login';
+import Start from './src/Functional/Login System/Start';
 
 
+
+const Stack = createStackNavigator();
 
 export default class App extends React.Component{
-
-    press = () => console.log("hello");
     render() {
        return (
-       <NavigationContainer>
-        <View style={styles.container}>
-            <Image style={styles.image} source = {require("./assets/logo-coloured.png")}/>
-                <TouchableOpacity style={styles.button} onPress={() => console.log("Hello World!")}>
-                    <Text style={styles.btnText}>Log In</Text>
-                </TouchableOpacity>
-//                <Text style={styles.textInput}>{this.press()}</Text>
-        </View>
-        </NavigationContainer>
-
-
+        <NavigationContainer>
+             <Stack.Navigator>
+               <Stack.Screen
+                 name="Start"
+                 component={Start}
+               />
+               <Stack.Screen
+                 name="Login"
+                 component={Login}
+               />
+             </Stack.Navigator>
+           </NavigationContainer>
         );
     }
 }
+
 
 const styles = StyleSheet.create({
   container: {
