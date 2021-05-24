@@ -4,7 +4,8 @@
 - [1. Introduction](#introducton)
 - [2. User Stories](#user-stories)
 - [3. Scope of Project](#scope-of-project)
-
+- [4. Program Flow](#program-flow)
+- [3. Project Log](#project-log)
 
 
 ## <a name="introducton"></a>1. Introduction
@@ -30,6 +31,18 @@ It is not uncommon for us to get unsatisfactory recommendations from the list of
 **Aim**
 
 We hope to make a social media platform that allows people to conveniently share and get food recommendations based on their tastes and preferences.
+
+
+**How are we different from other similar platforms?**
+
+1. Google 
+    - Our search engine returns results based on the popularity of food places instead of the distance the food places are from the user. 
+
+2. Instagram
+    - Our posts are focused on the food places instead of just the pictures.
+    - Posts are collated into a flag on the user’s map, hence showing the approximate food locations all over Singapore where the user has been to, rather than showing the user’s posts.
+    - Able to set a post as “Want to go!” to add the food place on to the user’s map as saved places to go next.
+
 
 
 
@@ -96,3 +109,9 @@ We hope to make a social media platform that allows people to conveniently share
     - Users can post images or descriptions to search for certain food, other users and web owners will help to respond. 
     - Users are able to vote for answers they think are correct.
 
+
+## <a name="program-flow"></a>4. Program Flow
+
+
+
+## <a name="project-log"></a>5. Project Log
