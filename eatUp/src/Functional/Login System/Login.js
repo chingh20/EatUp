@@ -7,7 +7,8 @@ import {
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  View
 } from 'react-native';
 
 
@@ -66,5 +67,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  textInput: {
+      borderWidth: 1,
+      borderColor: 'black',
+      fontSize: 20,
+      marginBottom: 8,
+      width: 200,
+      height: 30,
+    },
 });
+
+
+export default Login;
 
