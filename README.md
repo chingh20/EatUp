@@ -17,7 +17,7 @@ Apollo 11
 Link to our application:
 
 Recommended to use on Android Mobile Phone.
-![EatUp-poster](https://github.com/chingh20/EatUp/issues/1#issuecomment-847010270)
+![EatUp-poster](https://github.com/chingh20/EatUp/issues/1#issue-899613393)
 
 **Motivation**
 
