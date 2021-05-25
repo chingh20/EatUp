@@ -1,4 +1,5 @@
-import * as firebase from 'firebase';
+
+import { firebase } from '@firebase/app';
 import '@firebase/auth';
 import '@firebase/firestore';
 
@@ -14,10 +15,10 @@ const firebaseConfig = {
   };
 
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
 
-firebase.analytics();
+firebase.initializeApp(firebaseConfig);
 
-export { firebase };
+
+
+
+export {firebase};

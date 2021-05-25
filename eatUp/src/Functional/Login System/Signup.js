@@ -83,7 +83,7 @@ const Signup = ({ navigation })=> {
                 secureTextEntry
                  />
          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserPage')}>
-           <Text style={styles.btnText}>To Food Adventures!</Text>
+           <Text style={styles.btnText}>To Food Adventures!</Text>n
          </TouchableOpacity>
      </KeyboardAvoidingView>
     );
