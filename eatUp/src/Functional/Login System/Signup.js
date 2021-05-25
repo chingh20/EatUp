@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Image,
-  TextInput,
   Text,
   TouchableOpacity,
   StyleSheet,
@@ -9,6 +8,7 @@ import {
   Platform,
   View
 } from 'react-native';
+import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
 import { usernameCheck } from './usernameCheck';
@@ -69,7 +69,7 @@ const Signup = ({ navigation })=> {
             error={!!username.error}
             errorText={username.error}
             style={styles.textInput}
-            onChangeText={handleEmailUpdate}
+            onChangeText={handleUsernameUpdate}
          />
         <TextInput
                 placeholder="Password"
