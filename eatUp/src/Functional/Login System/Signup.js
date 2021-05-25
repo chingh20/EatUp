@@ -9,6 +9,7 @@ import {
   Platform,
   View
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#fffbf1',
       alignItems: 'center',
       justifyContent: 'center',
+      marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     textInput: {
         borderWidth: 1,

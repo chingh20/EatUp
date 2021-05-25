@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 //import Login from './Login';
 //import Signup from './Signup';
 
