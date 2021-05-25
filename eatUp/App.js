@@ -1,12 +1,12 @@
-
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import Login from './src/Functional/Login System/Login';
 import Start from './src/Functional/Login System/Start';
+import Login from './src/Functional/Login System/Login';
+import Signup from './src/Functional/Login System/Signup';
+//import { Start, Login, Signup } from './src/Functional/Login System';
 
 
 
@@ -16,7 +16,10 @@ export default class App extends React.Component{
     render() {
        return (
         <NavigationContainer>
-             <Stack.Navigator>
+             <Stack.Navigator
+             initialRouteName="StartPage"
+             screenOptions={{headerShown: false}}
+             >
                <Stack.Screen
                  name="Start"
                  component={Start}
@@ -24,6 +27,10 @@ export default class App extends React.Component{
                <Stack.Screen
                  name="Login"
                  component={Login}
+               />
+               <Stack.Screen
+                 name="Signup"
+                 component={Signup}
                />
              </Stack.Navigator>
            </NavigationContainer>
