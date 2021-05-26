@@ -31,59 +31,82 @@ const Signup = ({ navigation })=> {
         setPassword({ ...password, error: passwordError })
         return
       }
-      navigation.reset({
-            index: 0,
-            routes: [{ name: 'Start' }],
-          })
+      registerUser()
+      navigation.navigate('Login')
+
       }
 
    const handleEmailUpdate = (text) => setEmail({ value: text, error: '' })
    const handleUsernameUpdate = (text) => setUsername({ value: text, error: '' })
    const handlePasswordUpdate = (text) => setPassword({ value: text, error: '' })
 
- const handleButtonPress = () => {
-  setEmail('')
-  setUsername('')
-  setPassword('')
+
+ const registerUser = () => {
+      firebase
+      .auth()
+      .createUserWithEmailAndPassword(email.value, password.value)
+      .then((res) => {
+        res.user.updateProfile({
+          displayName: username.value
+        })
+        console.log('User registered successfully!')
+        navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+        })
+      })
+       .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.');
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+        });
     }
+
 
      return (
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
       <Image style={styles.image} source = {require("../../../assets/create-account-logo.png")}/>
+         <TextInput
+                    placeholder="Username"
+                    returnKeyType="next"
+                    value={username.value}
+                    style={styles.textInput}
+                    onChangeText={handleUsernameUpdate}
+                    error={!!username.error}
+                    errorText={username.error}
+                    />
         <TextInput
            placeholder="Email"
            returnKeyType="next"
            value={email.value}
-            error={!!email.error}
-            errorText={email.error}
             autoCapitalize="none"
             autoCompleteType="email"
             textContentType="emailAddress"
             keyboardType="email-address"
             style={styles.textInput}
             onChangeText={handleEmailUpdate}
+            error={!!email.error}
+            errorText={email.error}
         />
-         <TextInput
-            placeholder="Username"
-            returnKeyType="next"
-            value={username.value}
-            error={!!username.error}
-            errorText={username.error}
-            style={styles.textInput}
-            onChangeText={handleUsernameUpdate}
-         />
+
         <TextInput
                 placeholder="Password"
                 returnKeyType="done"
                 value={password.value}
-                error={!!password.error}
-                errorText={password.error}
                 style={styles.textInput}
                 onChangeText={handlePasswordUpdate}
+                error={!!password.error}
+                errorText={password.error}
                 secureTextEntry
                  />
-         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserPage')}>
-           <Text style={styles.btnText}>To Food Adventures!</Text>n
+         <TouchableOpacity style={styles.button} onPress={onSignupPressed}>
+           <Text style={styles.btnText}>To Food Adventures!</Text>
          </TouchableOpacity>
      </KeyboardAvoidingView>
     );
