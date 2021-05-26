@@ -62,7 +62,7 @@ const Signup = ({ navigation })=> {
           .catch((error) => {
                alert(error)
           });
-          navigation.navigate('Login')
+          navigation.navigate('Home',{data})
       })
        .catch(function(error) {
         // Handle Errors here.
