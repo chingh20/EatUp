@@ -32,7 +32,7 @@ const Signup = ({ navigation })=> {
         return
       }
       registerUser()
-      navigation.navigate('Login')
+
 
       }
 
@@ -50,22 +50,26 @@ const Signup = ({ navigation })=> {
           displayName: username.value
         })
         console.log('User registered successfully!')
-        navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Login' }],
-        })
+        navigation.navigate('Login')
       })
        .catch(function(error) {
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        var errorCode = error.code
+        var errorMessage = error.message
         if (errorCode == 'auth/weak-password') {
-          alert('The password is too weak.');
+          alert('The password is too weak.')
+          return
+        } else if (errorCode == 'auth/email-already-in-use') {
+          alert('An account with this email already exists.')
+          return
+        } else if (errorCode == 'auth/invalid-email') {
+          alert('Email address is not valid.')
+          return
         } else {
-          alert(errorMessage);
+          alert(errorMessage)
         }
-        console.log(error);
-        });
+        }
+        );
     }
 
 
