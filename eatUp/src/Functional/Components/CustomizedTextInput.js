@@ -8,13 +8,13 @@ export function CustomizedTextInput({ errorText, ...props }) {
         style={styles.textInput}
         {...props}
       />
-      {errorText ? <Text style={styles.textInput}>{errorText}</Text> : null}
+      {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
   </View>
   )
 }
 
 const styles = StyleSheet.create({
- textInput: {
+   textInput: {
        borderWidth: 1,
        borderColor: '#3e1f0d',
        fontSize: 20,
@@ -28,4 +28,8 @@ const styles = StyleSheet.create({
      alignItems: 'center',
      justifyContent: 'center',
    },
+   errorText: {
+      fontSize: 10,
+      marginTop: 0,
+   }
 })
