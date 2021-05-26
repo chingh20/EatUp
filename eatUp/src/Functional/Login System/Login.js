@@ -33,9 +33,22 @@ const Login = ({ navigation })=> {
       firebase.auth().signInWithEmailAndPassword(email.value, password.value)
             .then((userCredential) => {
               // Signed in
-              var user = userCredential.user
-              //navigation.navigate('HomePage')
-              alert('Login')
+              const uid = userCredential.user.uid
+              const usersRef = firebase.firestore().collection('users')
+              usersRef.doc(uid)
+                      .get()
+                      .then(userdoc => {
+                       if (!userdoc.exists) {
+                           return;
+                       }
+                       const user = userdoc.data()
+                       navigation.navigate('Home', {user})
+                       alert('Login')
+                       })
+                       .catch(error => {
+                           alert(error)
+                      });
+             // alert('Login')
             })
             .catch((error) => {
               var errorCode = error.code
