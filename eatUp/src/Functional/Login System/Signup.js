@@ -46,11 +46,23 @@ const Signup = ({ navigation })=> {
       .auth()
       .createUserWithEmailAndPassword(email.value, password.value)
       .then((res) => {
-        res.user.updateProfile({
-          displayName: username.value
-        })
-        console.log('User registered successfully!')
-        navigation.navigate('Login')
+        const uid = res.user.uid
+        const data = {
+           id: uid,
+           email:email.value,
+           username: username.value,
+        };
+        const usersRef = firebase.firestore().collection('users')
+       usersRef
+          .doc(uid)
+          .set(data)
+          .then(() => {
+            alert('User registered successfully!')
+          })
+          .catch((error) => {
+               alert(error)
+          });
+          navigation.navigate('Login')
       })
        .catch(function(error) {
         // Handle Errors here.
