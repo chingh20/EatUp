@@ -32,58 +32,97 @@ const Signup = ({ navigation })=> {
         setPassword({ ...password, error: passwordError })
         return
       }
-      navigation.reset({
-            index: 0,
-            routes: [{ name: 'Start' }],
-          })
+      registerUser()
+
+
       }
 
    const handleEmailUpdate = (text) => setEmail({ value: text, error: '' })
    const handleUsernameUpdate = (text) => setUsername({ value: text, error: '' })
    const handlePasswordUpdate = (text) => setPassword({ value: text, error: '' })
 
- const handleButtonPress = () => {
-  setEmail('')
-  setUsername('')
-  setPassword('')
+
+ const registerUser = () => {
+      firebase
+      .auth()
+      .createUserWithEmailAndPassword(email.value, password.value)
+      .then((res) => {
+        const uid = res.user.uid
+        const data = {
+           id: uid,
+           email:email.value,
+           username: username.value,
+        };
+        const usersRef = firebase.firestore().collection('users')
+       usersRef
+          .doc(uid)
+          .set(data)
+          .then(() => {
+            alert('User registered successfully!')
+          })
+          .catch((error) => {
+               alert(error)
+          });
+          navigation.navigate('Home',{data})
+      })
+       .catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code
+        var errorMessage = error.message
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.')
+          return
+        } else if (errorCode == 'auth/email-already-in-use') {
+          alert('An account with this email already exists.')
+          return
+        } else if (errorCode == 'auth/invalid-email') {
+          alert('Email address is not valid.')
+          return
+        } else {
+          alert(errorMessage)
+        }
+        }
+        );
     }
+
 
      return (
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
       <Image style={styles.image} source = {require("../../../assets/create-account-logo.png")}/>
+         <TextInput
+                    placeholder="Username"
+                    returnKeyType="next"
+                    value={username.value}
+                    style={styles.textInput}
+                    onChangeText={handleUsernameUpdate}
+                    error={!!username.error}
+                    errorText={username.error}
+                    />
         <TextInput
            placeholder="Email"
            returnKeyType="next"
            value={email.value}
-            error={!!email.error}
-            errorText={email.error}
             autoCapitalize="none"
             autoCompleteType="email"
             textContentType="emailAddress"
             keyboardType="email-address"
             style={styles.textInput}
             onChangeText={handleEmailUpdate}
+            error={!!email.error}
+            errorText={email.error}
         />
-         <TextInput
-            placeholder="Username"
-            returnKeyType="next"
-            value={username.value}
-            error={!!username.error}
-            errorText={username.error}
-            style={styles.textInput}
-            onChangeText={handleUsernameUpdate}
-         />
+
         <TextInput
                 placeholder="Password"
                 returnKeyType="done"
                 value={password.value}
-                error={!!password.error}
-                errorText={password.error}
                 style={styles.textInput}
                 onChangeText={handlePasswordUpdate}
+                error={!!password.error}
+                errorText={password.error}
                 secureTextEntry
                  />
-         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserPage')}>
+         <TouchableOpacity style={styles.button} onPress={onSignupPressed}>
            <Text style={styles.btnText}>To Food Adventures!</Text>
          </TouchableOpacity>
      </KeyboardAvoidingView>

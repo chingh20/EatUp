@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { firebase } from '../../firebase/config';
 import {
   Image,
-  TextInput,
   Text,
   TouchableOpacity,
   StyleSheet,
@@ -12,7 +12,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
-
+import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 const Login = ({ navigation })=> {
 
   const [email, setEmail] = useState({ value: '', error: '' })
@@ -27,19 +27,53 @@ const Login = ({ navigation })=> {
       setPassword({ ...password, error: passwordError })
       return
     }
-    navigation.reset({
-          index: 0,
-          routes: [{ name: 'Start' }],
-        })
+    loginUser()
     }
+
+    const loginUser = () => {
+      firebase.auth().signInWithEmailAndPassword(email.value, password.value)
+            .then((userCredential) => {
+              // Signed in
+              const uid = userCredential.user.uid
+              const usersRef = firebase.firestore().collection('users')
+              usersRef.doc(uid)
+                      .get()
+                      .then(userdoc => {
+                       if (!userdoc.exists) {
+                           return;
+                       }
+                       const user = userdoc.data()
+                       navigation.navigate('Home', {user})
+                       alert('Login')
+                       })
+                       .catch(error => {
+                           alert(error)
+                      });
+             // alert('Login')
+            })
+            .catch((error) => {
+              var errorCode = error.code
+              var errorMessage = error.message
+                     if (errorCode == 'auth/invalid-email') {
+                       alert('Email address is not valid.')
+                       return
+                     } else if (errorCode == 'auth/user-not-found') {
+                       alert('No user corresponds to the given email.')
+                       return
+                     } else if (errorCode == 'auth/wrong-password') {
+                       alert('Wrong password.')
+                       return
+                     } else {
+                       alert(errorMessage)
+                     }
+              }
+              );
+    }
+
 
  const handleEmailUpdate = (text) => setEmail({ value: text, error: '' })
  const handlePasswordUpdate = (text) => setPassword({ value: text, error: '' })
 
- const handleButtonPress = () => {
-  setEmail('')
-  setPassword('')
-    }
 
      return (
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
@@ -48,23 +82,23 @@ const Login = ({ navigation })=> {
             placeholder="Email"
             returnKeyType="next"
             value={email.value}
-            error={!!email.error}
-            errorText={email.error}
             autoCapitalize="none"
             autoCompleteType="email"
             textContentType="emailAddress"
             keyboardType="email-address"
             style={styles.textInput}
             onChangeText={handleEmailUpdate}
+            error={!!email.error}
+            errorText={email.error}
          />
         <TextInput
         placeholder="Password"
         returnKeyType="done"
         value={password.value}
-        error={!!password.error}
-        errorText={password.error}
         style={styles.textInput}
         onChangeText={handlePasswordUpdate}
+        error={!!password.error}
+        errorText={password.error}
         secureTextEntry
          />
          <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
