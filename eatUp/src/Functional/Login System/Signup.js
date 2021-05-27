@@ -111,7 +111,6 @@ const Signup = ({ navigation })=> {
             error={!!email.error}
             errorText={email.error}
         />
-
         <TextInput
                 placeholder="Password"
                 returnKeyType="done"

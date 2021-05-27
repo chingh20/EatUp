@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   View
@@ -76,7 +77,8 @@ const Login = ({ navigation })=> {
 
 
      return (
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
+        <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} >
       <Image style={styles.image} source = {require("../../../assets/welcome-back-logo.png")}/>
         <TextInput
             placeholder="Email"
@@ -105,7 +107,7 @@ const Login = ({ navigation })=> {
           <Text style={styles.btnText}>Let's Go!</Text>
          </TouchableOpacity>
      </KeyboardAvoidingView>
-
+     </SafeAreaView>
     );
 }
 
@@ -116,6 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fffbf1',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   textInput: {
       borderWidth: 1,
