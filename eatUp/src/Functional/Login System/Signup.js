@@ -9,6 +9,7 @@ import {
   Platform,
   View
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
@@ -131,37 +132,38 @@ const Signup = ({ navigation })=> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fffbf1',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textInput: {
-      borderWidth: 1,
-      borderColor: '#3e1f0d',
-      fontSize: 20,
-      marginTop: 15,
-      width: 350,
-      height: 40,
+      flex: 1,
+      backgroundColor: '#fffbf1',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
-    button: {
-      width: 200,
-      marginTop: 30,
-      backgroundColor: "#ff5757",
-      padding: 15,
-      borderRadius: 50,
+    textInput: {
+        borderWidth: 1,
+        borderColor: '#3e1f0d',
+        fontSize: 20,
+        marginTop: 15,
+        width: 350,
+        height: 40,
       },
-    btnText: {
-      color: "white",
-      fontSize: 20,
-      justifyContent: "center",
-      textAlign: "center",
-    },
-    image: {
-      height: 250,
-      width: 350,
-      marginBottom: 10
-    },
+      button: {
+        width: 200,
+        marginTop: 30,
+        backgroundColor: "#ff5757",
+        padding: 15,
+        borderRadius: 50,
+        },
+      btnText: {
+        color: "white",
+        fontSize: 20,
+        justifyContent: "center",
+        textAlign: "center",
+      },
+      image: {
+        height: 250,
+        width: 350,
+        marginBottom: 10
+      },
 });
 
 

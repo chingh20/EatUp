@@ -9,6 +9,7 @@ import {
   Platform,
   View
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
