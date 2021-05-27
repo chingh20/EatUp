@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
    },
    errorText: {
       fontSize: 10,
+      color: '#fd1d1d',
       marginTop: 0,
    }
 })

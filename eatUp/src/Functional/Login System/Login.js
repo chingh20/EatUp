@@ -50,7 +50,6 @@ const Login = ({ navigation })=> {
                        .catch(error => {
                            alert(error)
                       });
-             // alert('Login')
             })
             .catch((error) => {
               var errorCode = error.code
@@ -77,8 +76,8 @@ const Login = ({ navigation })=> {
 
 
      return (
-        <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} >
+      <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
       <Image style={styles.image} source = {require("../../../assets/welcome-back-logo.png")}/>
         <TextInput
             placeholder="Email"
@@ -131,6 +130,8 @@ const styles = StyleSheet.create({
     button: {
       width: 200,
       marginTop: 30,
+      alignItems: "center",
+      justifyContent: 'center',
       backgroundColor: "#ff5757",
       padding: 15,
       borderRadius: 50,

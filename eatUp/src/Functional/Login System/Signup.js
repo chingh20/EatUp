@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   View
@@ -87,6 +88,7 @@ const Signup = ({ navigation })=> {
 
 
      return (
+     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
       <Image style={styles.image} source = {require("../../../assets/create-account-logo.png")}/>
          <TextInput
@@ -125,6 +127,7 @@ const Signup = ({ navigation })=> {
            <Text style={styles.btnText}>To Food Adventures!</Text>
          </TouchableOpacity>
      </KeyboardAvoidingView>
+     </SafeAreaView>
     );
 }
 
