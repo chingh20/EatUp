@@ -1,6 +1,6 @@
 import { Platform, Text, View, StyleSheet } from 'react-native'
 import React, { useState } from 'react';
-import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
+//import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
 import { firebase } from '../../firebase/config';
 
 export default function HomeScreen(props,user) {
@@ -9,7 +9,7 @@ export default function HomeScreen(props,user) {
 //        'react-native': 'react-native-web',
 //        ...
 //        'react-native-maps': 'react-native-web-maps',
-//    }
+//    }npm
 //}
 //    var mapstyle = [
 //                       {
@@ -276,12 +276,12 @@ export default function HomeScreen(props,user) {
     return (
         <View style = {styles.container}>
             <Text>Hello there!</Text>
-            <MapView>
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            initialRegion={region}
-//            customMapStyle={mapStyle}
-            </MapView>
+{/*           <MapView>
+//            provider={PROVIDER_GOOGLE}
+//            style={styles.map}
+//            initialRegion={region}
+////            customMapStyle={mapStyle}
+          </MapView> */}
         </View>
     )
 }
@@ -292,8 +292,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  map: {
-      width: 600,
-      height: 250,
-    },
+//  map: {
+//      width: 600,
+//      height: 250,
+//    },
  })

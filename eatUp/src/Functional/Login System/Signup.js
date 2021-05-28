@@ -55,16 +55,17 @@ const Signup = ({ navigation })=> {
            username: username.value,
         };
         const usersRef = firebase.firestore().collection('users')
-       usersRef
+        usersRef
           .doc(uid)
           .set(data)
           .then(() => {
             alert('User registered successfully!')
+            navigation.navigate('Home',{data})
           })
           .catch((error) => {
                alert(error)
           });
-          navigation.navigate('Home',{data})
+
       })
        .catch(function(error) {
         // Handle Errors here.
