@@ -71,6 +71,7 @@ const Login = ({ navigation })=> {
     }
 
 
+
  const handleEmailUpdate = (text) => setEmail({ value: text, error: '' })
  const handlePasswordUpdate = (text) => setPassword({ value: text, error: '' })
 
@@ -102,6 +103,9 @@ const Login = ({ navigation })=> {
         errorText={password.error}
         secureTextEntry
          />
+         <TouchableOpacity style={styles.nobutton} onPress={() => navigation.navigate('ForgotPassword')}>
+             <Text style={styles.nobuttontext}> Forgot Password?</Text>
+         </TouchableOpacity>
          <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
           <Text style={styles.btnText}>Let's Go!</Text>
          </TouchableOpacity>
@@ -147,6 +151,13 @@ const styles = StyleSheet.create({
       width: 350,
       marginBottom: 10
     },
+    nobutton: {
+           color: '#3e1f0d',
+           fontSize: 20,
+           marginTop: 30,
+           alignItems: 'center',
+           justifyContent: 'center',
+        },
 });
 
 
