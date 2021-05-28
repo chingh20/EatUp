@@ -5,6 +5,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import Start from './src/Functional/Login System/Start';
 import Login from './src/Functional/Login System/Login';
+import ForgotPassword from './src/Functional/Login System/ForgotPassword';
 import Signup from './src/Functional/Login System/Signup';
 import Home from './src/Functional/Home Page/Home';
 
@@ -35,9 +36,12 @@ export default class App extends React.Component{
                  component={Signup}
                />
                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+               />
+               <Stack.Screen
                  name="Home"
                  component={Home}
-
                />
                 </Stack.Navigator>
            </NavigationContainer>
