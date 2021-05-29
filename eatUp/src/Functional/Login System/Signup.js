@@ -34,9 +34,8 @@ const Signup = ({ navigation })=> {
         return
       }
       registerUser()
-
-
       }
+
 
    const handleEmailUpdate = (text) => setEmail({ value: text, error: '' })
    const handleUsernameUpdate = (text) => setUsername({ value: text, error: '' })
@@ -55,17 +54,21 @@ const Signup = ({ navigation })=> {
            username: username.value,
         };
         const usersRef = firebase.firestore().collection('users')
-        usersRef
-          .doc(uid)
-          .set(data)
-          .then(() => {
-            alert('User registered successfully!')
-            navigation.navigate('Home',{data})
-          })
-          .catch((error) => {
-               alert(error)
-          });
-
+        const userProfile = usersRef.doc(username.value).get()
+        if (!userProfile.exists) {
+         usersRef
+                  .doc(username.value)
+                  .set(data)
+                  .then(() => {
+                    alert('Welcome to EATUP, ' + username.value + '!')
+                    navigation.navigate('Home',{data})
+                  })
+                  .catch((error) => {
+                       alert(error)
+                  });
+        } else {
+             alert('Username has been taken!')
+        }
       })
        .catch(function(error) {
         // Handle Errors here.

@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { emailCheck } from './emailCheck';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 
+
 const ForgotPassword = ({navigation}) => {
 
     const [email, setEmail] = useState({ value: '', error: '' })
@@ -42,7 +43,7 @@ const ForgotPassword = ({navigation}) => {
   return (
      <SafeAreaView style={styles.container}>
      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
-     <Text>Enter your registered email account to reset password!</Text>
+     <Text style={styles.nobutton}>Enter your registered email account to reset password!</Text>
      <TextInput
                  placeholder="Email"
                  returnKeyType="next"
