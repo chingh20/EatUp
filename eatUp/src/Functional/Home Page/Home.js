@@ -275,11 +275,13 @@ export default function HomeScreen(props,user) {
 
     return (
         <View style = {styles.container}>
-         <MapView style = {styles.map}>
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            initialRegion={region}
-            customMapStyle={mapStyle}
+         <MapView
+          style={styles.map}
+          initialRegion={region}
+          provider={PROVIDER_GOOGLE}
+           customMapStyle={mapStyle}
+         >
+
           </MapView>
           <Text>Hello there!</Text>
         </View>
