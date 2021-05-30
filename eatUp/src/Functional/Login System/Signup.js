@@ -16,7 +16,7 @@ import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
 import { usernameCheck } from './usernameCheck';
 
-const Signup = ({ navigation })=> {
+const  Signup = ({ navigation })=> {
 
   const [email, setEmail] = useState({ value: '', error: '' })
   const [username, setUsername] = useState({ value: '', error: '' })
@@ -42,53 +42,63 @@ const Signup = ({ navigation })=> {
    const handlePasswordUpdate = (text) => setPassword({ value: text, error: '' })
 
 
- const registerUser = () => {
-      firebase
-      .auth()
-      .createUserWithEmailAndPassword(email.value, password.value)
-      .then((res) => {
-        const uid = res.user.uid
-        const data = {
-           id: uid,
-           email:email.value,
-           username: username.value,
-        };
+ const registerUser =  async  () => {
+
         const usersRef = firebase.firestore().collection('users')
-        const userProfile = usersRef.doc(username.value).get()
+        const userProfile = await usersRef.doc(username.value).get()
+
         if (!userProfile.exists) {
-         usersRef
-                  .doc(username.value)
-                  .set(data)
-                  .then(() => {
-                    alert('Welcome to EATUP, ' + username.value + '!')
-                    navigation.navigate('Home',{data})
-                  })
-                  .catch((error) => {
-                       alert(error)
-                  });
+        firebase
+                      .auth()
+                      .createUserWithEmailAndPassword(email.value, password.value)
+                      .then((res) => {
+
+                      res.user.updateProfile({
+                          displayName: username.value,
+                      });
+
+                        const uid = res.user.uid
+                        const data = {
+                           id: uid,
+                           email: email.value,
+                           username: username.value,
+                           mapTheme : "default"
+                        }
+
+                        usersRef
+                               .doc(username.value)
+                               .set(data)
+                               .then(() => {
+                                   alert('Welcome to EATUP, ' + username.value + '!')
+                                   navigation.navigate('Home',{ data })
+                               })
+                              .catch((error) => {
+                                               alert(error)
+                              });
+                        }).catch(function(error) {
+                                  // Handle Errors here.
+                                  var errorCode = error.code
+                                  var errorMessage = error.message
+                                  if (errorCode == 'auth/weak-password') {
+                                    alert('The password is too weak.')
+                                    return
+                                  } else if (errorCode == 'auth/email-already-in-use') {
+                                    alert('An account with this email already exists.')
+                                    return
+                                  } else if (errorCode == 'auth/invalid-email') {
+                                    alert('Email address is not valid.')
+                                    return
+                                  } else {
+                                    alert(errorMessage)
+                                  }
+                                  }
+                                  );
+
         } else {
-             alert('Username has been taken!')
+             alert('Username has already been taken!')
         }
-      })
-       .catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code
-        var errorMessage = error.message
-        if (errorCode == 'auth/weak-password') {
-          alert('The password is too weak.')
-          return
-        } else if (errorCode == 'auth/email-already-in-use') {
-          alert('An account with this email already exists.')
-          return
-        } else if (errorCode == 'auth/invalid-email') {
-          alert('Email address is not valid.')
-          return
-        } else {
-          alert(errorMessage)
-        }
-        }
-        );
-    }
+      }
+
 
 
      return (

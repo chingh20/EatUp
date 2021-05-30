@@ -1,4 +1,4 @@
-export const MapTheme = {
+export var MapTheme = {
 mapStyle,
 mapStyle2
 };

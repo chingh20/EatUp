@@ -35,9 +35,8 @@ const Login = ({ navigation })=> {
       firebase.auth().signInWithEmailAndPassword(email.value, password.value)
             .then((userCredential) => {
               // Signed in
-              const uid = userCredential.user.uid
               const usersRef = firebase.firestore().collection('users')
-              usersRef.doc(uid)
+              usersRef.doc(userCredential.user.displayName)
                       .get()
                       .then(userdoc => {
                        if (!userdoc.exists) {
