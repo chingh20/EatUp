@@ -3,7 +3,7 @@
 
 - [1. Introduction](#introducton)
 - [2. User Stories](#user-stories)
-- [3. Scope of Project](#scope-of-project)
+- [3. Scope of Project and Timeline of Implementations](#scope-of-project)
 - [4. Program Flow](#program-flow)
 - [5. Project Log](#project-log)
 
@@ -113,6 +113,7 @@ We hope to make a social media platform that allows people to conveniently share
 
 
 **Timeline of Implementations**
+
 Features to be completed by end of May:
 
 Login page
@@ -125,13 +126,13 @@ Home page
 - Logout function available
 - Coloured Maps for each user
 
- 
 
 Signups 
 
 - Email, password and username used to signup a new account
 - Checks if email and username are available to use
 - Checks if email and password are valid
+
 
 
 Features to be completed by end of June:
