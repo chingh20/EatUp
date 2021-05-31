@@ -2,7 +2,7 @@ import { Platform, Text, View, StyleSheet } from 'react-native'
 import React, { useState } from 'react';
 import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
 import { firebase } from '../../firebase/config';
-import { MapTheme } from './MapTheme'
+import { mapStyle, mapStyle2 } from './MapTheme'
 
 export default function HomeScreen(props,user) {
 
@@ -13,21 +13,29 @@ export default function HomeScreen(props,user) {
         longitudeDelta: 0.25,
     }
 
-    var usertheme = MapTheme.mapStyle
+
+    var usertheme = mapStyle
+    if (user.mapTheme == "default") {
+        usertheme = mapStyle2
+    }
+
 
     return (
         <View style = {styles.homecontainer}>
         <Text>Hello there!</Text>
          <MapView
           style={styles.map}
-          initialRegion={region}
+          Region={region}
+          scrollEnabled = {false}
+          minZoomLevel = {10}
           provider={PROVIDER_GOOGLE}
-          customMapStyle={MapTheme.mapStyle}
+          customMapStyle={mapStyle2}
          >
           </MapView>
         </View>
     )
 }
+
 const styles = StyleSheet.create({
   homecontainer: {
     flex: 1,
