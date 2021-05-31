@@ -8,6 +8,7 @@ import Login from './src/Functional/Login System/Login';
 import ForgotPassword from './src/Functional/Login System/ForgotPassword';
 import Signup from './src/Functional/Login System/Signup';
 import Home from './src/Functional/Home Page/Home';
+import Settings from './src/Functional/Home Page/Settings';
 
 
 
@@ -42,6 +43,10 @@ export default class App extends React.Component{
                <Stack.Screen
                  name="Home"
                  component={Home}
+               />
+               <Stack.Screen
+                  name="Settings"
+                  component={Settings}
                />
                 </Stack.Navigator>
            </NavigationContainer>

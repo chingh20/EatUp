@@ -1,10 +1,13 @@
-import { Platform, Text, View, StyleSheet } from 'react-native'
+import { Platform, Text, SafeAreaView, View, StyleSheet } from 'react-native'
 import React, { useState } from 'react';
 import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
 import { firebase } from '../../firebase/config';
 import { mapStyle, mapStyle2 } from './MapTheme'
+import { IconButton } from 'react-native-paper';
+import { StatusBar } from 'expo-status-bar';
 
-export default function HomeScreen(props,user) {
+
+export default function HomeScreen(props, user) {
 
     var region = {
         latitude: 1.3649170000000002,
@@ -15,24 +18,60 @@ export default function HomeScreen(props,user) {
 
 
     var usertheme = mapStyle
-    if (user.mapTheme == "default") {
+    if (user.mapTheme != "default") {
         usertheme = mapStyle2
     }
 
 
+    const LogoutUser = () => {
+    firebase.auth()
+      .signOut()
+      .then(() => {
+       props.navigation.navigate('Start')
+       alert('See you soon!')
+      })
+      .catch(error => {
+          alert(error)
+      });
+    }
+
     return (
-        <View style = {styles.homecontainer}>
-        <Text>Hello there!</Text>
+
+        <SafeAreaView style = {styles.homecontainer}>
+
+        <View style = {styles.upper}>
+        <IconButton
+            icon="arrow-left-circle"
+            onPress={LogoutUser}
+            color='#3e1f0d'
+            style={{ margin: 10 }}
+        />
+        <Text style={styles.name}>Hello!</Text>
+
+        <IconButton
+             icon="cog-outline"
+             onPress={() => props.navigation.navigate('Settings')}
+             color='#3e1f0d'
+             style={{ margin: 10 }}
+        />
+        </View>
+
+        <View style = {styles.middle}>
          <MapView
           style={styles.map}
           initialRegion={region}
-          scrollEnabled = {true}
           minZoomLevel = {10}
           provider={PROVIDER_GOOGLE}
-          customMapStyle={mapStyle2}
+          customMapStyle={usertheme}
          >
           </MapView>
         </View>
+
+        <View style = {styles.bottom}>
+        <Text> Menus </Text>
+        </View>
+
+        </SafeAreaView>
     )
 }
 
@@ -43,8 +82,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
+  upper: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#fffbf1',
+    alignItems: 'stretch',
+    justifyContent: 'space-between',
+  },
+  middle: {
+    flex: 1,
+    backgroundColor: '#fffbf1',
+  },
+  bottom: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: '#fffbf1',
+      alignItems: 'stretch',
+      justifyContent: 'space-around',
+    },
  map: {
       width: 600,
       height: 250,
     },
+ name: {
+    color: '#3e1f0d',
+    fontSize: 20,
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+ }
  })
