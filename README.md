@@ -51,20 +51,20 @@ We hope to make a social media platform that allows people to conveniently share
 ## <a name="user-stories"></a>2. User Stories
 **Core**
 
-1. Users will have their personalized food maps, where each saved destination contains their reviews/memories (posts) of food places. They will also be able to share their food maps with their friends.
-2. Users can post and share the food places they visited. 
-3. Users can follow people and see their posts in the feed.
+1. As a food lover, I want to have my own personalized food map, so that I can save destinations containing my reviews/memories (posts) of food places.
+2. As a food lover, I want to post and share the food places I visited, so that I can share my food map with my friends. 
+3. As a food lover, I want follow other users, so that I can see their posts in the feed to find more food places to try out.
 
 **Possible Extensions**
 
-4. Users will be able to get food recommendations that are similar to their tastes from the app’s algorithm or from public feeds.
-5. Users can conveniently search and check basic info about restaurants and food.
-6. Users can enter competitions or complete quests by visiting food places. (Eg. conquering food maps or eating foods with certain themes.)
-7. Users can help and obtain help from other users about where to get certain kinds of food. 
+4. As a food lover, I want to get food recommendations that are similar to my tastes from the app’s algorithm or from public feeds, so that I can try out new food/ places.
+5. As a food lover, I want to conveniently search about restaurants and food, so that I can check the basic information from others' posts.
+6. As a food lover, I want to enter competitions or complete quests by visiting food places, so that I can compete with my fellow friends or earn rewards related to food. (Eg. conquering food maps or eating foods with certain themes.)
+7. As a food lover, I want to help and obtain help from other users about where to get certain kinds of food, so that I can find out more information about the food-in-question. 
 
 
 
-## <a name="scope-of-project"></a>3. Scope of Project
+## <a name="scope-of-project"></a>3. Scope of Project and Timeline of Implementations
 
 **Core Features**
 
@@ -110,6 +110,49 @@ We hope to make a social media platform that allows people to conveniently share
 6. Lost & Found Section
     - Users can post images or descriptions to search for certain food, other users and web owners will help to respond. 
     - Users are able to vote for answers they think are correct.
+
+
+**Timeline of Implementations**
+Features to be completed by end of May:
+
+Login page
+- “Reset Password” function where a link will be sent to the user’s email to change their password. 
+- Email and password used to log into user account 
+- Only verified accounts can log in. 
+
+ 
+Home page
+- Logout function available
+- Coloured Maps for each user
+
+ 
+
+Signups 
+
+- Email, password and username used to signup a new account
+- Checks if email and username are available to use
+- Checks if email and password are valid
+
+
+Features to be completed by end of June:
+
+Home page
+- Complete theme selection
+- Customised map markers that contains user's posts linked to that location
+- Map markers for user's "Want to go!" places
+- Able to publish posts
+
+Post Feeds
+- Complete public post feeds view, include functions such as set post as "Want to go!" places and like posts
+- Able to view following users' maps
+
+Search engine
+- deploy search engine to find food places and other users
+
+
+*We will include further timeline for extension features later based on our progress of the above core features*
+
+
 
 
 ## <a name="program-flow"></a>4. Program Flow
