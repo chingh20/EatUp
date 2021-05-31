@@ -1,9 +1,9 @@
-export var MapTheme = {
+export default {
 mapStyle,
 mapStyle2
 };
 
-    var mapStyle = [
+    export var mapStyle = [
                        {
                          "elementType": "geometry",
                          "stylers": [
@@ -260,7 +260,7 @@ mapStyle2
                      ]
 
 
-    var mapStyle2 = [
+    export var mapStyle2 = [
                       {
                         "elementType": "geometry",
                         "stylers": [
