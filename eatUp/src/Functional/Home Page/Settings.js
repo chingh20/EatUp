@@ -4,24 +4,15 @@ import { StatusBar } from 'expo-status-bar';
 
 
 
-const Start = ({navigation}) => {
+const Settings = ({navigation}) => {
   return (
      <View style={styles.container}>
-     <Image style={styles.image} source = {require("../../../assets/logo-full-background.png")}/>
-     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.btnText}>Log In</Text>
-     </TouchableOpacity>
-
-     <Text style ={styles.nobutton}> No account yet? Sign up
-     <TouchableOpacity style={styles.nobutton} onPress={() => navigation.navigate('Signup')}>
-             <Text style={styles.nobuttontext}> here!</Text>
-          </TouchableOpacity>
-     </Text>
+     <Text> Settings Page </Text>
      </View>
   );
 };
 
-export default Start;
+export default Settings;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
