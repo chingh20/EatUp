@@ -25,8 +25,8 @@ export default function HomeScreen(props,user) {
         <Text>Hello there!</Text>
          <MapView
           style={styles.map}
-          Region={region}
-          scrollEnabled = {false}
+          initialRegion={region}
+          scrollEnabled = {true}
           minZoomLevel = {10}
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle2}
