@@ -7,11 +7,8 @@ import Start from './src/Functional/Login System/Start';
 import Login from './src/Functional/Login System/Login';
 import ForgotPassword from './src/Functional/Login System/ForgotPassword';
 import Signup from './src/Functional/Login System/Signup';
-import Home from './src/Functional/Home Page/Home';
+import BottomTab from './src/Functional/Home Page/BottomTab';
 import Settings from './src/Functional/Home Page/Settings';
-
-
-
 
 const Stack = createStackNavigator();
 
@@ -20,8 +17,9 @@ export default class App extends React.Component{
     render() {
        return (
         <NavigationContainer>
+
              <Stack.Navigator
-             initialRouteName="StartPage"
+             initialRouteName="Start"
              screenOptions={{headerShown: false}}
              >
                <Stack.Screen
@@ -40,15 +38,17 @@ export default class App extends React.Component{
                   name="ForgotPassword"
                   component={ForgotPassword}
                />
-               <Stack.Screen
+              <Stack.Screen
                  name="Home"
-                 component={Home}
+                 component={BottomTab}
                />
-               <Stack.Screen
-                  name="Settings"
-                  component={Settings}
+              <Stack.Screen
+                   name="Settings"
+                   component={Settings}
                />
+
                 </Stack.Navigator>
+
            </NavigationContainer>
         );
     }
