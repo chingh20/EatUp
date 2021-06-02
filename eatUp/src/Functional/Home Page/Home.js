@@ -7,7 +7,7 @@ import { IconButton } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 
 
-export default function HomeScreen(props, user) {
+export default function Home(props, user) {
 
     var region = {
         latitude: 1.3649170000000002,
@@ -38,21 +38,22 @@ export default function HomeScreen(props, user) {
     return (
 
         <SafeAreaView style = {styles.homecontainer}>
-
         <View style = {styles.upper}>
         <IconButton
             icon="arrow-left-circle"
             onPress={LogoutUser}
             color='#3e1f0d'
-            style={{ margin: 10 }}
+            size= {30}
+            style={{ margin: 0 }}
         />
-        <Text style={styles.name}>Hello!</Text>
+        <Text style={styles.name}>Hello!{""+JSON.stringify(user.mapTheme)}</Text>
 
         <IconButton
              icon="cog-outline"
              onPress={() => props.navigation.navigate('Settings')}
              color='#3e1f0d'
-             style={{ margin: 10 }}
+             size= {30}
+             style={{ margin: 0 }}
         />
         </View>
 
@@ -71,9 +72,13 @@ export default function HomeScreen(props, user) {
         <Text> Menus </Text>
         </View>
 
+
         </SafeAreaView>
     )
 }
+
+
+
 
 const styles = StyleSheet.create({
   homecontainer: {
@@ -86,16 +91,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#fffbf1',
-    alignItems: 'stretch',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   middle: {
     flex: 1,
-    backgroundColor: '#fffbf1',
+    backgroundColor: '#3e1f0d',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bottom: {
       flex: 1,
-      flexDirection: 'row',
+      flexDirection: 'column',
       backgroundColor: '#fffbf1',
       alignItems: 'stretch',
       justifyContent: 'space-around',

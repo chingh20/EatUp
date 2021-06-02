@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
+
 const Login = ({ navigation })=> {
 
   const [email, setEmail] = useState({ value: '', error: '' })
