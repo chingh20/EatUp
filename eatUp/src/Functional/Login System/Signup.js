@@ -62,19 +62,28 @@ const  Signup = ({ navigation })=> {
                            id: uid,
                            email: email.value,
                            username: username.value,
-                           mapTheme : "default"
+                           mapTheme: "default",
+                           profliePicture: null,
+                           friends: [],
+                           cuisinesTried: [],
+                           wantToGo: [],
+                           postLocations: [],
+                           personalizedTags: [],
+
                         }
+
+                        firebase.firestore().collection(username.value).doc('dummyPost').set({dummy:''})
 
                         usersRef
                                .doc(username.value)
                                .set(data)
                                .then(() => {
-                                   alert('Welcome to EATUP, ' + username.value + '!')
-                                   navigation.navigate('Home',{ data })
+                               alert('Welcome to EATUP, ' + username.value + '!')
+                               navigation.navigate('Home',{ data })
                                })
-                              .catch((error) => {
-                                               alert(error)
-                              });
+                               .catch((error) => {
+                                    alert(error)
+                               });
                         }).catch(function(error) {
                                   // Handle Errors here.
                                   var errorCode = error.code
