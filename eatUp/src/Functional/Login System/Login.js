@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  View
+  View,
+  ScrollView
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { emailCheck } from './emailCheck';
@@ -77,6 +78,7 @@ const Login = ({ navigation })=> {
 
 
      return (
+     <ScrollView contentContainerStyle = {styles.scroll}>
       <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
       <Image style={styles.image} source = {require("../../../assets/welcome-back-logo.png")}/>
@@ -111,11 +113,18 @@ const Login = ({ navigation })=> {
          </TouchableOpacity>
      </KeyboardAvoidingView>
      </SafeAreaView>
+     </ScrollView>
     );
 }
 
 
 const styles = StyleSheet.create({
+  scroll: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1
+  },
   container: {
     flex: 1,
     backgroundColor: '#fffbf1',
