@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  View
+  View,
+  ScrollView
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
@@ -111,6 +112,7 @@ const  Signup = ({ navigation })=> {
 
 
      return (
+     <ScrollView contentContainerStyle = {styles.scroll}>
      <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
       <Image style={styles.image} source = {require("../../../assets/create-account-logo.png")}/>
@@ -151,11 +153,18 @@ const  Signup = ({ navigation })=> {
          </TouchableOpacity>
      </KeyboardAvoidingView>
      </SafeAreaView>
+     </ScrollView>
     );
 }
 
 
 const styles = StyleSheet.create({
+  scroll: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1
+  },
   container: {
       flex: 1,
       backgroundColor: '#fffbf1',

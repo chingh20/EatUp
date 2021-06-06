@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconButton } from 'react-native-paper';
 import {
   Image,
@@ -9,16 +9,19 @@ import {
   KeyboardAvoidingView,
   Platform,
   View,
-  TextInput
+  ScrollView
 } from 'react-native';
 import { firebase } from '../../firebase/config';
 import { StatusBar } from 'expo-status-bar';
 import Camera from './Camera'
-import ImagePicker from 'react-native-image-picker'
+import * as ImagePicker from 'expo-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import uuid from 'uuid'
 
 export default function Post () {
   var user = firebase.auth().currentUser.displayName;
+
   const upload = (post) => {
     const id = uuid.v4()
     const uploadData = {
@@ -35,38 +38,70 @@ export default function Post () {
      return firebase
             .firestore()
             .collection(user)
-            .set(uploadData)
+            .add(uploadData)
 
     }
+
+//      useEffect(() => {
+//        (async () => {
+//          if (Platform.OS !== 'web') {
+//            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+//            if (status !== 'granted') {
+//              alert('Sorry, we need camera roll permissions to make this work!');
+//            }
+//          }
+//        })();
+//      }, []);
 
    const selectImage = async () => {
-      const options = {
-        noData: true
-      }
-      const response = await ImagePicker.launchImageLibrary(options)
-        if (response.didCancel) {
-          alert('User cancelled image picker')
-        } else if (response.error) {
-          alert('ImagePicker Error: ', response.error)
-        } else {
-          const source = { uri: response.uri }
-          console.log(source)
-          handleImageUpdate(response)
-        }
+     let result = await ImagePicker.launchImageLibraryAsync({
+         mediaTypes: ImagePicker.MediaTypeOptions.All,
+         allowsEditing: true,
+         aspect: [3,3],
+         quality: 1,
+       })
+
+       if (!result.cancelled) {
+         handleImageUpdate(result.uri)
+       }
     }
 
+    const [image, setImage] = useState({value: null, error: ''})
+    const [title, setTitle] = useState({ value: '', error: '' })
+    const [description, setDescription] = useState({ value: '', error: '' })
+    const [location, setLocation] = useState({ value: '', error: '' })
 
-    const [image, setImage] = useState(null)
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
-    const [location, setLocation] = useState('')
+    const handleImageUpdate = (image) => setImage({value: image, error: ''})
+    const handleTitleUpdate = (text) => setTitle({ value: text, error: '' })
+    const handleDescriptionUpdate = (text) => setDescription({ value: text, error: '' })
+    const handleLocationUpdate = (location) => setLocation({ value: location, error: '' })
 
-    const handleImageUpdate = (image) => setImage(image)
-    const handleTitleUpdate = (text) => setTitle(text)
-    const handleDescriptionUpdate = (text) => setDescription(text)
-    const handleLocationUpdate = (location) => setLocation(location)
+    function titleCheck(title) {
+      if (!title) return "This can't be empty!"
+      return ''
+    }
+
+    function imageCheck(image) {
+      if (image === null) return "Please choose an image!"
+      return ''
+    }
 
     const onSubmit = async () => {
+
+        const imageError = imageCheck(image.value)
+        const titleError = titleCheck(title.value)
+        const descriptionError = titleCheck(description.value)
+        const locationError = titleCheck(location.value)
+
+
+        if (image.value || titleError || descriptionError || locationError) {
+          setImage({...image,error: imageError})
+          setTitle({ ...title, error: titleError })
+          setDescription({ ...description, error: descriptionError })
+          setLocation({ ...location, error: locationError })
+          return
+        }
+
         try {
           const post = {
             photo: image,
@@ -88,77 +123,116 @@ export default function Post () {
       }
 
 return (
- <View style={{ marginTop: 80, alignItems: 'center' }}>
-        <View>
-          {image ? (
-            <Image
-              source={image}
-              style={{ width: '100%', height: 300 }}
-            />
-          ) : (
-            <TouchableOpacity style={styles.button} onPress={selectImage}>
-              <Text> Select an image from photo gallery </Text>
-            </TouchableOpacity>
-        )}
-        </View>
-        <View style={{ marginTop: 80, alignItems: 'center' }}>
-          <Text>Post Details</Text>
+<ScrollView contentContainerStyle={styles.scroll}>
+ <SafeAreaView style = {styles.container}>
+ <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
 
+          {image.value ?(
+              <View style={styles.container}>
+            <Image
+              source={{uri: image.value}}
+              style = {{width: 300 , height: 300}}
+            />
+
+            <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
+                <Text style={styles.nobtnText}> Choose Again </Text>
+            </TouchableOpacity>
+            </View>
+          ) : (
+          <View style={styles.container}>
+            <TouchableOpacity style={styles.button} onPress={selectImage}>
+              <Text style={styles.btnText}> Pick from Gallery </Text>
+            </TouchableOpacity>
+           </View>
+        )}
+          <View style={styles.container}>
+           <Text style={styles.errorText}> {image.error}</Text>
           <TextInput
             placeholder='Enter title of the post'
-            style={{ margin: 20 }}
-            value={title}
+            style={styles.textInput}
+            value={title.value}
             onChangeText={handleTitleUpdate}
+            error={!!title.error}
+            errorText={title.error}
           />
           <TextInput
             placeholder='Enter description'
-            style={{ margin: 20 }}
-            value={description}
+            style={styles.textInput}
+            value={description.value}
             onChangeText={handleDescriptionUpdate}
+            error={!!description.error}
+            errorText={description.error}
           />
-          <TouchableOpacity onPress={onSubmit}>
-            <Text> Add post </Text>
+          <TouchableOpacity style={styles.button} onPress={onSubmit}>
+            <Text style={styles.btnText}> Add post </Text>
           </TouchableOpacity>
-        </View>
+          </View>
 
- </View>
+</KeyboardAvoidingView>
+ </SafeAreaView>
+ </ScrollView>
+
     )
 
 
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    marginHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1
+  },
   container: {
-      flex: 1,
-      backgroundColor: '#fffbf1',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    flex: 1,
+    backgroundColor: '#fffbf1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+
+  },
+  textInput: {
+      borderWidth: 1,
+      borderColor: '#3e1f0d',
+      fontSize: 20,
+      marginTop: 15,
+      width: 350,
+      height: 40,
     },
-    textInput: {
-        borderWidth: 1,
-        borderColor: '#3e1f0d',
-        fontSize: 20,
-        marginTop: 15,
-        width: 350,
-        height: 40,
+    button: {
+      width: 200,
+      marginTop: 30,
+      alignItems: "center",
+      justifyContent: 'center',
+      backgroundColor: "#ff5757",
+      padding: 15,
+      borderRadius: 50,
       },
-      button: {
-        width: 200,
-        marginTop: 30,
-        backgroundColor: "#ff5757",
-        padding: 15,
-        borderRadius: 50,
+    btnText: {
+      color: "white",
+      fontSize: 20,
+      justifyContent: "center",
+      textAlign: "center",
+    },
+    image: {
+      height: 250,
+      width: 350,
+      marginBottom: 10
+    },
+    nobutton: {
+           color: '#3e1f0d',
+           fontSize: 20,
+           marginTop: 30,
+           alignItems: 'center',
+           justifyContent: 'center',
         },
-      btnText: {
-        color: "white",
-        fontSize: 20,
-        justifyContent: "center",
-        textAlign: "center",
-      },
-      image: {
-        height: 250,
-        width: 350,
-        marginBottom: 10
-      },
+    errorText: {
+          fontSize: 20,
+          color: '#fd1d1d',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop:20
+    }
 });

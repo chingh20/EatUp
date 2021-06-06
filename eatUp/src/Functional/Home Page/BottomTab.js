@@ -24,45 +24,45 @@ const Tab = createBottomTabNavigator();
                <Tab.Screen
                     name="Home"
                     component={Home}
-//                    options={{
-//                          tabBarLabel: 'Home',
-//                          tabBarIcon: ({ color, size }) => (
-//                            <MaterialCommunityIcons name="home" color={color} size={size} />
-//                          ),
-//                        }}
+                    options={{
+                          tabBarLabel: 'Home',
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="home" color={color} size={size} />
+                          ),
+                        }}
                      />
 
                <Tab.Screen
                     name="Feed"
                     component={Feed}
-//                    options={{
-//                          tabBarLabel: 'Feed',
-//                          tabBarIcon: ({ color, size }) => (
-//                            <MaterialCommunityIcons name="map-marker-radius-outline" color={color} size={size} />
-//                          ),
-//                        }}
+                    options={{
+                          tabBarLabel: 'Feed',
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="map-marker-radius-outline" color={color} size={size} />
+                          ),
+                        }}
                 />
 
                <Tab.Screen
                     name="Post"
                     component={Post}
-//                    options={{
-//                          tabBarLabel: 'Post',
-//                          tabBarIcon: ({ color, size }) => (
-//                            <MaterialCommunityIcons name="plus-circle-outline" color={color} size={size} />
-//                          ),
-//                        }}
+                    options={{
+                          tabBarLabel: 'Post',
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="plus-circle-outline" color={color} size={size} />
+                          ),
+                        }}
                />
 
                <Tab.Screen
                     name="Friends"
                     component={Friends}
-//                    options={{
-//                          tabBarLabel: 'Friends',
-//                          tabBarIcon: ({ color, size }) => (
-//                            <MaterialCommunityIcons name="account-multiple" color={color} size={size} />
-//                           ),
-//                         }}
+                    options={{
+                          tabBarLabel: 'Friends',
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="account-multiple" color={color} size={size} />
+                           ),
+                         }}
                />
 
                <Tab.Screen name="Settings" component={Settings} />
