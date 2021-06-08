@@ -163,17 +163,20 @@ return (
             error={!!description.error}
             errorText={description.error}
           />
+
+          <GooglePlacesInput />
+
           <TouchableOpacity style={styles.button} onPress={onSubmit}>
-            <Text style={styles.btnText}> Add post </Text>
-          </TouchableOpacity>
+           <Text style={styles.btnText}> Add post </Text>
+         </TouchableOpacity>
           </View>
+
+
 
 </KeyboardAvoidingView>
  </SafeAreaView>
- </ScrollView>
-
+//</ScrollView>
     )
-
 
 }
 
@@ -197,13 +200,14 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: '#3e1f0d',
       fontSize: 20,
-      marginTop: 15,
+      marginBottom: 15,
       width: 350,
       height: 40,
     },
     button: {
       width: 200,
       marginTop: 30,
+      marginBottom: 10,
       alignItems: "center",
       justifyContent: 'center',
       backgroundColor: "#ff5757",
