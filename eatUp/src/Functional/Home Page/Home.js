@@ -5,8 +5,7 @@ import { firebase } from '../../firebase/config';
 import { mapStyle, mapStyle2 } from './MapTheme'
 import { IconButton } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-
-
+import GooglePlacesInput from './googleMap'
 export default function Home(props, user) {
 
     var region = {
