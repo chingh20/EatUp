@@ -1,11 +1,18 @@
 import React from 'react';
-import { Platform, Text, SafeAreaView, View, StyleSheet } from 'react-native';
-import Star from './Star'
+import { Platform, Text, SafeAreaView, View, } from 'react-native';
+
+import Star from './Star';
+
+
+
 export default function Feed () {
+    const area_id = '0'
     return (
     <SafeAreaView>
     <Text> Feed </Text>
-    <Star />
+    <View>
+   <Star />
+          </View>
     </SafeAreaView>
     );
 
