@@ -164,7 +164,7 @@ return (
             errorText={description.error}
           />
 
-          <GooglePlacesInput />
+         // <GooglePlacesInput />
 
           <TouchableOpacity style={styles.button} onPress={onSubmit}>
            <Text style={styles.btnText}> Add post </Text>
