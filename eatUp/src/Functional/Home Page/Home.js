@@ -1,5 +1,5 @@
-import { Platform, Text, SafeAreaView, View, StyleSheet, ScrollView } from 'react-native'
-import React, { useState } from 'react';
+import { Platform, Text, SafeAreaView, View, Image, StyleSheet, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react';
 import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
 import { firebase } from '../../firebase/config';
 import { mapStyle, mapStyle2 } from './MapTheme'
@@ -19,25 +19,31 @@ export default function Home(props, user) {
         longitudeDelta: 0.25,
     }
 
+    const [userData, setUserData] = useState(null);
+
     var user = firebase.auth().currentUser.displayName;
 
-    const getUserDetails = () => {
-      var user = firebase.auth().currentUser
-      return firebase
+
+    const getUserDetails = async () => {
+    await
+      firebase
         .firestore()
         .collection('users')
-        .doc(user.uid)
-        .get()
-        .then(function(doc) {
-          let userDetails = doc.data()
-          return userDetails
-        })
-        .catch(function(error) {
-          console.log('Error getting documents: ', error)
-        })
+        .doc(user)
+        .get().then((documentSnapshot) => {
+            if (documentSnapshot.exists) {
+            alert(documentSnapshot.data())
+            setUserData(documentSnapshot.data())
+            }
+         })
+
     }
 
-    const userDetails = getUserDetails()
+    useEffect(() =>
+        {getUserDetails();} , []
+    )
+
+
 
 //    var usertheme = mapStyle
 //    if (user.mapTheme != "default") {
@@ -52,13 +58,9 @@ export default function Home(props, user) {
        props.navigation.navigate('Start')
        alert('See you soon!')
       })
-      .catch(error => {
-          alert(error)
-      });
     }
 
     return (
-//<ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='always'>
         <SafeAreaView style = {styles.homecontainer}>
         <View style = {styles.upper}>
         <IconButton
@@ -80,21 +82,15 @@ export default function Home(props, user) {
 
         <View style = {styles.middle}>
         <Text style={styles.name}>Hello, {user}!</Text>
+
         <Avatar
-           size="large"
            rounded
-           source={userDetails.displayPicture}
+           size='large'
+           style={{ width: 100, height: 100 }}
            onPress={() => props.navigation.navigate('ChangeDisplayPic')}
+           source={{uri: userData? userData.displayPicture : 'file:///var/mobile/Containers/Data/Application/4ECBB8DE-0801-4A52-8FD8-156C59C30DEF/Library/Caches/ExponentExperienceData/%2540ching123%252FeatUp/ImagePicker/00B19375-78BD-4D8B-A10D-4B24BD2DD146.jpg'}}
         />
 
-         <MapView
-          style={styles.map}
-          initialRegion={region}
-          minZoomLevel = {10}
-          provider={PROVIDER_GOOGLE}
-          customMapStyle={mapStyle}
-         >
-          </MapView>
         </View>
 
         <View style = {styles.bottom}>
@@ -102,7 +98,6 @@ export default function Home(props, user) {
         </View>
 
         </SafeAreaView>
-//        </ScrollView>
     )
 }
 
@@ -132,7 +127,7 @@ const styles = StyleSheet.create({
   },
   middle: {
     flex: 1,
-    backgroundColor: '#3e1f0d',
+    backgroundColor: '#fffbf1',
     alignItems: 'center',
     justifyContent: 'center',
   },

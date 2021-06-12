@@ -95,7 +95,7 @@ export default function Post () {
         const locationError = titleCheck(location.value)
 
 
-        if (image.value || titleError || descriptionError || locationError) {
+        if (imageError || titleError || descriptionError || locationError) {
           setImage({...image,error: imageError})
           setTitle({ ...title, error: titleError })
           setDescription({ ...description, error: descriptionError })
@@ -163,8 +163,6 @@ return (
             error={!!description.error}
             errorText={description.error}
           />
-
-         // <GooglePlacesInput />
 
           <TouchableOpacity style={styles.button} onPress={onSubmit}>
            <Text style={styles.btnText}> Add post </Text>
