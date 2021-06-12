@@ -13,6 +13,7 @@ import React, { useState } from 'react';
 import { firebase } from '../../firebase/config';
 import * as ImagePicker from 'expo-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
+import { StatusBar } from 'expo-status-bar';
 
 const ChangeDisplayPic = ({ navigation }) => {
 
@@ -40,7 +41,7 @@ const changePic = (avatarImage) => {
            if (!result.cancelled) {
              handleImageUpdate(result.uri)
            }
-        }
+    }
 
     const [image, setImage] = useState({value: null, error: ''})
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
@@ -53,7 +54,7 @@ const changePic = (avatarImage) => {
     const onChange = async () => {
           const imageError = imageCheck(image.value)
 
-          if (image.value) {
+          if (imageError) {
           setImage({...image,error: imageError})
           return
         }
@@ -64,6 +65,8 @@ const changePic = (avatarImage) => {
           changePic(avatarImage)
 
           handleImageUpdate(null)
+          navigation.navigate('Home')
+
 
           } catch (e) {
               console.error(e)

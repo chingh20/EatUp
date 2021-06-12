@@ -50,7 +50,7 @@ export default class App extends React.Component{
                <Stack.Screen
                   name="ChangeDisplayPic"
                   component={ChangeDisplayPic}
-                              />
+               />
 
                 </Stack.Navigator>
 

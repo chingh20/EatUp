@@ -59,6 +59,7 @@ const  Signup = ({ navigation })=> {
                       });
 
                         const uid = res.user.uid
+
                         const data = {
                            id: uid,
                            email: email.value,
@@ -70,7 +71,6 @@ const  Signup = ({ navigation })=> {
                            wantToGo: [],
                            postLocations: [],
                            personalizedTags: [],
-
                         }
 
                         firebase.firestore().collection(username.value).doc('dummyPost').set({dummy:''})
