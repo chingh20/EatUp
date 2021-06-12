@@ -124,7 +124,7 @@ export default function Post () {
       }
 
 return (
-//<ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='always'>
+<ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='always'>
 <SafeAreaView style = {styles.container}>
  <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} style={styles.container}>
           {image.value ?(
@@ -175,7 +175,7 @@ return (
 
 </KeyboardAvoidingView>
  </SafeAreaView>
-//</ScrollView>
+</ScrollView>
     )
 
 }
