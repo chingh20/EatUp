@@ -9,6 +9,7 @@ import ForgotPassword from './src/Functional/Login System/ForgotPassword';
 import Signup from './src/Functional/Login System/Signup';
 import BottomTab from './src/Functional/Home Page/BottomTab';
 import Settings from './src/Functional/Home Page/Settings';
+import ChangeDisplayPic from './src/Functional/Home Page/ChangeDisplayPic';;
 
 const Stack = createStackNavigator();
 
@@ -46,6 +47,10 @@ export default class App extends React.Component{
                    name="Settings"
                    component={Settings}
                />
+               <Stack.Screen
+                  name="ChangeDisplayPic"
+                  component={ChangeDisplayPic}
+                              />
 
                 </Stack.Navigator>
 

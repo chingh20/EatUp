@@ -64,7 +64,7 @@ const  Signup = ({ navigation })=> {
                            email: email.value,
                            username: username.value,
                            mapTheme: "default",
-                           profliePicture: null,
+                           displayPicture: null,
                            friends: [],
                            cuisinesTried: [],
                            wantToGo: [],
