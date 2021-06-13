@@ -13,15 +13,16 @@ import {
 } from 'react-native';
 import { firebase } from '../../firebase/config';
 import { StatusBar } from 'expo-status-bar';
-import Camera from './Camera'
+import CameraFunction from './Camera'
 import * as ImagePicker from 'expo-image-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import uuid from 'uuid'
 import GooglePlacesInput from './googleMap';
+import HandlingImage from '../Components/HandlingImage';
 
 export default function Post () {
-  var user = firebase.auth().currentUser.displayName;
+  var username = firebase.auth().currentUser.displayName;
 
   const upload = (post) => {
     const id = uuid.v4()
@@ -32,14 +33,21 @@ export default function Post () {
       postDescription: post.description,
       postLocation: post.location,
       likes: [],
-      user: firebase.firestore().collection('users').doc(user),
+      user: username,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     }
 
-     return firebase
-            .firestore()
-            .collection(user)
-            .add(uploadData)
+     firebase
+       .firestore()
+       .collection(username)
+       .add(uploadData)
+
+     firebase
+        .firestore()
+        .collection('posts')
+        .add(uploadData)
+    imageName = username + post.title + id
+     HandlingImage(imagePath, {imageName})
 
     }
 
@@ -53,6 +61,13 @@ export default function Post () {
 //          }
 //        })();
 //      }, []);
+  const getPlatformPath = ({ path, uri }) => {
+         return Platform.select({
+               android: { "value": path },
+                ios: { "value": uri }
+         })
+ }
+
 
    const selectImage = async () => {
      let result = await ImagePicker.launchImageLibraryAsync({
@@ -64,14 +79,17 @@ export default function Post () {
 
        if (!result.cancelled) {
          handleImageUpdate(result.uri)
+         let path = this.getPlatformPath(response).value
+         setImagePath(path)
        }
+
     }
 
     const [image, setImage] = useState({value: null, error: ''})
     const [title, setTitle] = useState({ value: '', error: '' })
     const [description, setDescription] = useState({ value: '', error: '' })
     const [location, setLocation] = useState({ value: '', error: '' })
-
+    const [imagePath, setImagePath] = useState('')
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
     const handleTitleUpdate = (text) => setTitle({ value: text, error: '' })
     const handleDescriptionUpdate = (text) => setDescription({ value: text, error: '' })
@@ -137,11 +155,17 @@ return (
             <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
                 <Text style={styles.nobtnText}> Choose Again </Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.nobutton} onPress={CameraFunction}>
+                <Text style={styles.nobtnText}> Camera </Text>
+            </TouchableOpacity>
             </View>
           ) : (
           <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={selectImage}>
               <Text style={styles.btnText}> Pick from Gallery </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={selectImage}>
+               <Text style={styles.btnText}> Take Picture </Text>
             </TouchableOpacity>
            </View>
         )}

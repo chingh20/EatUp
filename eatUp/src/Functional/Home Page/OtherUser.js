@@ -6,18 +6,9 @@ import { firebase } from '../../firebase/config';
 import { IconButton } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { Avatar } from 'react-native-elements';
-import ChangeDisplayPic from './ChangeDisplayPic';
-import GooglePlacesInput from './googleMap'
 
 
-export default function Home(props, user) {
-
-    var region = {
-        latitude: 1.3649170000000002,
-        longitude: 103.82287200000002,
-        latitudeDelta: 0.3,
-        longitudeDelta: 0.25,
-    }
+const OtherUser = ({navigation, route}) => {
 
     const [userData, setUserData] = useState(null);
     const [post, setPost] = useState([]);
@@ -32,75 +23,57 @@ export default function Home(props, user) {
         .doc(user)
         .get().then((documentSnapshot) => {
             if (documentSnapshot.exists) {
+            alert(documentSnapshot.data())
             setUserData(documentSnapshot.data())
             }
          })
     }
 
-//    const fetchPost = async () => {
-//        try {
-//          const list = [];
-//
-//          await firestore()
-//            .collection('posts')
-//            .where('user', '==', username)
-//            .orderBy('timestamp', 'desc')
-//            .get()
-//            .then((querySnapshot) => {
-//                querySnapshot.forEach((doc) => {
-//                    const {
-//                        id,
-//                        postPhoto,
-//                        postTitle,
-//                        postDescription,
-//                        postLocation,
-//                        likes,
-//                        user,
-//                        timestamp
-//                    } = doc.data();
-//                    list.push({
-//                    idd: doc.id,
-//                    id,
-//                    userName: 'User',
-//                    userImg: null,
-//                    timestamp: timeStamp,
-//                    likes,
-//                    });
-//                  });
-//                });
-//
-//            setPost(list);
-//
-//
-//            } catch (e) {
-//            console.log(e)
-//            }
-//    }
+    const fetchPost = async () => {
+        try {
+          const list = [];
 
+          await firestore()
+            .collection('posts')
+            .where('user', '==', username)
+            .orderBy('timestamp', 'desc')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const {
+                        id,
+                        postPhoto,
+                        postTitle,
+                        postDescription,
+                        postLocation,
+                        likes,
+                        user,
+                        timestamp
+                    } = doc.data();
+                    list.push({
+                    idd: doc.id,
+                    id,
+                    userName: 'User',
+                    userImg: null,
+                    timestamp: timeStamp,
+                    likes,
+                    });
+                  });
+                });
+
+            setPost(list);
+
+            } catch (e) {
+            console.log(e)
+            }
+    }
 
 
     useEffect(() =>
        {getUserDetails();
-//        fetchPost();
+        fetchPost();
         } , []
     )
-
-
-
-//    var usertheme = mapStyle
-//    if (user.mapTheme != "default") {
-//        usertheme = mapStyle2
-//    }
-
-
-    const LogoutUser = () => {
-    firebase.auth()
-      .signOut()
-      .then(() => {
-       props.navigation.navigate('Start')
-       alert('See you soon!')
-      })
-    }
 
     return (
         <SafeAreaView style = {styles.homecontainer}>
@@ -192,3 +165,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
  }
  })
+
+export default OtherUser;
