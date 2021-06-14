@@ -11,30 +11,34 @@ import {
   View,
   ScrollView
 } from 'react-native';
-import { firebase } from '../../firebase/config';
+import { firebase, storage } from '../../firebase/config';
 import { StatusBar } from 'expo-status-bar';
 import CameraFunction from './Camera'
 import * as ImagePicker from 'expo-image-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import uuid from 'uuid'
-import GooglePlacesInput from './googleMap';
-import HandlingImage from '../Components/HandlingImage';
+
 
 export default function Post () {
   var username = firebase.auth().currentUser.displayName;
 
-  const upload = (post) => {
+
+  const upload = async (post) => {
     const id = uuid.v4()
+    let imageName = username + '-' +  id
+    let reference = storage.ref().child(`postPhotos/${imageName}`)
+    reference.put(image.value)
+    let url = reference.getDownloadURL()
     const uploadData = {
       id: id,
-      postPhoto: post.photo,
+      postPhoto: url,
       postTitle: post.title,
       postDescription: post.description,
-      postLocation: post.location,
-      likes: [],
+      likes: null,
+      comments: null,
       user: username,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      timestamp: firebase.firestore.Timestamp.fromDate(new Date())
     }
 
      firebase
@@ -44,10 +48,8 @@ export default function Post () {
 
      firebase
         .firestore()
-        .collection('posts')
+        .collection('Posts')
         .add(uploadData)
-    imageName = username + post.title + id
-     HandlingImage(imagePath, {imageName})
 
     }
 
@@ -61,12 +63,7 @@ export default function Post () {
 //          }
 //        })();
 //      }, []);
-  const getPlatformPath = ({ path, uri }) => {
-         return Platform.select({
-               android: { "value": path },
-                ios: { "value": uri }
-         })
- }
+
 
 
    const selectImage = async () => {
@@ -79,8 +76,6 @@ export default function Post () {
 
        if (!result.cancelled) {
          handleImageUpdate(result.uri)
-         let path = this.getPlatformPath(response).value
-         setImagePath(path)
        }
 
     }
@@ -88,12 +83,12 @@ export default function Post () {
     const [image, setImage] = useState({value: null, error: ''})
     const [title, setTitle] = useState({ value: '', error: '' })
     const [description, setDescription] = useState({ value: '', error: '' })
-    const [location, setLocation] = useState({ value: '', error: '' })
-    const [imagePath, setImagePath] = useState('')
+
+
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
     const handleTitleUpdate = (text) => setTitle({ value: text, error: '' })
     const handleDescriptionUpdate = (text) => setDescription({ value: text, error: '' })
-    const handleLocationUpdate = (location) => setLocation({ value: location, error: '' })
+
 
     function titleCheck(title) {
       if (!title) return "This can't be empty!"
@@ -110,30 +105,28 @@ export default function Post () {
         const imageError = imageCheck(image.value)
         const titleError = titleCheck(title.value)
         const descriptionError = titleCheck(description.value)
-        const locationError = titleCheck(location.value)
 
 
-        if (imageError || titleError || descriptionError || locationError) {
+        if (imageError || titleError || descriptionError) {
           setImage({...image,error: imageError})
           setTitle({ ...title, error: titleError })
           setDescription({ ...description, error: descriptionError })
-          setLocation({ ...location, error: locationError })
           return
         }
 
         try {
           const post = {
-            photo: image,
-            title: title,
-            description: description,
-            location: location
+            photo: image.value,
+            title: title.value,
+            description: description.value,
           }
+
+
           upload(post)
 
          handleImageUpdate(null)
          handleTitleUpdate('')
          handleDescriptionUpdate('')
-         handleLocationUpdate('')
 
         } catch (e) {
           alert(e)

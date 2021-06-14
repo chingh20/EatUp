@@ -10,7 +10,7 @@ import ChangeDisplayPic from './ChangeDisplayPic';
 import GooglePlacesInput from './googleMap'
 
 
-export default function Home(props, user) {
+export default function Home(props) {
 
     var region = {
         latitude: 1.3649170000000002,
@@ -29,7 +29,7 @@ export default function Home(props, user) {
       firebase
         .firestore()
         .collection('users')
-        .doc(user)
+        .doc(username)
         .get().then((documentSnapshot) => {
             if (documentSnapshot.exists) {
             setUserData(documentSnapshot.data())
@@ -63,8 +63,8 @@ export default function Home(props, user) {
 //                    id,
 //                    userName: 'User',
 //                    userImg: null,
-//                    timestamp: timeStamp,
-//                    likes,
+//                    timestamp: timestamp,
+//                    liked: false,
 //                    });
 //                  });
 //                });
@@ -123,7 +123,7 @@ export default function Home(props, user) {
         </View>
 
         <View style = {styles.middle}>
-        <Text style={styles.name}>Hello, {user}!</Text>
+        <Text style={styles.name}>Hello, {username}!</Text>
 
         <Avatar
            rounded

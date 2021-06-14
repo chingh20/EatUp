@@ -14,31 +14,27 @@ import { firebase } from '../../firebase/config';
 import * as ImagePicker from 'expo-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import { StatusBar } from 'expo-status-bar';
-import HandlingImage from '../Components/HandlingImage';
+import { storage } from '../../firebase/config';
+
 
 const ChangeDisplayPic = ({ navigation }) => {
 
-const changePic = (avatarImage) => {
+const changePic = async (avatarImage) => {
   var user = firebase.auth().currentUser
   var username = user.displayName
-
-  HandlingImage(imagePath, username)
-
+  var reference = storage.ref().child(`profilePhotos/${username}`);
+  reference.put(image.value);
+  let url = await reference.getDownloadURL()
   firebase
     .firestore()
     .collection('users')
     .doc(username)
     .update({
-      displayPicture: avatarImage
+      displayPicture: url
     })
 
 }
-  const getPlatformPath = ({ path, uri }) => {
-         return Platform.select({
-               android: { "value": path },
-                ios: { "value": uri }
-         })
- }
+
 
     const selectImage = async () => {
          let result = await ImagePicker.launchImageLibraryAsync({
@@ -50,8 +46,6 @@ const changePic = (avatarImage) => {
 
            if (!result.cancelled) {
              handleImageUpdate(result.uri)
-             let path = this.getPlatformPath(response).value
-             setImagePath(path)
            }
     }
 

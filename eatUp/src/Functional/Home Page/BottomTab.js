@@ -32,7 +32,7 @@ const Tab = createBottomTabNavigator();
                         }}
                      />
 
-               <Tab.Screen
+             <Tab.Screen
                     name="Feed"
                     component={Feed}
                     options={{
