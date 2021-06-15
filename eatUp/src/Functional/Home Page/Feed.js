@@ -36,19 +36,19 @@ const Feed = () => {
                       const {
                           id,
                           postPhoto,
-                          postTitle,
                           postDescription,
                           postLocation,
                           likes,
                           user,
                           timestamp,
+                          postTag,
                           comments
                       } = doc.data();
                       list.push({
                       id: doc.id,
                       user,
                       postPhoto,
-                      postTitle,
+                      postTag,
                       timestamp: timestamp,
                       liked: false,
                       likes,

@@ -12,13 +12,13 @@ export default function CameraFunction() {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
+      const  status  = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
 
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return alert('No access to camera');
   }
 
     const takePicture = async () => {

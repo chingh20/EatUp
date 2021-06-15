@@ -17,7 +17,8 @@ import CameraFunction from './Camera'
 import * as ImagePicker from 'expo-image-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
-import uuid from 'uuid'
+import uuid from 'uuid';
+import {Picker} from '@react-native-picker/picker';
 
 
 export default function Post () {
@@ -27,13 +28,14 @@ export default function Post () {
   const upload = async (post) => {
     const id = uuid.v4()
     let imageName = username + '-' +  id
-    let reference = storage.ref().child(`postPhotos/${imageName}`)
-    reference.put(image.value)
-    let url = reference.getDownloadURL()
+    let reference = await storage.ref().child(`postPhotos/${imageName}`)
+    await reference.put(image.value)
+    let url = await reference.getDownloadURL()
     const uploadData = {
       id: id,
       postPhoto: url,
-      postTitle: post.title,
+      postTag: post.tag,
+      postLocation: post.location,
       postDescription: post.description,
       likes: null,
       comments: null,
@@ -41,15 +43,18 @@ export default function Post () {
       timestamp: firebase.firestore.Timestamp.fromDate(new Date())
     }
 
+
      firebase
        .firestore()
        .collection(username)
        .add(uploadData)
 
+
      firebase
         .firestore()
         .collection('Posts')
         .add(uploadData)
+
 
     }
 
@@ -80,13 +85,14 @@ export default function Post () {
 
     }
 
+    const [tag, setTag] = useState('Western');
     const [image, setImage] = useState({value: null, error: ''})
-    const [title, setTitle] = useState({ value: '', error: '' })
+    const [location, setLocation] = useState({ value: '', error: '' })
     const [description, setDescription] = useState({ value: '', error: '' })
 
 
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
-    const handleTitleUpdate = (text) => setTitle({ value: text, error: '' })
+    const handleLocationUpdate = (text) => setLocation({ value: text, error: '' })
     const handleDescriptionUpdate = (text) => setDescription({ value: text, error: '' })
 
 
@@ -103,13 +109,13 @@ export default function Post () {
     const onSubmit = async () => {
 
         const imageError = imageCheck(image.value)
-        const titleError = titleCheck(title.value)
+        const locationError = titleCheck(location.value)
         const descriptionError = titleCheck(description.value)
 
 
-        if (imageError || titleError || descriptionError) {
+        if (imageError || locationError || descriptionError) {
           setImage({...image,error: imageError})
-          setTitle({ ...title, error: titleError })
+          setLocation({ ...location, error: locationError })
           setDescription({ ...description, error: descriptionError })
           return
         }
@@ -117,7 +123,8 @@ export default function Post () {
         try {
           const post = {
             photo: image.value,
-            title: title.value,
+            tag: tag,
+            location: location.value,
             description: description.value,
           }
 
@@ -125,7 +132,7 @@ export default function Post () {
           upload(post)
 
          handleImageUpdate(null)
-         handleTitleUpdate('')
+         handleLocationUpdate('')
          handleDescriptionUpdate('')
 
         } catch (e) {
@@ -165,12 +172,12 @@ return (
           <View style={styles.container}>
            <Text style={styles.errorText}> {image.error}</Text>
           <TextInput
-            placeholder='Enter title of the post'
+            placeholder='Enter location of the post'
             style={styles.textInput}
-            value={title.value}
-            onChangeText={handleTitleUpdate}
-            error={!!title.error}
-            errorText={title.error}
+            value={location.value}
+            onChangeText={handleLocationUpdate}
+            error={!!location.error}
+            errorText={location.error}
           />
           <TextInput
             placeholder='Enter description'
@@ -180,6 +187,24 @@ return (
             error={!!description.error}
             errorText={description.error}
           />
+
+
+          <Picker
+            mode="dropdown"
+            style = {styles.picker}
+            selectedValue={tag}
+            onValueChange={(itemValue) =>
+              setTag(itemValue)
+            }>
+            <Picker.Item label="Western" value="Western" />
+            <Picker.Item label="Chinese" value="Chinese" />
+            <Picker.Item label="Indian" value="Indian" />
+            <Picker.Item label="Indian2" value="Indian2" />
+            <Picker.Item label="Indian3" value="Indian3" />
+            <Picker.Item label="Indian4" value="Indian4" />
+            <Picker.Item label="Indian5" value="Indian5" />
+
+          </Picker>
 
           <TouchableOpacity style={styles.button} onPress={onSubmit}>
            <Text style={styles.btnText}> Add post </Text>
@@ -253,5 +278,11 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           justifyContent: 'center',
           marginTop:20
+    },
+    picker: {
+        backgroundColor: '#ff5757',
+        borderRadius: 1,
+        width: 350,
+        height: 40,
     }
 });
