@@ -22,8 +22,8 @@ const ChangeDisplayPic = ({ navigation }) => {
 const changePic = async (avatarImage) => {
   var user = firebase.auth().currentUser
   var username = user.displayName
-  var reference = storage.ref().child(`profilePhotos/${username}`);
-  reference.put(image.value);
+  var reference = await storage.ref().child(`profilePhotos/${username}`);
+  await reference.put(image.value);
   let url = await reference.getDownloadURL()
   firebase
     .firestore()

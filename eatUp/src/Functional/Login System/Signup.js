@@ -70,7 +70,6 @@ const  Signup = ({ navigation })=> {
                            cuisinesTried: [],
                            wantToGo: [],
                            postLocations: [],
-                           personalizedTags: [],
                         }
 
                         firebase.firestore().collection(username.value).doc('dummyPost').set({dummy:''})

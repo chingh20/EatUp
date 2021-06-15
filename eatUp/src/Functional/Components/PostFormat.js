@@ -20,21 +20,28 @@ const PostFormat = ({post, onPress}) => {
   var currentUser = firebase.auth().currentUser;
   const [userData, setUserData] = useState(null);
 
-  likeIcon = post.liked ? 'heart' : 'heart-outline';
-  likeIconColor = post.liked ? '#2e64e5' : '#333';
+  const likeIcon = post.liked ? 'heart' : 'heart-outline';
+  const likeIconColor = post.liked ? '#2e64e5' : '#333';
+
+  var likeText = '';
+  var commentText = '';
+
 
   if (post.likes == 1) {
     likeText = '1 Like';
+    // update firebase
   } else if (post.likes > 1) {
-    likeText = item.likes + ' Likes';
+    likeText = post.likes + ' Likes';
+    // update firebase
   } else {
-    likeText = 'Like';
+    likeText = 'Like3';
+    //update firebase
   }
 
   if (post.comments == 1) {
     commentText = '1 Comment';
   } else if (post.comments > 1) {
-    commentText = item.comments + ' Comments';
+    commentText = post.comments + ' Comments';
   } else {
     commentText = 'Comment';
   }
@@ -78,15 +85,18 @@ const PostFormat = ({post, onPress}) => {
           <Text style={styles.time}>{moment(post.timestamp.toDate()).fromNow()}</Text>
         </View>
       </View>
-      <Text style={styles.title}>{post.postTitle}</Text>
-      {/* {item.postImg != null ? <PostImg source={{uri: item.postImg}} /> : <Divider />} */}
+
+      <Text style={styles.description}>{post.postDescription}</Text>
+
+      <View style={styles.imageView}>
       {post.postPhoto != null ? (
         <Image style={styles.image}
           source={{uri: post.postPhoto}}
         />
       ) : (
-        <Divider color='transparent' orientation='horizontal' width={1}/>
+        <Divider color='transparent' orientation='horizontal' width={2}/>
       )}
+      </View>
 
       <View style={styles.likeBar}>
       <TouchableOpacity>
@@ -113,15 +123,20 @@ export default PostFormat;
 const styles = StyleSheet.create({
   postContainer: {
     flex: 1,
-    width: 300,
-    backgroundColor: '#f9ae8f',
-    marginBottom: 15,
+    width: 350,
+    height: 450,
+    backgroundColor: '#fdf4da',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginBottom: 5,
     borderRadius: 10,
   },
   userInfoContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     padding: 15,
     justifyContent: 'flex-start',
+    borderRadius: 10,
   },
   userImage: {
     width: 50,
@@ -141,24 +156,30 @@ const styles = StyleSheet.create({
     color: '#d26d4d',
     fontSize: 10,
   },
-  title: {
+  description: {
     color: '#3e1f0d',
     fontSize: 15,
     padding: 10,
-    marginBottom: 10
+    marginBottom: 5
   },
-  userImage: {
-    width: 300,
-    height: 300,
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 5
+  },
+  imageView: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   likeBar: {
     flexDirection: 'row',
-    padding: 10,
     justifyContent: 'center',
     backgroundColor: '#ff5757',
+    borderRadius: 10,
   },
   statusText: {
-    color: '#d26d4d',
+    color: "white",
     fontSize: 10,
     marginTop: 5,
     marginLeft: 5,
