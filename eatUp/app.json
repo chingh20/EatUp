@@ -17,7 +17,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Use camera to take food pictures for your posts.",
+        "NSPhotoLibraryAddUsageDescription": "PhotoLibraryAddUsage",
+        "NSPhotoLibraryUsageDescription": "PhotoLibraryUsage",
+        "NSMicrophoneUsageDescription": "MicrophoneUsage"
+      }
     },
     "android": {
       "adaptiveIcon": {
