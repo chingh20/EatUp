@@ -86,7 +86,8 @@ const PostFormat = ({post, onPress}) => {
         </View>
       </View>
 
-      <Text style={styles.description}>{post.postDescription}</Text>
+      <Text style={styles.description}>{post.postTag}</Text>
+      <Text style={styles.description}>{post.postLocation}</Text>
 
       <View style={styles.imageView}>
       {post.postPhoto != null ? (
@@ -96,6 +97,8 @@ const PostFormat = ({post, onPress}) => {
       ) : (
         <Divider color='transparent' orientation='horizontal' width={2}/>
       )}
+
+      <Text style={styles.description}>{post.postDescription}</Text>
       </View>
 
       <View style={styles.likeBar}>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
   postContainer: {
     flex: 1,
     width: 350,
-    height: 450,
+    height: 550,
     backgroundColor: '#fdf4da',
     justifyContent: 'center',
     alignItems: 'stretch',

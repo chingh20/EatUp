@@ -13,23 +13,42 @@ import {
 } from 'react-native';
 import { firebase, storage } from '../../firebase/config';
 import { StatusBar } from 'expo-status-bar';
-import CameraFunction from './Camera'
 import * as ImagePicker from 'expo-image-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import uuid from 'uuid';
-import {Picker} from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector'
 
 
-export default function Post () {
+export default function Post ({navigation}, props) {
   var username = firebase.auth().currentUser.displayName;
 
 
   const upload = async (post) => {
     const id = uuid.v4()
+
+        let uri = image.value;
+
+        const blob = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function () {
+            resolve(xhr.response);
+          };
+          xhr.onerror = function (e) {
+            reject(new TypeError("Network request failed"));
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", uri, true);
+          xhr.send(null);
+        });
+
     let imageName = username + '-' +  id
     let reference = await storage.ref().child(`postPhotos/${imageName}`)
-    await reference.put(image.value)
+
+    await reference.put(blob).catch((error) => {
+                                 console.log(error);
+                               });
+
     let url = await reference.getDownloadURL()
     const uploadData = {
       id: id,
@@ -47,28 +66,17 @@ export default function Post () {
      firebase
        .firestore()
        .collection(username)
-       .add(uploadData)
+       .doc(id)
+       .set(uploadData)
 
 
      firebase
         .firestore()
         .collection('Posts')
-        .add(uploadData)
-
+        .doc(id)
+        .set(uploadData)
 
     }
-
-//      useEffect(() => {
-//        (async () => {
-//          if (Platform.OS !== 'web') {
-//            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-//            if (status !== 'granted') {
-//              alert('Sorry, we need camera roll permissions to make this work!');
-//            }
-//          }
-//        })();
-//      }, []);
-
 
 
    const selectImage = async () => {
@@ -85,15 +93,24 @@ export default function Post () {
 
     }
 
-    const [tag, setTag] = useState('Western');
+
+    const [tag, setTag] = useState({ value: '', error: '' });
     const [image, setImage] = useState({value: null, error: ''})
     const [location, setLocation] = useState({ value: '', error: '' })
     const [description, setDescription] = useState({ value: '', error: '' })
 
 
+    const handleTagUpdate = (text) => setTag({ value: text, error: '' })
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
     const handleLocationUpdate = (text) => setLocation({ value: text, error: '' })
     const handleDescriptionUpdate = (text) => setDescription({ value: text, error: '' })
+
+    const takePicture = async () => {
+        navigation.navigate('CameraFunction')
+        if (props.photo != null) {
+                handleImageUpdate(props.photo)
+        }
+    }
 
 
     function titleCheck(title) {
@@ -108,12 +125,14 @@ export default function Post () {
 
     const onSubmit = async () => {
 
+        const tagError = titleCheck(tag.value)
         const imageError = imageCheck(image.value)
         const locationError = titleCheck(location.value)
         const descriptionError = titleCheck(description.value)
 
 
-        if (imageError || locationError || descriptionError) {
+        if (tagError|| imageError || locationError || descriptionError) {
+          setTag({ ...tag, error: tagError })
           setImage({...image,error: imageError})
           setLocation({ ...location, error: locationError })
           setDescription({ ...description, error: descriptionError })
@@ -123,7 +142,7 @@ export default function Post () {
         try {
           const post = {
             photo: image.value,
-            tag: tag,
+            tag: tag.value,
             location: location.value,
             description: description.value,
           }
@@ -134,12 +153,22 @@ export default function Post () {
          handleImageUpdate(null)
          handleLocationUpdate('')
          handleDescriptionUpdate('')
+         handleTagUpdate('')
 
         } catch (e) {
           alert(e)
           console.error(e)
         }
       }
+
+ let index = 0;
+        const data = [
+            { key: index++, label: 'Indian' },
+            { key: index++, label: 'Chinese' },
+            { key: index++, label: 'Korean' },
+            { key: index++, label: 'Western' },
+            { key: index++, label: 'Fast Food' }
+        ];
 
 return (
 <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps='always'>
@@ -155,7 +184,7 @@ return (
             <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
                 <Text style={styles.nobtnText}> Choose Again </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.nobutton} onPress={CameraFunction}>
+            <TouchableOpacity style={styles.nobutton} onPress={takePicture}>
                 <Text style={styles.nobtnText}> Camera </Text>
             </TouchableOpacity>
             </View>
@@ -164,14 +193,34 @@ return (
             <TouchableOpacity style={styles.button} onPress={selectImage}>
               <Text style={styles.btnText}> Pick from Gallery </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={selectImage}>
-               <Text style={styles.btnText}> Take Picture </Text>
+            <TouchableOpacity style={styles.button} onPress={takePicture}>
+              <Text style={styles.btnText}> Camera </Text>
             </TouchableOpacity>
+            <Text style={styles.errorText}> {image.error}</Text>
            </View>
         )}
           <View style={styles.container}>
-           <Text style={styles.errorText}> {image.error}</Text>
-          <TextInput
+
+        <ModalSelector
+                    data={data}
+                    initValue="Select the type of food!"
+                    touchableStyle={styles.picker}
+                    accessible={true}
+                    supportedOrientations={['portrait']}
+                    scrollViewAccessibilityLabel={'Scrollable options'}
+                    cancelButtonAccessibilityLabel={'Cancel Button'}
+                    onChange={(option)=>{ handleTagUpdate(option.label) }}>
+
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder="Select the type of food!"
+                        editable={true}
+                        value={tag.value}
+                        error={!!tag.error}
+                        errorText={tag.error}/>
+                </ModalSelector>
+
+            <TextInput
             placeholder='Enter location of the post'
             style={styles.textInput}
             value={location.value}
@@ -187,25 +236,6 @@ return (
             error={!!description.error}
             errorText={description.error}
           />
-
-
-          <Picker
-            mode="dropdown"
-            style = {styles.picker}
-            selectedValue={tag}
-            onValueChange={(itemValue) =>
-              setTag(itemValue)
-            }>
-            <Picker.Item label="Western" value="Western" />
-            <Picker.Item label="Chinese" value="Chinese" />
-            <Picker.Item label="Indian" value="Indian" />
-            <Picker.Item label="Indian2" value="Indian2" />
-            <Picker.Item label="Indian3" value="Indian3" />
-            <Picker.Item label="Indian4" value="Indian4" />
-            <Picker.Item label="Indian5" value="Indian5" />
-
-          </Picker>
-
           <TouchableOpacity style={styles.button} onPress={onSubmit}>
            <Text style={styles.btnText}> Add post </Text>
          </TouchableOpacity>
@@ -280,8 +310,7 @@ const styles = StyleSheet.create({
           marginTop:20
     },
     picker: {
-        backgroundColor: '#ff5757',
-        borderRadius: 1,
+        backgroundColor: 'transparent',
         width: 350,
         height: 40,
     }
