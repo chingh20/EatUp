@@ -56,7 +56,8 @@ export default function Post ({navigation}, props) {
       postTag: post.tag,
       postLocation: post.location,
       postDescription: post.description,
-      likes: null,
+      likes: [],
+      wantToGo:[],
       comments: null,
       user: username,
       timestamp: firebase.firestore.Timestamp.fromDate(new Date())

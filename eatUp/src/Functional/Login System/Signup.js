@@ -16,6 +16,7 @@ import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextIn
 import { emailCheck } from './emailCheck';
 import { passwordCheck } from './passwordCheck';
 import { usernameCheck } from './usernameCheck';
+import defaultPicture from "../../../assets/default-user-image.png";
 
 const  Signup = ({ navigation })=> {
 
@@ -65,7 +66,7 @@ const  Signup = ({ navigation })=> {
                            email: email.value,
                            username: username.value,
                            mapTheme: "default",
-                           displayPicture: null,
+                           displayPicture: Image.resolveAssetSource(defaultPicture).uri,
                            friends: [],
                            cuisinesTried: [],
                            wantToGo: [],
