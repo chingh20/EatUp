@@ -15,10 +15,11 @@ import {
 import PostFormat from '../Components/PostFormat'
 import { StatusBar } from 'expo-status-bar';
 
-// Set the default number of images to load for each pagination.
-const PAGE_SIZE = 5;
+
 
 const Feed = () => {
+  var user = firebase.auth().currentUser
+  var username = user.displayName
 
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState([]);
@@ -40,10 +41,13 @@ const Feed = () => {
                           postDescription,
                           postLocation,
                           likes,
+                          wantToGo,
                           user,
                           timestamp,
                           comments
                       } = doc.data();
+
+
                       list.push({
                       id: doc.id,
                       user,
@@ -52,8 +56,10 @@ const Feed = () => {
                       postDescription,
                       postLocation,
                       timestamp: timestamp,
-                      liked: false,
-                      likes,
+                      liked: likes.includes(username),
+                      likes: likes.length,
+                      wantToGo: wantToGo.includes(username),
+                      wantToGoCount: wantToGo.length,
                       comments,
                       });
                     });
@@ -84,14 +90,13 @@ const Feed = () => {
 
       return (
       <SafeAreaView style={styles.container}>
-      <Text> hello</Text>
+
          <FlatList
             data={post}
             renderItem={({item}) => (
                <PostFormat
                  post={item}
-                 onPress={() => alert('to add navigation to other profiles')
-                 }
+                 onPress={() => alert('to add navigation to other profiles')}
                />
             )}
             keyExtractor={(item) => item.id}

@@ -23,6 +23,9 @@ const PostFormat = ({post, onPress}) => {
   const likeIcon = post.liked ? 'heart' : 'heart-outline';
   const likeIconColor = post.liked ? '#2e64e5' : '#333';
 
+  const wantToGoIcon = post.wantToGo ? 'star-face' : 'star-outline';
+  const wantToGoColor = post.wantToGo ? '#2e64e5' : '#333';
+
   var likeText = '';
   var commentText = '';
 
@@ -34,7 +37,7 @@ const PostFormat = ({post, onPress}) => {
     likeText = post.likes + ' Likes';
     // update firebase
   } else {
-    likeText = 'Like3';
+    likeText = 'Like';
     //update firebase
   }
 
@@ -60,6 +63,25 @@ const PostFormat = ({post, onPress}) => {
       alert(error);
       });
   };
+
+    const onLikePost = (currentUsername, postId) => {
+        const targetPost = firebase.firestore().collection('Posts').doc(postId)
+
+        post.liked
+        ? targetPost.update({likes: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
+        : targetPost.update({likes: firebase.firestore.FieldValue.arrayUnion(currentUsername)})
+    }
+
+    const onWantToGo = (currentUsername, postId) => {
+        const targetPost = firebase.firestore().collection('Posts').doc(postId)
+        const userFoodList = firebase.firestore().collection('users').doc(currentUsername)
+
+        post.wantToGo
+        ? targetPost.update({wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
+          && userFoodList.update({wantToGo: firebase.firestore.FieldValue.arrayRemove(post.postLocation)})
+        : targetPost.update({wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername)})
+          && userFoodList.update({wantToGo: firebase.firestore.FieldValue.arrayUnion(post.postLocation)})
+    }
 
   useEffect(() => {
     getUser();
@@ -112,7 +134,7 @@ const PostFormat = ({post, onPress}) => {
           <IconButton icon={likeIcon}
                       size={20}
                       color={likeIconColor}
-                      onPress={() => alert('comment to be added!')}/>
+                      onPress={() => onLikePost(currentUser.displayName, post.id)}/>
           <Text style={styles.statusText}>{likeText}</Text>
 
 
@@ -122,9 +144,10 @@ const PostFormat = ({post, onPress}) => {
           <Text style={styles.statusText}>{commentText}</Text>
 
         {currentUser.displayName != post.user ? (
-             <IconButton icon="star-outline"
+             <IconButton icon={wantToGoIcon}
                          size={20}
-                         onPress={() => alert('want to go list to be added!')}/>
+                         color={wantToGoColor}
+                         onPress={() => onWantToGo(currentUser.displayName, post.id)}/>
         ) : null}
 
         {currentUser.displayName == post.user ? (

@@ -8,9 +8,11 @@ import { StatusBar } from 'expo-status-bar';
 import { Avatar } from 'react-native-elements';
 import ChangeDisplayPic from './ChangeDisplayPic';
 import GooglePlacesInput from './googleMap'
-
+import defaultUserImage from "../../../assets/default-user-image.png";
 
 export default function Home(props) {
+
+    const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri
 
     var region = {
         latitude: 1.3649170000000002,
@@ -130,12 +132,9 @@ export default function Home(props) {
            size='large'
            avatarStyle={{ width: 100, height: 100, borderRadius: 50 }}
            containerStyle={{ width: 100, height: 100, borderWidth: 1, borderRadius: 50 }}
-           onPress={() => props.navigation.navigate('ChangeDisplayPic')}
+           onPress={() => props.navigation.navigate('ChangeDisplayPic', {picture: userData? userData.displayPicture : defaultUserImageUri} )}
            source={{
-                       uri: userData
-                         ? userData.displayPicture ||
-                           'https://reactnative.dev/img/tiny_logo.png'
-                         : 'https://reactnative.dev/img/tiny_logo.png'
+                       uri: userData? userData.displayPicture : defaultUserImageUri
                          }}
         />
 

@@ -15,12 +15,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import { StatusBar } from 'expo-status-bar';
 import { storage } from '../../firebase/config';
+import defaultUserImage from "../../../assets/default-user-image.png";
 
 
 const ChangeDisplayPic = ({ navigation }, props) => {
 
   var user = firebase.auth().currentUser
   var username = user.displayName
+  const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri
 
 const changePic = async (avatarImage) => {
 
@@ -67,8 +69,7 @@ const changePic = async (avatarImage) => {
            }
     }
 
-    const [image, setImage] = useState({value: null, error: ''})
-    const [imagePath, setImagePath] = useState('')
+    const [image, setImage] = useState({value: props.picture, error: ''})
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
 
     function imageCheck(image) {
@@ -89,7 +90,7 @@ const changePic = async (avatarImage) => {
 
           changePic(avatarImage)
 
-          handleImageUpdate(null)
+          handleImageUpdate(avatarImage)
           navigation.navigate('Home')
 
 
@@ -101,20 +102,12 @@ const changePic = async (avatarImage) => {
     const onRemove = () => {
            alert('You have removed your profile picture!')
 
-           firebase
-               .firestore()
-               .collection('users')
-               .doc(username)
-               .update({
-                 displayPicture: null
-               })
-
-           navigation.navigate('Home')
+           handleImageUpdate(defaultUserImageUri)
         }
 
     return (
     <SafeAreaView style = {styles.container}>
-    <Text>Edit Display Picture</Text>
+
               {image.value ?(
                   <View style={styles.container}>
                 <Image
@@ -123,8 +116,11 @@ const changePic = async (avatarImage) => {
                 />
 
                 <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
-                    <Text style={styles.nobtnText}> Choose Again </Text>
+                    <Text style={styles.nobtnText}> Edit Profile Picture </Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={onRemove}>
+                    <Text style={styles.btnText}> Remove Display Picture </Text>
+                 </TouchableOpacity>
                 </View>
               ) : (
               <View style={styles.container}>
