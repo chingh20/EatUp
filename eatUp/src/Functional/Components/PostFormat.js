@@ -72,9 +72,9 @@ const PostFormat = ({post, onPress}) => {
           source={{
             uri: userData
               ? userData.displayPicture ||
-                'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
-              : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
-          }}
+                'https://reactnative.dev/img/tiny_logo.png'
+              : 'https://reactnative.dev/img/tiny_logo.png'
+              }}
         />
         <View style={styles.userInfoText}>
           <TouchableOpacity onPress={onPress}>
@@ -86,8 +86,15 @@ const PostFormat = ({post, onPress}) => {
         </View>
       </View>
 
-      <Text style={styles.description}>{post.postTag}</Text>
-      <Text style={styles.description}>{post.postLocation}</Text>
+      <View style={styles.tagContainer}>
+         <IconButton icon="tag-multiple" size={20} />
+          <Text style={styles.description}>{post.postTag}</Text>
+      </View>
+
+      <View style={styles.tagContainer}>
+         <IconButton icon="flag-variant" size={20} />
+         <Text style={styles.description}>{post.postLocation}</Text>
+      </View>
 
       <View style={styles.imageView}>
       {post.postPhoto != null ? (
@@ -102,19 +109,28 @@ const PostFormat = ({post, onPress}) => {
       </View>
 
       <View style={styles.likeBar}>
-      <TouchableOpacity>
-           <IconButton icon={likeIcon} size={20} color={likeIconColor} />
-           <Text style={styles.statusText}>{likeText}</Text>
-      </TouchableOpacity>
+          <IconButton icon={likeIcon}
+                      size={20}
+                      color={likeIconColor}
+                      onPress={() => alert('comment to be added!')}/>
+          <Text style={styles.statusText}>{likeText}</Text>
 
-        <TouchableOpacity>
-          <IconButton icon="comment" size={20} />
+
+          <IconButton icon="comment"
+                      size={20}
+                      onPress={() => alert('comment to be added!')}/>
           <Text style={styles.statusText}>{commentText}</Text>
-        </TouchableOpacity>
+
+        {currentUser.displayName != post.user ? (
+             <IconButton icon="star-outline"
+                         size={20}
+                         onPress={() => alert('want to go list to be added!')}/>
+        ) : null}
+
         {currentUser.displayName == post.user ? (
-          <TouchableOpacity onPress={() => alert('delete feature to be added!')}>
-            <IconButton icon="delete" size={20} />
-          </TouchableOpacity>
+            <IconButton icon="delete"
+                        size={20}
+                        onPress={() => alert('delete feature to be added!')}/>
         ) : null}
       </View>
     </View>
@@ -184,7 +200,17 @@ const styles = StyleSheet.create({
   statusText: {
     color: "white",
     fontSize: 10,
-    marginTop: 5,
-    marginLeft: 5,
+    marginTop: 15,
+    marginRight: 15,
+  },
+  tagContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 1,
+    marginBottom: 2,
+    justifyContent: 'flex-start',
+    borderColor: '#ff5757',
+    borderWidth: 1,
+    borderRadius: 5
   },
 });
