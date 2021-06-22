@@ -72,8 +72,8 @@ const PostFormat = ({post, onPress}) => {
           source={{
             uri: userData
               ? userData.displayPicture ||
-                'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
-              : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
+                require("../../../assets/create-account-logo.png")
+              : require("../../../assets/create-account-logo.png"),
           }}
         />
         <View style={styles.userInfoText}>
