@@ -128,9 +128,15 @@ export default function Home(props) {
         <Avatar
            rounded
            size='large'
-           style={{ width: 100, height: 100 }}
+           avatarStyle={{ width: 100, height: 100, borderRadius: 50 }}
+           containerStyle={{ width: 100, height: 100, borderWidth: 1, borderRadius: 50 }}
            onPress={() => props.navigation.navigate('ChangeDisplayPic')}
-           source={{uri: userData? userData.displayPicture : 'file:///var/mobile/Containers/Data/Application/4ECBB8DE-0801-4A52-8FD8-156C59C30DEF/Library/Caches/ExponentExperienceData/%2540ching123%252FeatUp/ImagePicker/00B19375-78BD-4D8B-A10D-4B24BD2DD146.jpg'}}
+           source={{
+                       uri: userData
+                         ? userData.displayPicture ||
+                           'https://reactnative.dev/img/tiny_logo.png'
+                         : 'https://reactnative.dev/img/tiny_logo.png'
+                         }}
         />
 
         </View>

@@ -72,9 +72,9 @@ const PostFormat = ({post, onPress}) => {
           source={{
             uri: userData
               ? userData.displayPicture ||
-                require("../../../assets/create-account-logo.png")
-              : require("../../../assets/create-account-logo.png"),
-          }}
+                'https://reactnative.dev/img/tiny_logo.png'
+              : 'https://reactnative.dev/img/tiny_logo.png'
+              }}
         />
         <View style={styles.userInfoText}>
           <TouchableOpacity onPress={onPress}>

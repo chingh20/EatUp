@@ -17,11 +17,13 @@ import { StatusBar } from 'expo-status-bar';
 import { storage } from '../../firebase/config';
 
 
-const ChangeDisplayPic = ({ navigation }) => {
+const ChangeDisplayPic = ({ navigation }, props) => {
 
-const changePic = async (avatarImage) => {
   var user = firebase.auth().currentUser
   var username = user.displayName
+
+const changePic = async (avatarImage) => {
+
   var reference = await storage.ref().child(`profilePhotos/${username}`)
    let uri = image.value
 
@@ -96,8 +98,23 @@ const changePic = async (avatarImage) => {
           }
     }
 
+    const onRemove = () => {
+           alert('You have removed your profile picture!')
+
+           firebase
+               .firestore()
+               .collection('users')
+               .doc(username)
+               .update({
+                 displayPicture: null
+               })
+
+           navigation.navigate('Home')
+        }
+
     return (
     <SafeAreaView style = {styles.container}>
+    <Text>Edit Display Picture</Text>
               {image.value ?(
                   <View style={styles.container}>
                 <Image
@@ -113,6 +130,10 @@ const changePic = async (avatarImage) => {
               <View style={styles.container}>
                 <TouchableOpacity style={styles.button} onPress={selectImage}>
                   <Text style={styles.btnText}> Pick from Gallery </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={onRemove}>
+                   <Text style={styles.btnText}> Remove Display Picture </Text>
                 </TouchableOpacity>
                </View>
             )}
