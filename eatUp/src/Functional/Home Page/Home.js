@@ -14,17 +14,18 @@ export default function Home(props) {
 
     const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri
 
-    var region = {
-        latitude: 1.3649170000000002,
-        longitude: 103.82287200000002,
-        latitudeDelta: 0.3,
-        longitudeDelta: 0.25,
-    }
+//    var region = {
+//        latitude: 1.3649170000000002,
+//        longitude: 103.82287200000002,
+//        latitudeDelta: 0.3,
+//        longitudeDelta: 0.25,
+//    }
 
     const [userData, setUserData] = useState(null);
     const [post, setPost] = useState([]);
 
     var username = firebase.auth().currentUser.displayName;
+
 
     const getUserDetails = async () => {
     await
@@ -36,54 +37,14 @@ export default function Home(props) {
             if (documentSnapshot.exists) {
             setUserData(documentSnapshot.data())
             }
+
          })
     }
-
-//    const fetchPost = async () => {
-//        try {
-//          const list = [];
-//
-//          await firestore()
-//            .collection('posts')
-//            .where('user', '==', username)
-//            .orderBy('timestamp', 'desc')
-//            .get()
-//            .then((querySnapshot) => {
-//                querySnapshot.forEach((doc) => {
-//                    const {
-//                        id,
-//                        postPhoto,
-//                        postTitle,
-//                        postDescription,
-//                        postLocation,
-//                        likes,
-//                        user,
-//                        timestamp
-//                    } = doc.data();
-//                    list.push({
-//                    idd: doc.id,
-//                    id,
-//                    userName: 'User',
-//                    userImg: null,
-//                    timestamp: timestamp,
-//                    liked: false,
-//                    });
-//                  });
-//                });
-//
-//            setPost(list);
-//
-//
-//            } catch (e) {
-//            console.log(e)
-//            }
-//    }
 
 
 
     useEffect(() =>
        {getUserDetails();
-//        fetchPost();
         } , []
     )
 
@@ -132,7 +93,8 @@ export default function Home(props) {
            size='large'
            avatarStyle={{ width: 100, height: 100, borderRadius: 50 }}
            containerStyle={{ width: 100, height: 100, borderWidth: 1, borderRadius: 50 }}
-           onPress={() => props.navigation.navigate('ChangeDisplayPic', {picture: userData? userData.displayPicture : defaultUserImageUri} )}
+           onPress={() => {
+           props.navigation.navigate("ChangeDisplayPic", {picture: userData? userData.displayPicture : defaultUserImageUri})}}
            source={{
                        uri: userData? userData.displayPicture : defaultUserImageUri
                          }}

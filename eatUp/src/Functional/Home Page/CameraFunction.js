@@ -59,7 +59,7 @@ export default function CameraFunction({navigation}) {
   };
 
   const savePhoto = async () => {
-        navigation.navigate("Post", {photo: {savedPhoto}})
+        navigation.navigate("Post", {photo: savedPhoto})
 
   };
 
