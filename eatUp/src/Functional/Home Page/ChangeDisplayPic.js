@@ -18,8 +18,7 @@ import { storage } from '../../firebase/config';
 import defaultUserImage from "../../../assets/default-user-image.png";
 
 
-const ChangeDisplayPic = ({ navigation }, props) => {
-
+const ChangeDisplayPic = ({navigation, route},props) => {
   var user = firebase.auth().currentUser
   var username = user.displayName
   const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri
@@ -69,7 +68,7 @@ const changePic = async (avatarImage) => {
            }
     }
 
-    const [image, setImage] = useState({value: props.picture, error: ''})
+    const [image, setImage] = useState({value: route.params.picture, error: ''})
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
 
     function imageCheck(image) {
@@ -115,21 +114,17 @@ const changePic = async (avatarImage) => {
                   style = {{width: 300 , height: 300}}
                 />
 
-                <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
-                    <Text style={styles.nobtnText}> Edit Profile Picture </Text>
+                <TouchableOpacity style={styles.button} onPress={selectImage}>
+                    <Text style={styles.btnText}> Choose Another Picture </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={onRemove}>
-                    <Text style={styles.btnText}> Remove Display Picture </Text>
+                    <Text style={styles.btnText}> Remove Picture </Text>
                  </TouchableOpacity>
                 </View>
               ) : (
               <View style={styles.container}>
                 <TouchableOpacity style={styles.button} onPress={selectImage}>
                   <Text style={styles.btnText}> Pick from Gallery </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.button} onPress={onRemove}>
-                   <Text style={styles.btnText}> Remove Display Picture </Text>
                 </TouchableOpacity>
                </View>
             )}

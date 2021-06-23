@@ -20,7 +20,7 @@ import uuid from 'uuid';
 import ModalSelector from 'react-native-modal-selector'
 
 
-export default function Post ({navigation}, props) {
+export default function Post ({navigation, route}) {
   var username = firebase.auth().currentUser.displayName;
 
 
@@ -108,8 +108,8 @@ export default function Post ({navigation}, props) {
 
     const takePicture = async () => {
         navigation.navigate('CameraFunction')
-        if (props.photo != null) {
-                handleImageUpdate(props.photo)
+        if (route.params.photo != null) {
+                handleImageUpdate(route.params.photo)
         }
     }
 
