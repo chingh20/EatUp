@@ -12,75 +12,38 @@ import {
   FlatList
 } from 'react-native';
 import FriendListFormat from '../Components/FriendListFormat'
-import Search from './Search'
+import FriendSearch from './FriendSearch'
 import {firebase} from '../../firebase/config'
 import { StatusBar } from 'expo-status-bar'
 
 
 export default function Friends () {
 
-  var user = firebase.auth().currentUser
-  var username = user.displayName
 
-  const [userFriendArray, setUserFriendArray] = useState([]);
+  const [userFriendArray, setUserFriendArray] = useState();
 
-  const fetchFriendArray = async () => {
-          try {
-            const list = [];
+  const fetchUserFriendArray = async () => {
 
             await firebase.firestore()
               .collection('users')
               .doc(username)
               .get()
-              .then((querySnapshot) => {
-                  querySnapshot.forEach((doc) => {
-                      const {
-                          id,
-                          postPhoto,
-                          postTag,
-                          postDescription,
-                          postLocation,
-                          likes,
-                          wantToGo,
-                          user,
-                          timestamp,
-                          comments
-                      } = doc.data();
+              .then((documentSnapshot) => {
+                 if (documentSnapshot.exists) {
+                    setUserFriendArray(documentSnapshot.data());
 
+                 }
+              })
+              .catch((error) => {
+                 alert(error);
+              });
 
-                      list.push({
-                      id: doc.id,
-                      user,
-                      postPhoto,
-                      postTag,
-                      postDescription,
-                      postLocation,
-                      timestamp: timestamp,
-                      liked: likes.includes(username),
-                      likes: likes.length,
-                      wantToGo: wantToGo.includes(username),
-                      wantToGoCount: wantToGo.length,
-                      comments,
-                      });
-                    });
-                  })
-                  .catch((error)=> {
-                  alert(error)
-                  });
-
-              setPost(list);
-              if (loading) {
-                setLoading(false);
-              }
-
-              } catch (e) {
-              console.log(e)
-              }
       }
+
 
       useEffect(() =>
          {
-          fetchPost();
+          fetchUserFriendArray();
           } , []
       )
 

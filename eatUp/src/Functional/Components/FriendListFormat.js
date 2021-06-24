@@ -15,16 +15,15 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const FriendListFormat = ({friend, onPress}) => {
+const FriendListFormat = ({friends, onPress}) => {
 
-  var currentUser = firebase.auth().currentUser;
   const [userFriendData, setUserFriendData] = useState();
 
 
-  const getUserFriend = async () => {
+  const getUserFriendData = async () => {
     await firebase.firestore()
       .collection('users')
-      .doc(friend)
+      .doc(friends)
       .get()
       .then((documentSnapshot) => {
         if (documentSnapshot.exists) {
@@ -41,7 +40,7 @@ const FriendListFormat = ({friend, onPress}) => {
   }, []);
 
   return (
-    <View style={styles.friendContainer} key={user}>
+    <View style={styles.friendContainer} key={friends}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
           source={{
@@ -57,6 +56,9 @@ const FriendListFormat = ({friend, onPress}) => {
               {userFriendData ? userFriendData.username || 'Test' : 'Test'}
             </Text>
           </TouchableOpacity>
+          <IconButton icon="account-remove-outline"
+              size={20}
+          onPress={() => alert('comment to be added!')}/>
         </View>
       </View>
     </View>
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 200,
     backgroundColor: '#fdf4da',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'stretch',
     marginBottom: 5,
     borderRadius: 10,
