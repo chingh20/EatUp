@@ -31,7 +31,7 @@ export default function Search({navigation}) {
         <View>
             <TextInput
                 style= {styles.textInput}
-                placeholder="Type Here..."
+                placeholder="Search"
                 onChangeText={(search) => fetchUsers(search)} />
 
      <FlatList
