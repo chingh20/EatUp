@@ -13,6 +13,7 @@ import ChangeDisplayPic from './src/Functional/Home Page/ChangeDisplayPic';
 import OtherUser from './src/Functional/Home Page/OtherUser';
 import CameraFunction from './src/Functional/Home Page/CameraFunction';
 
+
 const Stack = createStackNavigator();
 
 export default class App extends React.Component{
