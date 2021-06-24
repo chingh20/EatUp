@@ -9,6 +9,7 @@ import { Avatar } from 'react-native-elements';
 import ChangeDisplayPic from './ChangeDisplayPic';
 import GooglePlacesInput from './googleMap'
 import defaultUserImage from "../../../assets/default-user-image.png";
+import Search from './Search'
 
 export default function Home(props) {
 
