@@ -3,51 +3,47 @@ import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity } from 'r
 import { firebase } from '../../firebase/config';
 
 
-export default function Search() {
-    const [users, setUsers] = useState([])
+export default function FriendSearch({array}) {
+    var user = firebase.auth().currentUser
+    var userDisplayName = user.displayName
+
+    const [friends, setFriends] = useState([])
 
     const fetchUsers = (search) => {
-    if(search.length > 0 && search != " ") {
-    firebase.firestore()
-                .collection('users')
-                .where('username', '>=', search).where('username', '<=', search+ '\uf8ff')
-                .get()
-                .then((snapshot) => {
+          if (search.length > 0 && search != " ") {
+          const friend = array.filter( (person) => {
+                       return person.startsWith(search)
+          })
+             setFriends(friend);
 
-        let user = snapshot.docs.map(doc => {
-                const data = doc.data();
-                      const id = doc.id;
-                     return { id, ...data }
-                  });
-                    setUsers(user);
-                })
-    } else {
-    setUsers([])
-    }
+          } else {
+          setFriends([])
+          }
+
     }
 
     const onPressed = (user) => {
-    alert(user.username)
-    setUsers([])
+    alert(user)
+    setFriends([])
     }
 
     return (
         <View>
             <TextInput
                 style= {styles.textInput}
-                placeholder="Search"
+                placeholder="Search Friends"
                 onChangeText={(search) => fetchUsers(search)} />
 
      <FlatList
                numColumns={1}
                 horizontal={false}
-                data={users}
+                data={friends}
                 renderItem={({ item }) => (
                 <TouchableOpacity
                 style = {styles.button}
                 onPress = {(item) => onPressed(item)}
                 >
-                    <Text>{item.username}</Text>
+                    <Text>{item}</Text>
                 </TouchableOpacity>
                 )}
             />
