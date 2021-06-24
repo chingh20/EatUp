@@ -13,6 +13,7 @@ import Search from './Search'
 
 export default function Home(props) {
 
+
     const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri
 
 //    var region = {
