@@ -51,7 +51,7 @@ const FriendListFormat = ({friends, onPress}) => {
               }}
         />
         <View style={styles.friendInfoText}>
-          <TouchableOpacity onPress={onPress}>
+          <TouchableOpacity style = {styles.button} onPress={onPress}>
             <Text style={styles.friendName}>
               {userFriendData ? userFriendData.username || 'Test' : 'Test'}
             </Text>

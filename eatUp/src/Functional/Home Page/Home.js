@@ -14,8 +14,6 @@ import Search from './Search'
 export default function Home(props) {
 
 
-    const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri
-
 //    var region = {
 //        latitude: 1.3649170000000002,
 //        longitude: 103.82287200000002,
@@ -85,9 +83,12 @@ export default function Home(props) {
              size= {30}
              style={{ margin: 0 }}
         />
+
         </View>
 
+
         <View style = {styles.middle}>
+        <Search />
         <Text style={styles.name}>Hello, {username}!</Text>
 
         <Avatar
@@ -96,9 +97,9 @@ export default function Home(props) {
            avatarStyle={{ width: 100, height: 100, borderRadius: 50 }}
            containerStyle={{ width: 100, height: 100, borderWidth: 1, borderRadius: 50 }}
            onPress={() => {
-           props.navigation.navigate("ChangeDisplayPic", {picture: userData? userData.displayPicture : defaultUserImageUri})}}
+           props.navigation.navigate("ChangeDisplayPic", {picture: userData? userData.displayPicture: null })}}
            source={{
-                       uri: userData? userData.displayPicture : defaultUserImageUri
+                       uri: userData? userData.displayPicture: null
                          }}
         />
 
