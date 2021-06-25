@@ -16,22 +16,21 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const FriendListFormat = ({friends, onPress}) => {
-
+const UserSearchListFormat = ({search, onPress}) => {
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendList = firebase.firestore().collection('users').doc(currentUsername)
 
-  const [userFriendData, setUserFriendData] = useState();
+  const [userSearchData, setUserSearchData] = useState();
 
 
-  const getUserFriendData = async () => {
+  const getUserSearchData = async () => {
     await firebase.firestore()
       .collection('users')
-      .doc(friends)
+      .doc(search)
       .get()
       .then((documentSnapshot) => {
         if (documentSnapshot.exists) {
-          setUserFriendData(documentSnapshot.data());
+          setUserSearchData(documentSnapshot.data());
         }
       })
       .catch((error) => {
@@ -40,24 +39,9 @@ const FriendListFormat = ({friends, onPress}) => {
   };
 
   useEffect(() => {
-    getUserFriendData();
+    getUserSearchData();
   }, []);
 
-const unfriend = () => {
-  Alert.alert(
-        "UNFOLLOW?",
-        "Unfollow " + friends + "?",
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
-          { text: "Yes",
-            onPress: () => userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)}) }
-        ]
-      );
-  }
 
   const onUnfriendPressed = () => {
         userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)})
@@ -69,8 +53,8 @@ const unfriend = () => {
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
           source={{
-            uri: userFriendData
-              ? userFriendData.displayPicture ||
+            uri: userSearchData
+              ? userSearchData.displayPicture ||
                 'https://reactnative.dev/img/tiny_logo.png'
               : 'https://reactnative.dev/img/tiny_logo.png'
               }}
@@ -78,11 +62,17 @@ const unfriend = () => {
         <View style={styles.friendInfoText}>
           <TouchableOpacity style = {styles.button} onPress={onPress}>
             <Text style={styles.friendName}>
-              {userFriendData ? userFriendData.username || 'Test' : 'Test'}
+              {userSearchData ? userSearchData.username || 'Test' : 'Test'}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
+//      {currentUser.displayName != post.user ? (
+//                   <IconButton icon={wantToGoIcon}
+//                               size={20}
+//                               color={wantToGoColor}
+//                               onPress={() => onWantToGo(currentUser.displayName, post.id)}/>
+//       ) : null}
         <IconButton icon="account-remove-outline"
                     size={20}
                     onPress={onUnfriendPressed}/>
