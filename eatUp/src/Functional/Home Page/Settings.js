@@ -1,19 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-
+import Search from './Search'
 
 
 const Settings = ({navigation}) => {
   return (
+  <SafeAreaView style = {styles.homecontainer}>
      <View style={styles.container}>
      <Text> Settings Page </Text>
      </View>
+     <View style={styles.container}>
+             <Search />
+     </View>
+</SafeAreaView>
   );
 };
 
 export default Settings;
 const styles = StyleSheet.create({
+ homecontainer: {
+    flex: 1,
+    backgroundColor: '#fffbf1',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fffbf1',
