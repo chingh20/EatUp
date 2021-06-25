@@ -13,48 +13,51 @@ import {
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { firebase } from '../../firebase/config';
-import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const UserSearchListFormat = ({search, onPress}) => {
+const UserSearchListFormat = ({users, onPress}) => {
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendList = firebase.firestore().collection('users').doc(currentUsername)
 
-  const [userSearchData, setUserSearchData] = useState();
+  const [userFriendArray, setUserFriendArray] = useState();
+
+  const fetchUserFriendArray = async () => {
+
+              await firebase.firestore()
+                .collection('users')
+                .doc(currentUsername)
+                .get()
+                .then((documentSnapshot) => {
+                   if (documentSnapshot.exists) {
+                      setUserFriendArray(documentSnapshot.data());
+
+                   }
+                })
+                .catch((error) => {
+                   alert(error);
+                });
+
+  }
 
 
-  const getUserSearchData = async () => {
-    await firebase.firestore()
-      .collection('users')
-      .doc(search)
-      .get()
-      .then((documentSnapshot) => {
-        if (documentSnapshot.exists) {
-          setUserSearchData(documentSnapshot.data());
-        }
-      })
-      .catch((error) => {
-      alert(error);
-      });
-  };
-
-  useEffect(() => {
-    getUserSearchData();
-  }, []);
+  useEffect(()=>{
+    fetchUserFriendArray();
+  },[]);
 
 
-  const onUnfriendPressed = () => {
-        userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)})
-        alert("You have unfollowed " + friends + "!")
+
+  const onAddFriendPressed = () => {
+        userFriendList.update({friends: firebase.firestore.FieldValue.arrayUnion(users.username)})
+        alert("You have followed " + users.username + "!")
   }
 
   return (
-    <View style={styles.friendContainer} key={friends}>
+    <View style={styles.friendContainer} key={users? users.username : ''}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
           source={{
-            uri: userSearchData
-              ? userSearchData.displayPicture ||
+            uri: users
+              ? users.displayPicture ||
                 'https://reactnative.dev/img/tiny_logo.png'
               : 'https://reactnative.dev/img/tiny_logo.png'
               }}
@@ -62,32 +65,31 @@ const UserSearchListFormat = ({search, onPress}) => {
         <View style={styles.friendInfoText}>
           <TouchableOpacity style = {styles.button} onPress={onPress}>
             <Text style={styles.friendName}>
-              {userSearchData ? userSearchData.username || 'Test' : 'Test'}
+              {users? users.username
+                             : 'Test'}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-//      {currentUser.displayName != post.user ? (
-//                   <IconButton icon={wantToGoIcon}
-//                               size={20}
-//                               color={wantToGoColor}
-//                               onPress={() => onWantToGo(currentUser.displayName, post.id)}/>
-//       ) : null}
-        <IconButton icon="account-remove-outline"
-                    size={20}
-                    onPress={onUnfriendPressed}/>
+      {users && userFriendArray ? (
+        (!userFriendArray.friends.includes(users.username) && currentUsername != users.username ? (
+                   <IconButton icon="account-plus-outline"
+                                       size={20}
+                                       onPress={onAddFriendPressed}/>
+               ) : null)
+        ) : null}
     </View>
   );
 };
 
-export default FriendListFormat;
+export default UserSearchListFormat;
 
 const styles = StyleSheet.create({
   friendContainer: {
     flex: 1,
     flexDirection: 'row',
     width: 350,
-    height: 200,
+    height: 70,
     backgroundColor: '#fdf4da',
     justifyContent: 'space-between',
     alignItems: 'center',

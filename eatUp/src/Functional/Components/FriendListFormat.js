@@ -65,7 +65,7 @@ const unfriend = () => {
   }
 
   return (
-    <View style={styles.friendContainer} key={friends}>
+    <View style={styles.friendContainer} key={userFriendData? userFriendData.username: ''}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
           source={{
@@ -85,7 +85,7 @@ const unfriend = () => {
       </View>
         <IconButton icon="account-remove-outline"
                     size={20}
-                    onPress={onUnfriendPressed}/>
+                    onPress={unfriend}/>
     </View>
   );
 };
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: 350,
-    height: 200,
+    height: 70,
     backgroundColor: '#fdf4da',
     justifyContent: 'space-between',
     alignItems: 'center',

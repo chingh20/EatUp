@@ -1,30 +1,30 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native'
 import { firebase } from '../../firebase/config';
+import FriendListFormat from '../Components/FriendListFormat'
 
 
 export default function FriendSearch({array}) {
+
     var user = firebase.auth().currentUser
     var userDisplayName = user.displayName
 
-    const [friends, setFriends] = useState([])
+    const [userFriends, setUserFriends] = useState(null)
+
+
 
     const fetchUsers = (search) => {
-          if (search.length > 0 && search != " ") {
-          const friend = array.filter( (person) => {
-                       return person.startsWith(search)
-          })
-             setFriends(friend);
-
-          } else {
-          setFriends([])
+          if (search != '' || search != ' '){
+           const friend = array.filter( (person) => {
+                         return person.startsWith(search)
+                    })
+                    setUserFriends(friend);
           }
-
     }
 
     const onPressed = (user) => {
     alert(user)
-    setFriends([])
+    setUserFriends(array)
     }
 
     return (
@@ -35,17 +35,14 @@ export default function FriendSearch({array}) {
                 onChangeText={(search) => fetchUsers(search)} />
 
      <FlatList
-               numColumns={1}
-                horizontal={false}
-                data={friends}
+                data={userFriends == null ? array : userFriends}
                 renderItem={({ item }) => (
-                <TouchableOpacity
-                style = {styles.button}
+                <FriendListFormat
+                friends={item}
                 onPress = {(item) => onPressed(item)}
-                >
-                    <Text>{item}</Text>
-                </TouchableOpacity>
+                />
                 )}
+                keyExtractor={(item) => item}
             />
         </View>
     )

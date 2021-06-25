@@ -88,9 +88,8 @@ export default function Home(props) {
 
 
         <View style = {styles.middle}>
-        <Search />
-        <Text style={styles.name}>Hello, {username}!</Text>
 
+        <Text style={styles.name}>Hello, {username}!</Text>
         <Avatar
            rounded
            size='large'
@@ -102,12 +101,10 @@ export default function Home(props) {
                        uri: userData? userData.displayPicture: null
                          }}
         />
-
-        </View>
-
-        <View style = {styles.bottom}>
         <Text> Menus </Text>
         </View>
+
+
 
         </SafeAreaView>
     )
@@ -138,7 +135,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   middle: {
-    flex: 1,
+    flex: 9,
     backgroundColor: '#fffbf1',
     alignItems: 'center',
     justifyContent: 'center',

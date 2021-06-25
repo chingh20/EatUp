@@ -11,7 +11,6 @@ import {
   ScrollView,
   FlatList
 } from 'react-native';
-import FriendListFormat from '../Components/FriendListFormat'
 import FriendSearch from './FriendSearch'
 import {firebase} from '../../firebase/config'
 import { StatusBar } from 'expo-status-bar'
@@ -55,19 +54,7 @@ export default function Friends () {
     return (
     <SafeAreaView style={styles.container}>
 
-         <FlatList
-            data={userFriendArray? userFriendArray.friends: []}
-            renderItem={({item}) => (
-               <FriendListFormat
-                 friends={item}
-                 onPress={() => alert(item)}
-               />
-            )}
-            keyExtractor={(item) => item}
-            ListHeaderComponent= <FriendSearch array={userFriendArray? userFriendArray.friends: []} />
-            ListFooterComponent={listHeader}
-            showsVerticalScrollIndicator={false}
-         />
+    <FriendSearch array={userFriendArray? userFriendArray.friends: []} />
 
      </SafeAreaView>
     );

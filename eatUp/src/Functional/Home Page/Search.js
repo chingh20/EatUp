@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native'
 import { firebase } from '../../firebase/config';
-
+import UserSearchListFormat from '../Components/UserSearchListFormat'
 
 export default function Search() {
     const [users, setUsers] = useState([])
+
 
     const fetchUsers = (search) => {
     if(search.length > 0 && search != " ") {
@@ -26,8 +27,8 @@ export default function Search() {
     }
     }
 
-    const onPressed = (user) => {
-    alert(user.username)
+    const onPressed = (item) => {
+    alert(item.username)
     setUsers([])
     }
 
@@ -39,17 +40,15 @@ export default function Search() {
                 onChangeText={(search) => fetchUsers(search)} />
 
      <FlatList
-               numColumns={1}
-                horizontal={false}
                 data={users}
                 renderItem={({ item }) => (
-                <TouchableOpacity
-                style = {styles.button}
-                onPress = {(item) => onPressed(item)}
-                >
-                    <Text>{item.username}</Text>
-                </TouchableOpacity>
+                <UserSearchListFormat
+                users={item}
+                onPress = {() => onPressed(item)}
+                />
                 )}
+                keyExtractor={(item) => item.username}
+                showsVerticalScrollIndicator={false}
             />
         </View>
     )
