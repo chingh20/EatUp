@@ -18,7 +18,8 @@ import { StatusBar } from 'expo-status-bar'
 
 
 export default function Friends () {
-
+    var user = firebase.auth().currentUser
+    var userDisplayName = user.displayName
 
   const [userFriendArray, setUserFriendArray] = useState();
 
@@ -26,7 +27,7 @@ export default function Friends () {
 
             await firebase.firestore()
               .collection('users')
-              .doc(username)
+              .doc(userDisplayName)
               .get()
               .then((documentSnapshot) => {
                  if (documentSnapshot.exists) {
