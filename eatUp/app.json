@@ -22,8 +22,12 @@
         "NSCameraUsageDescription": "Use camera to take food pictures for your posts.",
         "NSPhotoLibraryAddUsageDescription": "PhotoLibraryAddUsage",
         "NSPhotoLibraryUsageDescription": "PhotoLibraryUsage",
-        "NSMicrophoneUsageDescription": "MicrophoneUsage"
-      }
+        "NSMicrophoneUsageDescription": "MicrophoneUsage",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow EatUp to use your location",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]}
     },
     "android": {
       "adaptiveIcon": {

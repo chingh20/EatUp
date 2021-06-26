@@ -1,8 +1,7 @@
 import { Platform, Text, SafeAreaView, View, Image, StyleSheet, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react';
-
 import { firebase } from '../../firebase/config';
-
+import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
 import { IconButton } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { Avatar } from 'react-native-elements';
@@ -10,6 +9,7 @@ import ChangeDisplayPic from './ChangeDisplayPic';
 import GooglePlacesInput from './googleMap'
 import defaultUserImage from "../../../assets/default-user-image.png";
 import Search from './Search'
+import { mapStyle, mapStyle2 } from './MapTheme'
 
 export default function Home(props) {
 
@@ -47,10 +47,6 @@ export default function Home(props) {
         } , []
     )
 
-//    var usertheme = mapStyle
-//    if (user.mapTheme != "default") {
-//        usertheme = mapStyle2
-//    }
 
 
     const LogoutUser = () => {
@@ -100,7 +96,16 @@ export default function Home(props) {
         />
         <Text> Following {userData? userData.friends.length : null} other Food Lover(s)! </Text>
         </View>
-
+        <MapView
+                  style={styles.map}
+                  scrollEnabled = {false}
+                  initialRegion={initRegion}
+                  scrollEnabled = {true}
+                  minZoomLevel = {10}
+                  provider={PROVIDER_GOOGLE}
+                  customMapStyle={mapStyle}
+                 >
+        </MapView>
 
 
         </SafeAreaView>
