@@ -71,11 +71,12 @@ export default function Post ({navigation, route}) {
         .doc(id)
         .set(uploadData)
 
-        firebase
-               .firestore()
-               .collection(username)
-               .doc(id)
-               .set({postRef: firebase.firestore().doc(`Posts/${id}`)})
+     firebase
+        .firestore()
+        .collection(username)
+        .doc(id)
+        .set({postRef: firebase.firestore().doc(`Posts/${id}`),
+        postGeoCoordinates: post.geoCoordinates})
 
     }
 
@@ -99,18 +100,17 @@ export default function Post ({navigation, route}) {
     const [image, setImage] = useState({value: null, error: ''})
     const [location, setLocation] = useState({ value: '', error: '' })
     const [description, setDescription] = useState({ value: '', error: '' })
-
+    const [geolocation, setGeolocation] = useState({value:'', error:''});
 
     const handleTagUpdate = (text) => setTag({ value: text, error: '' })
     const handleImageUpdate = (image) => setImage({value: image, error: ''})
     const handleLocationUpdate = (text) => setLocation({ value: text, error: '' })
     const handleDescriptionUpdate = (text) => setDescription({ value: text, error: '' })
+    const handleGeolocationUpdate = (geoPoint) => setGeolocation({value:geoPoint, error:''})
+
 
     const takePicture = async () => {
         navigation.navigate('CameraFunction')
-        if (route.params.photo != null) {
-                handleImageUpdate(route.params.photo)
-        }
     }
 
 
@@ -124,27 +124,34 @@ export default function Post ({navigation, route}) {
       return ''
     }
 
-    const [place, setPlace] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
+    function geolocationCheck(geolocation) {
+      if (!geolocation) return "Loading geolocation..."
+    }
+
 
       useEffect(() => {
         (async () => {
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
+            alert('Permission to access geolocation was denied');
             return;
           }
-
           let place = await Location.getCurrentPositionAsync({});
-          setPlace(place);
+          handleGeolocationUpdate(place)
         })();
       }, []);
 
-      let text = 'Waiting..';
-        if (errorMsg) {
-          text = errorMsg;
-        } else if (place) {
-          text = JSON.stringify(place);
+    useEffect(() => {
+        if (route.params) {
+            handleImageUpdate(route.params.photo)
+        }
+    }, [route.params])
+
+
+
+      let text = ''
+        if (!geolocation.value) {
+          text = 'Waiting for geolocation...'
         }
 
 
@@ -154,13 +161,14 @@ export default function Post ({navigation, route}) {
         const imageError = imageCheck(image.value)
         const locationError = titleCheck(location.value)
         const descriptionError = titleCheck(description.value)
+        const geolocationError = geolocationCheck(geolocation.value)
 
-
-        if (tagError|| imageError || locationError || descriptionError) {
+        if (tagError|| imageError || locationError || descriptionError || geolocationError) {
           setTag({ ...tag, error: tagError })
           setImage({...image,error: imageError})
           setLocation({ ...location, error: locationError })
           setDescription({ ...description, error: descriptionError })
+          setGeolocation({...geolocation, error: geolocationError})
           return
         }
 
@@ -170,8 +178,8 @@ export default function Post ({navigation, route}) {
             tag: tag.value,
             location: location.value,
             description: description.value,
-            geoCoordinates: place
-                            ? new firebase.firestore.GeoPoint(place.coords.latitude, place.coords.longitude)
+            geoCoordinates: geolocation
+                            ? new firebase.firestore.GeoPoint(geolocation.value.coords.latitude, geolocation.value.coords.longitude)
                             : null
           }
 
@@ -182,6 +190,7 @@ export default function Post ({navigation, route}) {
          handleLocationUpdate('')
          handleDescriptionUpdate('')
          handleTagUpdate('')
+         handleGeolocationUpdate('')
 
         } catch (e) {
           alert(e)
