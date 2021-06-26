@@ -18,7 +18,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { CustomizedTextInput as TextInput } from '../Components/CustomizedTextInput';
 import uuid from 'uuid';
 import ModalSelector from 'react-native-modal-selector'
-
+import * as Location from 'expo-location';
 
 export default function Post ({navigation, route}) {
   var username = firebase.auth().currentUser.displayName;
@@ -66,17 +66,16 @@ export default function Post ({navigation, route}) {
 
 
      firebase
-       .firestore()
-       .collection(username)
-       .doc(id)
-       .set(uploadData)
-
-
-     firebase
         .firestore()
         .collection('Posts')
         .doc(id)
         .set(uploadData)
+
+        firebase
+               .firestore()
+               .collection(username)
+               .doc(id)
+               .set({postRef: firebase.firestore().doc(`Posts/${id}`)})
 
     }
 
@@ -124,6 +123,30 @@ export default function Post ({navigation, route}) {
       if (image === null) return "Please choose an image!"
       return ''
     }
+
+    const [place, setPlace] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
+
+      useEffect(() => {
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
+
+          let place = await Location.getCurrentPositionAsync({});
+          setPlace(place);
+        })();
+      }, []);
+
+      let text = 'Waiting..';
+        if (errorMsg) {
+          text = errorMsg;
+        } else if (place) {
+          text = JSON.stringify(place);
+        }
+
 
     const onSubmit = async () => {
 
@@ -241,6 +264,7 @@ return (
             error={!!description.error}
             errorText={description.error}
           />
+          <Text>{text} </Text>
           <TouchableOpacity style={styles.button} onPress={onSubmit}>
            <Text style={styles.btnText}> Add post </Text>
          </TouchableOpacity>
