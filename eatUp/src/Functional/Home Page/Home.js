@@ -13,13 +13,12 @@ import Search from './Search'
 
 export default function Home(props) {
 
-
-//    var region = {
-//        latitude: 1.3649170000000002,
-//        longitude: 103.82287200000002,
-//        latitudeDelta: 0.3,
-//        longitudeDelta: 0.25,
-//    }
+    var initRegion = {
+        latitude: 1.3649170000000002,
+        longitude: 103.82287200000002,
+        latitudeDelta: 0.3,
+        longitudeDelta: 0.25,
+    }
 
     const [userData, setUserData] = useState(null);
     const [post, setPost] = useState([]);
@@ -47,8 +46,6 @@ export default function Home(props) {
        {getUserDetails();
         } , []
     )
-
-
 
 //    var usertheme = mapStyle
 //    if (user.mapTheme != "default") {
@@ -101,7 +98,7 @@ export default function Home(props) {
                        uri: userData? userData.displayPicture: null
                          }}
         />
-        <Text> Menus </Text>
+        <Text> Following {userData? userData.friends.length : null} other Food Lover(s)! </Text>
         </View>
 
 
@@ -117,7 +114,7 @@ const styles = StyleSheet.create({
   homecontainer: {
     flex: 1,
     backgroundColor: '#fffbf1',
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'space-around',
   },
    scroll: {
@@ -128,20 +125,17 @@ const styles = StyleSheet.create({
       flexGrow: 1
     },
   upper: {
-    flex: 1,
     flexDirection: 'row',
     backgroundColor: '#fffbf1',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
   middle: {
-    flex: 9,
     backgroundColor: '#fffbf1',
     alignItems: 'center',
     justifyContent: 'center',
   },
   bottom: {
-      flex: 1,
       flexDirection: 'column',
       backgroundColor: '#fffbf1',
       alignItems: 'stretch',

@@ -56,6 +56,7 @@ export default function Post ({navigation, route}) {
       postTag: post.tag,
       postLocation: post.location,
       postDescription: post.description,
+      postGeoCoordinates: post.geoCoordinates,
       likes: [],
       wantToGo:[],
       comments: null,
@@ -146,6 +147,9 @@ export default function Post ({navigation, route}) {
             tag: tag.value,
             location: location.value,
             description: description.value,
+            geoCoordinates: place
+                            ? new firebase.firestore.GeoPoint(place.coords.latitude, place.coords.longitude)
+                            : null
           }
 
 
