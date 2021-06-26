@@ -1,7 +1,7 @@
 import { Platform, Text, SafeAreaView, View, Image, StyleSheet, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { firebase } from '../../firebase/config';
-import MapView , { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView , { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { IconButton } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { Avatar } from 'react-native-elements';
@@ -21,7 +21,7 @@ export default function Home(props) {
     }
 
     const [userData, setUserData] = useState(null);
-    const [post, setPost] = useState([]);
+
 
     var username = firebase.auth().currentUser.displayName;
 
@@ -32,12 +32,14 @@ export default function Home(props) {
         .firestore()
         .collection('users')
         .doc(username)
-        .get().then((documentSnapshot) => {
+        .get()
+        .then((documentSnapshot) => {
             if (documentSnapshot.exists) {
             setUserData(documentSnapshot.data())
             }
 
          })
+         .catch((e)=>{alert(e)})
     }
 
 
@@ -105,6 +107,11 @@ export default function Home(props) {
                   provider={PROVIDER_GOOGLE}
                   customMapStyle={mapStyle}
                  >
+                 {userData? userData.postLocations.map((location,index) => (
+                          <Marker
+                            key= {index}
+                            coordinate={{latitude: location.latitude, longitude: location.longitude}}/>)
+                  ): null}
         </MapView>
 
 

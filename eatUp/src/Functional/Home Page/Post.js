@@ -78,6 +78,12 @@ export default function Post ({navigation, route}) {
         .set({postRef: firebase.firestore().doc(`Posts/${id}`),
         postGeoCoordinates: post.geoCoordinates})
 
+     firebase
+     .firestore()
+     .collection('users')
+     .doc(username)
+     .update({postLocations: firebase.firestore.FieldValue.arrayUnion(post.geoCoordinates)})
+
     }
 
 
