@@ -86,7 +86,7 @@ export default function CameraFunction({navigation}) {
       />
       <View style={styles.container}>
         {isPreview && (
-        <View>
+        <View style={styles.closeButtonsContainer}>
           <TouchableOpacity
             onPress={cancelPreview}
             style={styles.closeButton}
@@ -131,21 +131,29 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   bottomButtonsContainer: {
-    position: 'absolute',
+   position: 'absolute',
     flexDirection: 'row',
     bottom: 28,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center'
   },
+  closeButtonsContainer: {
+     position: 'absolute',
+      flexDirection: 'row',
+      bottom: 28,
+      width: '100%',
+      alignItems: 'stretch',
+      justifyContent: 'space-around'
+    },
   closeButton: {
-    top: 35,
-    right: 20,
+   // top: 35,
+//    right: 20,
     height: 50,
     width: 50,
     borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'space-around',
+    alignItems: 'stretch',
     backgroundColor: '#5A45FF',
     opacity: 0.7
   },
