@@ -1,7 +1,7 @@
 import { Platform, Text, SafeAreaView, View, Image, StyleSheet, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { firebase } from '../../firebase/config';
-import MapView , { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView , { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { IconButton } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { Avatar } from 'react-native-elements';
@@ -21,9 +21,10 @@ export default function Home(props) {
     }
 
     const [userData, setUserData] = useState(null);
+    const [wantToGo, setWantToGo] = useState(null);
+    const [postPlaces, setPostPlaces] = useState(null);
 
-
-    var username = firebase.auth().currentUser.displayName;
+    const username = firebase.auth().currentUser.displayName;
 
 
     const getUserDetails = async () => {
@@ -44,10 +45,127 @@ export default function Home(props) {
 
 
 
-    useEffect(() =>
-       {getUserDetails();
-        } , []
-    )
+
+     const PostPlaces = async () => {
+            try {
+                    const PostPlacesArray = [];
+
+                    await firebase.firestore()
+                      .collection(username)
+                      .get()
+                      .then((querySnapshot) => {
+                          querySnapshot.forEach((doc) => {
+                              const {
+                                  id,
+                                  postPhoto,
+                                  postTag,
+                                  postDescription,
+                                  postLocation,
+                                  postGeoCoordinates,
+                                  likes,
+                                  wantToGo,
+                                  user,
+                                  timestamp,
+                                  comments
+                              } = doc.data();
+
+                             PostPlacesArray.push({
+                              id: doc.id,
+                              user,
+                              postPhoto,
+                              postTag,
+                              postDescription,
+                              postLocation,
+                              postGeoCoordinates,
+                              timestamp: timestamp,
+                              liked: likes.includes(username),
+                              likes: likes.length,
+                              wantToGo: wantToGo.includes(username),
+                              wantToGoCount: wantToGo.length,
+                              comments,
+                              });
+                            });
+                          })
+                          .catch((error)=> {
+                          alert(error)
+                          });
+
+                      setPostPlaces(PostPlacesArray);
+
+                      } catch (e) {
+                      console.log(e)
+                      }
+        }
+
+    const WantToGoPlace = async () => {
+        try {
+                const wantToGoArray = [];
+
+                await firebase.firestore()
+                  .collection('Posts')
+                  .where("wantToGo", "array-contains", username)
+                  .get()
+                  .then((querySnapshot) => {
+                      querySnapshot.forEach((doc) => {
+                          const {
+                              id,
+                              postPhoto,
+                              postTag,
+                              postDescription,
+                              postLocation,
+                              postGeoCoordinates,
+                              likes,
+                              wantToGo,
+                              user,
+                              timestamp,
+                              comments
+                          } = doc.data();
+
+
+                          wantToGoArray.push({
+                          id: doc.id,
+                          user,
+                          postPhoto,
+                          postTag,
+                          postDescription,
+                          postLocation,
+                          postGeoCoordinates,
+                          timestamp: timestamp,
+                          liked: likes.includes(username),
+                          likes: likes.length,
+                          wantToGo: wantToGo.includes(username),
+                          wantToGoCount: wantToGo.length,
+                          comments,
+                          });
+                        });
+                      })
+                      .catch((error)=> {
+                      alert(error)
+                      });
+
+                  setWantToGo(wantToGoArray);
+
+                  } catch (e) {
+                  console.log(e)
+                  }
+    }
+
+        useEffect(() =>
+           {getUserDetails();
+            } , []
+        )
+
+
+       useEffect(() =>
+               {WantToGoPlace();
+                    } , []
+       )
+
+       useEffect(() =>
+              {PostPlaces();
+                   } , []
+       )
+
 
 
 
@@ -92,9 +210,7 @@ export default function Home(props) {
            containerStyle={{ width: 100, height: 100, borderWidth: 1, borderRadius: 50 }}
            onPress={() => {
            props.navigation.navigate("ChangeDisplayPic", {picture: userData? userData.displayPicture: null })}}
-           source={{
-                       uri: userData? userData.displayPicture: null
-                         }}
+           source={{uri: userData? userData.displayPicture: null}}
         />
         <Text> Following {userData? userData.friends.length : null} other Food Lover(s)! </Text>
         </View>
@@ -107,11 +223,35 @@ export default function Home(props) {
                   provider={PROVIDER_GOOGLE}
                   customMapStyle={mapStyle}
                  >
-                 {userData? userData.postLocations.map((location,index) => (
-                          <Marker
-                            key= {index}
-                            coordinate={{latitude: location.latitude, longitude: location.longitude}}/>)
-                  ): null}
+
+                  {wantToGo? wantToGo.map((post) => (
+                      <Marker
+                          pinColor = {'#fffcc7'}
+                          key= {post.postGeoCoordinates.latitude + ""+ post.postLocation + "" + post.postGeoCoordinates.longitude}
+                          coordinate={{latitude: post.postGeoCoordinates.latitude, longitude: post.postGeoCoordinates.longitude}}>
+                               <Callout style={{width: 100}}>
+                                      <View>
+                                <Text style = {styles.name}>{post.postLocation}</Text>
+                                </View>
+                                 </Callout>
+
+                        </Marker>
+                  )
+                   )
+                   : null}
+
+                   {postPlaces? postPlaces.map((post) => (
+                       <Marker
+                           key= {post.postGeoCoordinates.latitude + ""+ post.postLocation + "" + post.postGeoCoordinates.longitude}
+                           coordinate={{latitude: post.postGeoCoordinates.latitude, longitude: post.postGeoCoordinates.longitude}}>
+                                                          <Callout style={{width: 100}}>
+                                                                 <View>
+                                                           <Text style = {styles.name}>{post.postLocation}</Text>
+                                                           </View>
+                                                            </Callout>
+                           </Marker>
+                                                                              )
+                                     ): null}
         </MapView>
 
 

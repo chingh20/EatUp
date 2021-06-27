@@ -65,18 +65,18 @@ export default function Post ({navigation, route}) {
     }
 
 
-     firebase
-        .firestore()
-        .collection('Posts')
-        .doc(id)
-        .set(uploadData)
 
      firebase
         .firestore()
         .collection(username)
         .doc(id)
-        .set({postRef: firebase.firestore().doc(`Posts/${id}`),
-        postGeoCoordinates: post.geoCoordinates})
+        .set(uploadData)
+
+         firebase
+        .firestore()
+        .collection('Posts')
+        .doc(id)
+        .set(uploadData)
 
      firebase
      .firestore()
