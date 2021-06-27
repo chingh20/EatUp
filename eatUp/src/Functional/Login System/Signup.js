@@ -73,8 +73,6 @@ const  Signup = ({ navigation })=> {
                            postLocations: [],
                         }
 
-                        firebase.firestore().collection(username.value).doc('dummyPost').set({dummy:''})
-
                         usersRef
                                .doc(username.value)
                                .set(data)
