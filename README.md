@@ -14,9 +14,11 @@ Apollo 11
 
 **Deployed EatUp Andriod Phone Application**
 
-Link to our application: 
-https://exp.host/@ching123/eatUp/index.exp?sdkVersion=41.0.0
-https://expo.io/@ching123/projects/eatUp
+Link to our application:
+https://exp.host/@ching123/eatUp/index.exp?sdkVersion=41.0.
+
+
+https://expo.io/@ching123/eatUp
 
 Recommended to use on Android Mobile Phone.
 ![EatUp-poster](https://github.com/chingh20/EatUp/blob/5b35742227cdae4c9a4ae849a127fee8ea840d3c/Images/Poster.jpg)
@@ -183,7 +185,7 @@ Post Feeds
 
 Search engine
 - To deploy search engine to find food places
-_ Able to navigate to other user's maps
+- Able to navigate to other user's maps
 
 
 Settings
