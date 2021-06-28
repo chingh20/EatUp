@@ -114,18 +114,13 @@ We hope to make a social media platform that allows people to conveniently share
 
 **Timeline of Implementations**
 
-Features completed by end of June:
+_Features completed by end of June:_
 
 Login page
 - “Reset Password” function where a link will be sent to the user’s email to change their password. 
 - Email and password used to log into user account 
 - Only verified accounts can log in. 
 - Logout Function
-
- 
-Home page
-- Logout function available
-- Coloured Maps for each user
 
 
 Signups
@@ -169,7 +164,7 @@ Friends
 
 
 
-Features to be completed by end of July:
+_Features to be completed by end of July:_
 
 HomePage
 - Able to return to initial position for the map
@@ -219,4 +214,6 @@ Recommendation
 ## <a name="project-log"></a>5. Project Log
 
 **Milestone 1 - Ideation:** https://docs.google.com/document/d/1bwHSE8-z5ftegvH8m3DMPwBO0ncLpUE5cHEylacY_N0/edit?usp=sharing
+
+
 **Milestone 2 - Prototyping:** https://docs.google.com/document/d/1A_5HZFt_O3Rno-n-tJrWsMFIjSOIkOtLiBsFgz32H5o/edit?usp=sharing
