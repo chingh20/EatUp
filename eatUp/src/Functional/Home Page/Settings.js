@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import Search from './Search'
+
 
 
 const Settings = ({navigation}) => {
@@ -9,9 +9,6 @@ const Settings = ({navigation}) => {
   <SafeAreaView style = {styles.homecontainer}>
      <View style={styles.container}>
      <Text> Settings Page </Text>
-     </View>
-     <View style={styles.container}>
-             <Search />
      </View>
 </SafeAreaView>
   );

@@ -4,7 +4,7 @@
 - [1. Introduction](#introducton)
 - [2. User Stories](#user-stories)
 - [3. Scope of Project and Timeline of Implementations](#scope-of-project)
-- [4. Program Flow](#program-flow)
+- [4. Program Flow and Tech Stack](#program-flow-and-tech-stack)
 - [5. Project Log](#project-log)
 
 
@@ -114,12 +114,13 @@ We hope to make a social media platform that allows people to conveniently share
 
 **Timeline of Implementations**
 
-Features to be completed by end of May:
+Features completed by end of June:
 
 Login page
 - “Reset Password” function where a link will be sent to the user’s email to change their password. 
 - Email and password used to log into user account 
 - Only verified accounts can log in. 
+- Logout Function
 
  
 Home page
@@ -127,37 +128,95 @@ Home page
 - Coloured Maps for each user
 
 
-Signups 
-
+Signups
 - Email, password and username used to signup a new account
 - Checks if email and username are available to use
 - Checks if email and password are valid
 
 
-
-Features to be completed by end of June:
-
 Home page
-- Complete theme selection
 - Customised map markers that contains user's posts linked to that location
 - Map markers for user's "Want to go!" places
-- Able to publish posts
+- Able to filter the markers on the user's map
+- Map markers show the Location name of the post when pressed
+- Display Picture available
+- Show number of followers
 
-Post Feeds
-- Complete public post feeds view, include functions such as set post as "Want to go!" places and like posts
-- Able to view following users' maps
+
+Change Display Picture
+- Able to change display picture from Gallery or Camera
+- Able to remove display Picture
+
+
+Add Post
+- Able to publish posts from Gallery or Camera with Live Location saved
+
+
+Feeds
+- Complete public post feeds view
+- Able to set posts as "Want to go!" places and like posts
+
 
 Search engine
-- deploy search engine to find food places and other users
+- Deploy search engine to other users
+- Able to follow the result of the search if the target has not been added to user's friend list
+- Able to unfollow following users
 
 
-*We will include further timeline for extension features later based on our progress of the above core features*
+Friends
+- Deploy search engine to filter friends
+- Able to unfollow following users
+
+
+
+Features to be completed by end of July:
+
+HomePage
+- Able to return to initial position for the map
+- Show full post linked to that marker when pressed
+
+
+Add Post
+- Add tagging friends feature
+
+
+Post Feeds
+- Add delete post function
+- Add comment post function
+- Able to view other users' maps
+
+
+Search engine
+- To deploy search engine to find food places
+_ Able to navigate to other user's maps
+
+
+Settings
+- Complete theme selection
+
+
+Recommendation 
+- To deploy Love of the Day
+- To deploy Try Now
+- To deploy Cuisine Mix
+- To Eat Again
+
+
+*We will include further timeline for more extension features later based on our progress of the above core features*
 
 
 
 
-## <a name="program-flow"></a>4. Program Flow
+## <a name="program-flow-and-tech-stack"></a>4. Program Flow and Tech Stack
 ![EatUp-basic-program-flow](https://github.com/chingh20/EatUp/blob/45451ac7522bfb81830ef3faffdd5e3b274d6ec1/Images/Flow%20chart.jpg)
+
+**Tech Stack**
+- React Native
+- Firebase
+- Expo
 
 
 ## <a name="project-log"></a>5. Project Log
+
+**Milestone 1 - Ideation:** https://docs.google.com/document/d/1bwHSE8-z5ftegvH8m3DMPwBO0ncLpUE5cHEylacY_N0/edit?usp=sharing
+**Milestone 2 - Prototyping:** https://docs.google.com/document/d/1A_5HZFt_O3Rno-n-tJrWsMFIjSOIkOtLiBsFgz32H5o/edit?usp=sharing

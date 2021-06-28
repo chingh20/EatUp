@@ -1,5 +1,5 @@
 import React from 'react';
-import Settings from './Settings';
+import Search from './Search';
 import Feed from './Feed';
 import Post from './Post';
 import Home from './Home';
@@ -65,7 +65,16 @@ const Tab = createBottomTabNavigator();
                          }}
                />
 
-               <Tab.Screen name="Settings" component={Settings} />
+               <Tab.Screen
+                    name="Search"
+                    component={Search}
+                    options={{
+                          tabBarLabel: 'Search',
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name="magnify" color={color} size={size} />
+                           ),
+                         }}
+               />
 
                </Tab.Navigator>
       );

@@ -1,78 +1,75 @@
-import React, { useState } from 'react'
-import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native'
-import { firebase } from '../../firebase/config';
-import UserSearchListFormat from '../Components/UserSearchListFormat'
-
-export default function Search() {
-    const [users, setUsers] = useState([])
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import SearchBar from './SearchBar'
 
 
-    const fetchUsers = (search) => {
-    if(search.length > 0 && search != " ") {
-    firebase.firestore()
-                .collection('users')
-                .where('username', '>=', search).where('username', '<=', search+ '\uf8ff')
-                .get()
-                .then((snapshot) => {
+const Search = ({navigation}) => {
+  return (
+  <SafeAreaView style = {styles.homecontainer}>
+     <View style={styles.container}>
+     <Text> Search all other users! </Text>
+     </View>
+     <View style={styles.container}>
+     <SearchBar />
+     </View>
+</SafeAreaView>
+  );
+};
 
-        let user = snapshot.docs.map(doc => {
-                const data = doc.data();
-                      const id = doc.id;
-                     return { id, ...data }
-                  });
-                    setUsers(user);
-                })
-    } else {
-    setUsers([])
-    }
-    }
-
-    const onPressed = (item) => {
-    alert(item.username)
-    setUsers([])
-    }
-
-    return (
-        <View>
-            <TextInput
-                style= {styles.textInput}
-                placeholder="Search"
-                onChangeText={(search) => fetchUsers(search)} />
-
-     <FlatList
-                data={users}
-                renderItem={({ item }) => (
-                <UserSearchListFormat
-                users={item}
-                onPress = {() => onPressed(item)}
-                />
-                )}
-                keyExtractor={(item) => item.username}
-                showsVerticalScrollIndicator={false}
-            />
-        </View>
-    )
-}
-
+export default Search;
 const styles = StyleSheet.create({
-  textInput: {
-      borderWidth: 1,
-      borderColor: '#3e1f0d',
-      fontSize: 20,
-      marginBottom: 15,
-      width: 350,
-      height: 40,
+ homecontainer: {
+    flex: 1,
+    backgroundColor: '#fffbf1',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fffbf1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+     width: 200,
+     marginTop: 50,
+     backgroundColor: "#ff5757",
+     padding: 15,
+     borderRadius: 50,
+  },
+  nobutton: {
+       color: '#3e1f0d',
+       fontSize: 20,
+       marginTop: 30,
+       alignItems: 'center',
+       justifyContent: 'center',
     },
-     button: {
-                width: 200,
-                marginTop: 30,
-                marginBottom: 10,
-                alignItems: "center",
-                justifyContent: 'center',
-                backgroundColor: "#ff5757",
-                padding: 15,
-                borderRadius: 50,
-                },
+
+  nobuttontext: {
+       color: '#bc1824',
+       fontSize: 20,
+    },
+  btnText: {
+      color: "white",
+      fontSize: 20,
+      justifyContent: "center",
+      textAlign: "center",
+   },
+   image: {
+      height: 250,
+      width: 350,
+      marginBottom: 10
+   },
+   textInput: {
+         color: '#3e1f0d',
+         borderWidth: 1,
+         borderColor: '#3e1f0d',
+         fontSize: 20,
+         marginBottom: 8,
+         width: 200,
+         height: 30,
+       },
+});
 
 
-})
