@@ -4,7 +4,7 @@
 - [1. Introduction](#introducton)
 - [2. User Stories](#user-stories)
 - [3. Scope of Project and Timeline of Implementations](#scope-of-project)
-- [4. Program Flow and Tech Stack](#program-flow-and-tech-stack)
+- [4. Program Flow, Tech Stack and Software Testing](#program-flow)
 - [5. Project Log](#project-log)
 
 
@@ -205,13 +205,16 @@ Recommendation
 
 
 
-## <a name="program-flow-and-tech-stack"></a>4. Program Flow and Tech Stack
+## <a name="program-flow"></a>4. Program Flow, Tech Stack and Software Testing
 ![EatUp-basic-program-flow](https://github.com/chingh20/EatUp/blob/45451ac7522bfb81830ef3faffdd5e3b274d6ec1/Images/Flow%20chart.jpg)
+
 
 **Tech Stack**
 - React Native
 - Firebase
 - Expo
+
+**Software Testing Log:** https://docs.google.com/document/d/1KN7-z4OmE3RCq2xjzpzlJn_nDtMBuuAtnF9YVwhNHvc/edit?usp=sharing
 
 
 ## <a name="project-log"></a>5. Project Log
