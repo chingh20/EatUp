@@ -23,9 +23,36 @@ export default function Home(props) {
     const [userData, setUserData] = useState(null);
     const [wantToGo, setWantToGo] = useState(null);
     const [postPlaces, setPostPlaces] = useState(null);
+    const [starMarkerFilter, setStarMarkerFilter] = useState(true);
+    const [postMarkerFilter, setPostMarkerFilter] = useState(true);
+    const [backToInitialRegion, setBackToInitialRegion] = useState(false);
+
+    const starMarkerFilterIcon = starMarkerFilter ? 'star' : 'star-outline';
+    const postMarkerFilterIcon = postMarkerFilter ? 'eye' : 'eye-outline';
+
+    const onStarMarkerFilterPressed = () => {
+        if (starMarkerFilter) {
+            setStarMarkerFilter(false)
+        } else {
+            setStarMarkerFilter(true)
+        }
+    }
+
+    const onPostMarkerFilterPressed = () => {
+        if (postMarkerFilter) {
+            setPostMarkerFilter(false)
+        } else {
+            setPostMarkerFilter(true)
+        }
+    }
+
+    const onBackToInitialRegionPressed = () => {
+        if (!backToInitialRegion) {
+            setBackToInitialRegion(true)
+        }
+    }
 
     const username = firebase.auth().currentUser.displayName;
-
 
     const getUserDetails = async () => {
     await
@@ -42,8 +69,6 @@ export default function Home(props) {
          })
          .catch((e)=>{alert(e)})
     }
-
-
 
 
      const PostPlaces = async () => {
@@ -178,6 +203,7 @@ export default function Home(props) {
       })
     }
 
+
     return (
         <SafeAreaView style = {styles.homecontainer}>
         <View style = {styles.upper}>
@@ -213,18 +239,19 @@ export default function Home(props) {
            source={{uri: userData? userData.displayPicture: null}}
         />
         <Text> Following {userData? userData.friends.length : null} other Food Lover(s)! </Text>
-        </View>
+
         <MapView
                   style={styles.map}
                   scrollEnabled = {false}
                   initialRegion={initRegion}
+                  region={onBackToInitialRegionPressed ? initRegion : null}
                   scrollEnabled = {true}
                   minZoomLevel = {10}
                   provider={PROVIDER_GOOGLE}
                   customMapStyle={mapStyle}
                  >
 
-                  {wantToGo? wantToGo.map((post) => (
+                  {wantToGo && starMarkerFilter ? wantToGo.map((post) => (
                       <Marker
                           pinColor = {'#fffcc7'}
                           key= {post.postGeoCoordinates.latitude + ""+ post.postLocation + "" + post.postGeoCoordinates.longitude}
@@ -240,7 +267,7 @@ export default function Home(props) {
                    )
                    : null}
 
-                   {postPlaces? postPlaces.map((post) => (
+                   {postPlaces && postMarkerFilter ? postPlaces.map((post) => (
                        <Marker
                            key= {post.postGeoCoordinates.latitude + ""+ post.postLocation + "" + post.postGeoCoordinates.longitude}
                            coordinate={{latitude: post.postGeoCoordinates.latitude, longitude: post.postGeoCoordinates.longitude}}>
@@ -253,8 +280,23 @@ export default function Home(props) {
                                                                               )
                                      ): null}
         </MapView>
-
-
+        </View>
+        <View style={styles.bottom}>
+        <IconButton
+            icon={starMarkerFilterIcon}
+            onPress={onStarMarkerFilterPressed}
+            color='#3e1f0d'
+            size= {30}
+            style={{ margin: 0 }}
+        />
+        <IconButton
+            icon={postMarkerFilterIcon}
+            onPress={onPostMarkerFilterPressed}
+            color='#3e1f0d'
+            size= {30}
+            style={{ margin: 0 }}
+        />
+        </View>
         </SafeAreaView>
     )
 }
@@ -288,10 +330,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottom: {
-      flexDirection: 'column',
+      flexDirection: 'row',
       backgroundColor: '#fffbf1',
       alignItems: 'stretch',
-      justifyContent: 'space-around',
+      justifyContent: 'flex-start',
     },
  map: {
       width: 600,
