@@ -4,7 +4,7 @@ import { firebase } from '../../firebase/config';
 import FriendListFormat from '../Components/FriendListFormat'
 
 
-export default function FriendSearch({array}) {
+export default function FriendSearch({array,navigation}) {
 
     var user = firebase.auth().currentUser
     var userDisplayName = user.displayName
@@ -22,8 +22,8 @@ export default function FriendSearch({array}) {
           }
     }
 
-    const onPressed = (user) => {
-    alert(user)
+    const onPressed = (otherUser) => {
+  //  navigation.navigate('OtherUser', {user: otherUser})
     setUserFriends(array)
     }
 

@@ -12,7 +12,7 @@ import Settings from './src/Functional/Home Page/Settings';
 import ChangeDisplayPic from './src/Functional/Home Page/ChangeDisplayPic';
 import OtherUser from './src/Functional/Home Page/OtherUser';
 import CameraFunction from './src/Functional/Home Page/CameraFunction';
-
+import FriendSearch from './src/Functional/Home Page/FriendSearch';
 
 const Stack = createStackNavigator();
 
@@ -61,6 +61,10 @@ export default class App extends React.Component{
                <Stack.Screen
                   name="CameraFunction"
                   component={CameraFunction}
+               />
+               <Stack.Screen
+                   name="FriendSearch"
+                   component={FriendSearch}
                />
 
                 </Stack.Navigator>
