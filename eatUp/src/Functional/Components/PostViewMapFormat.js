@@ -15,34 +15,34 @@ import { firebase } from "../../firebase/config";
 import moment from "moment";
 import { Divider } from "react-native-elements";
 
-const PostFormat = ({ post, onPress }) => {
+const PostViewMapFormat = ({ markerPost, onPress }) => {
   var currentUser = firebase.auth().currentUser;
   const [userData, setUserData] = useState(null);
 
-  const likeIcon = post.liked ? "heart" : "heart-outline";
-  const likeIconColor = post.liked ? "#2e64e5" : "#333";
+  const likeIcon = markerPost.liked ? "heart" : "heart-outline";
+  const likeIconColor = markerPost.liked ? "#2e64e5" : "#333";
 
-  const wantToGoIcon = post.wantToGo ? "star-face" : "star-outline";
-  const wantToGoColor = post.wantToGo ? "#2e64e5" : "#333";
+  const wantToGoIcon = markerPost.wantToGo ? "star-face" : "star-outline";
+  const wantToGoColor = markerPost.wantToGo ? "#2e64e5" : "#333";
 
   var likeText = "";
   var commentText = "";
 
-  if (post.likes == 1) {
+  if (markerPost.likes == 1) {
     likeText = "1 Like";
     // update firebase
-  } else if (post.likes > 1) {
-    likeText = post.likes + " Likes";
+  } else if (markerPost.likes > 1) {
+    likeText = markerPost.likes + " Likes";
     // update firebase
   } else {
     likeText = "Like";
     //update firebase
   }
 
-  if (post.comments == 1) {
+  if (markerPost.comments == 1) {
     commentText = "1 Comment";
-  } else if (post.comments > 1) {
-    commentText = post.comments + " Comments";
+  } else if (markerPost.comments > 1) {
+    commentText = markerPost.comments + " Comments";
   } else {
     commentText = "Comment";
   }
@@ -51,7 +51,7 @@ const PostFormat = ({ post, onPress }) => {
     await firebase
       .firestore()
       .collection("users")
-      .doc(post.user)
+      .doc(markerPost.user)
       .get()
       .then((documentSnapshot) => {
         if (documentSnapshot.exists) {
@@ -66,7 +66,7 @@ const PostFormat = ({ post, onPress }) => {
   const onLikePost = (currentUsername, postId) => {
     const targetPost = firebase.firestore().collection("Posts").doc(postId);
 
-    post.liked
+    markerPost.liked
       ? targetPost.update({
           likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         })
@@ -82,20 +82,20 @@ const PostFormat = ({ post, onPress }) => {
       .collection("users")
       .doc(currentUsername);
 
-    post.wantToGo
+    markerPost.wantToGo
       ? targetPost.update({
           wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         }) &&
         userFoodList.update({
           wantToGo: firebase.firestore.FieldValue.arrayRemove(
-            post.postLocation
+            markerPost.postLocation
           ),
         })
       : targetPost.update({
           wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         }) &&
         userFoodList.update({
-          wantToGo: firebase.firestore.FieldValue.arrayUnion(post.postLocation),
+          wantToGo: firebase.firestore.FieldValue.arrayUnion(markerPost.postLocation),
         });
   };
 
@@ -104,7 +104,19 @@ const PostFormat = ({ post, onPress }) => {
   }, []);
 
   return (
-    <View style={styles.postContainer} key={post.id}>
+    <View style={styles.postContainer} key={markerPost.id}>
+    <View style={styles.imageView}>
+            {markerPost.postPhoto != null ? (
+              <Image style={styles.image} source={{ uri: markerPost.postPhoto }} />
+            ) : (
+              <Divider color="transparent" orientation="horizontal" width={2} />
+            )}
+
+            <Text style={styles.description}>{markerPost.postDescription}</Text>
+    </View>
+
+    <View style= {styles.imageView}>
+      <View>
       <View style={styles.userInfoContainer}>
         <Image
           style={styles.userImage}
@@ -122,29 +134,19 @@ const PostFormat = ({ post, onPress }) => {
             </Text>
           </TouchableOpacity>
           <Text style={styles.time}>
-            {moment(post.timestamp.toDate()).fromNow()}
+            {moment(markerPost.timestamp.toDate()).fromNow()}
           </Text>
         </View>
       </View>
 
       <View style={styles.tagContainer}>
         <IconButton icon="tag-multiple" size={20} />
-        <Text style={styles.description}>{post.postTag}</Text>
+        <Text style={styles.description}>{markerPost.postTag}</Text>
       </View>
 
       <View style={styles.tagContainer}>
         <IconButton icon="flag-variant" size={20} />
-        <Text style={styles.description}>{post.postLocation}</Text>
-      </View>
-
-      <View style={styles.imageView}>
-        {post.postPhoto != null ? (
-          <Image style={styles.image} source={{ uri: post.postPhoto }} />
-        ) : (
-          <Divider color="transparent" orientation="horizontal" width={2} />
-        )}
-
-        <Text style={styles.description}>{post.postDescription}</Text>
+        <Text style={styles.description}>{markerPost.postLocation}</Text>
       </View>
 
       <View style={styles.likeBar}>
@@ -152,7 +154,7 @@ const PostFormat = ({ post, onPress }) => {
           icon={likeIcon}
           size={20}
           color={likeIconColor}
-          onPress={() => onLikePost(currentUser.displayName, post.id)}
+          onPress={() => onLikePost(currentUser.displayName, markerPost.id)}
         />
         <Text style={styles.statusText}>{likeText}</Text>
 
@@ -163,16 +165,16 @@ const PostFormat = ({ post, onPress }) => {
         />
         <Text style={styles.statusText}>{commentText}</Text>
 
-        {currentUser.displayName != post.user ? (
+        {currentUser.displayName != markerPost.user ? (
           <IconButton
             icon={wantToGoIcon}
             size={20}
             color={wantToGoColor}
-            onPress={() => onWantToGo(currentUser.displayName, post.id)}
+            onPress={() => onWantToGo(currentUser.displayName, markerPost.id)}
           />
         ) : null}
 
-        {currentUser.displayName == post.user ? (
+        {currentUser.displayName == markerPost.user ? (
           <IconButton
             icon="delete"
             size={20}
@@ -180,20 +182,21 @@ const PostFormat = ({ post, onPress }) => {
           />
         ) : null}
       </View>
+     </View>
+     </View>
     </View>
   );
 };
 
-export default PostFormat;
+export default PostViewMapFormat;
 
 const styles = StyleSheet.create({
   postContainer: {
+    flexDirection: "row",
     flex: 1,
-    width: 350,
-    height: 550,
     backgroundColor: "#fdf4da",
-    justifyContent: "center",
-    alignItems: "stretch",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 5,
     borderRadius: 10,
   },
@@ -229,11 +232,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 5,
+    width: 150,
+    height: 150,
+    marginLeft: 1,
+    marginRight: 1,
+    marginTop: 1,
+    marginBottom: 1,
   },
   imageView: {
+    flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -243,6 +250,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#ff5757",
     borderRadius: 10,
+    width: '100%'
   },
   statusText: {
     color: "white",
@@ -251,6 +259,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   tagContainer: {
+    width: '100%',
     flexDirection: "row",
     alignItems: "center",
     padding: 1,
