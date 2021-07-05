@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   tagContainer: {
     width:'100%',
     flexDirection: "row",
-    alignItems: "center",
+    alignSelf: "center",
     padding: 1,
     marginBottom: 2,
     justifyContent: "flex-start",

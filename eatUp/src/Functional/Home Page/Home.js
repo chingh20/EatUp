@@ -346,6 +346,11 @@ export default function Home(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fffbf1",
+  },
+
   homecontainer: {
     marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     flex: 3,

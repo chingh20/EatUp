@@ -18,9 +18,28 @@ import { StatusBar } from 'expo-status-bar';
 
 
 
-const Feed = () => {
+const Feed = (props) => {
   var user = firebase.auth().currentUser
   var username = user.displayName
+
+  React.useEffect(() => {
+      const unsubscribe = props.navigation.addListener('focus', () => {
+        alert('Refreshed');
+        fetchPost();
+      });
+      return unsubscribe;
+    }, [props.navigation]);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+    const wait = (timeout) => {
+      return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState([]);
