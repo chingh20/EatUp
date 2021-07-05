@@ -127,6 +127,7 @@ const PostFormat = ({ post, onPress }) => {
         </View>
       </View>
 
+
       <View style={styles.tagContainer}>
         <IconButton icon="tag-multiple" size={20} />
         <Text style={styles.description}>{post.postTag}</Text>
@@ -136,6 +137,7 @@ const PostFormat = ({ post, onPress }) => {
         <IconButton icon="flag-variant" size={20} />
         <Text style={styles.description}>{post.postLocation}</Text>
       </View>
+
 
       <View style={styles.imageView}>
         {post.postPhoto != null ? (
@@ -251,6 +253,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   tagContainer: {
+    width:'100%',
     flexDirection: "row",
     alignItems: "center",
     padding: 1,
@@ -258,6 +261,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     borderColor: "#ff5757",
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 25,
   },
 });

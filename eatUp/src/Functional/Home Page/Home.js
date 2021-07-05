@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { firebase } from "../../firebase/config";
@@ -21,6 +22,16 @@ import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
 
 export default function Home(props) {
+  React.useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      alert("Refreshed");
+      getUserDetails();
+      PostPlaces();
+      WantToGoPlace();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   var initRegion = {
     latitude: 1.3649170000000002,
     longitude: 103.82287200000002,
@@ -34,15 +45,13 @@ export default function Home(props) {
   const [starMarkerFilter, setStarMarkerFilter] = useState(true);
   const [postMarkerFilter, setPostMarkerFilter] = useState(true);
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
-  const [calloutPressed, setCalloutPressed] = useState(null);
-  const [markerPressed, setMarkerPressed] = useState(true);
+  const [markerPressed, setMarkerPressed] = useState(null);
 
   const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
   const postMarkerFilterIcon = postMarkerFilter ? "eye" : "eye-outline";
 
-  const onCalloutPressed = (id) => {
-    setMarkerPressed(false);
-    setCalloutPressed(id);
+  const onMarkerPressed = (id) => {
+    setMarkerPressed(id);
   };
 
   const onStarMarkerFilterPressed = () => {
@@ -67,9 +76,6 @@ export default function Home(props) {
     }
   };
 
-  const onMarkerPressed = () => {
-      setMarkerPressed(true)
-  }
   const username = firebase.auth().currentUser.displayName;
 
   const getUserDetails = async () => {
@@ -223,7 +229,6 @@ export default function Home(props) {
           size={30}
           style={{ margin: 0 }}
         />
-
         <IconButton
           icon="cog-outline"
           onPress={() => props.navigation.navigate("Settings")}
@@ -271,54 +276,45 @@ export default function Home(props) {
           {wantToGo && starMarkerFilter
             ? wantToGo.map((post) => (
                 <Marker
-                  onPress={() => onMarkerPressed}
+                  onPress={() => onMarkerPressed(post)}
                   pinColor={"#fffcc7"}
-                  key={
-                    post.id
-                  }
+                  key={post.id}
                   coordinate={{
                     latitude: post.postGeoCoordinates.latitude,
                     longitude: post.postGeoCoordinates.longitude,
                   }}
                 >
-                  <Callout
-                    style={{ width: 100 }}
-                    onPress={() => onCalloutPressed(post)}
-                  >
-                    <View>
-                      <Text style={styles.name}>{post.postLocation}</Text>
-                    </View>
+                  <Callout tooltip style={{ width: 150 }}>
+                    <Text style={styles.name}>{post.postLocation}</Text>
                   </Callout>
                 </Marker>
               ))
             : null}
 
-          {postPlaces && postMarkerFilter
-            ? postPlaces.map((post) => (
-                <Marker
-                  key={
-                    post.id
-                  }
-                  coordinate={{
-                    latitude: post.postGeoCoordinates.latitude,
-                    longitude: post.postGeoCoordinates.longitude,
-                  }}
-                  onPress={onMarkerPressed}
-                >
-                  <Callout
-                    style={{ width: 100 }}
-                    onPress={() => onCalloutPressed(post)}
-                  >
-                    <View>
-                      <Text style={styles.name}>{post.postLocation}</Text>
-                    </View>
-                  </Callout>
-                </Marker>
-              ))
-            : <View/>}
+          {postPlaces && postMarkerFilter ? (
+            postPlaces.map((post) => (
+              <Marker
+                key={post.id}
+                coordinate={{
+                  latitude: post.postGeoCoordinates.latitude,
+                  longitude: post.postGeoCoordinates.longitude,
+                }}
+                onPress={() => onMarkerPressed(post)}
+              >
+                <Callout style={{ width: 150 }}>
+                  <View>
+                    <Text style={styles.name}>{post.postLocation}</Text>
+                  </View>
+                </Callout>
+              </Marker>
+            ))
+          ) : (
+            <View />
+          )}
         </MapView>
+      </View>
 
-      <View style={styles.bottom}>
+      <View style={styles.filter}>
         <IconButton
           icon={starMarkerFilterIcon}
           onPress={onStarMarkerFilterPressed}
@@ -334,14 +330,16 @@ export default function Home(props) {
           style={{ margin: 0 }}
         />
       </View>
-      <View style= {styles.bottom}>
-        {calloutPressed && !markerPressed ? (
+
+      <View style={styles.postcontainer}>
+        {markerPressed ? (
           <PostViewMapFormat
-            markerPost={calloutPressed}
+            markerPost={markerPressed}
             onPress={() => alert("homepage post onpress")}
           />
-        ) : null}
-      </View>
+        ) : (
+          <View />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -349,18 +347,20 @@ export default function Home(props) {
 
 const styles = StyleSheet.create({
   homecontainer: {
-    flex: 1,
+    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    flex: 3,
     backgroundColor: "#fffbf1",
     alignItems: "stretch",
     justifyContent: "space-around",
   },
-  scroll: {
-    marginHorizontal: 20,
-    flexDirection: "row",
+
+  postcontainer: {
+    flex: 1,
+    backgroundColor: "#fffbf1",
     alignItems: "center",
     justifyContent: "center",
-    flexGrow: 1,
   },
+
   upper: {
     flexDirection: "row",
     backgroundColor: "#fffbf1",
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  bottom: {
+  filter: {
     flexDirection: "row",
     backgroundColor: "#fffbf1",
     alignItems: "stretch",
@@ -388,5 +388,15 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    width: 150,
+    marginTop: 30,
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ff5757",
+    padding: 15,
+    borderRadius: 50,
   },
 });

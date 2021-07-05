@@ -1,6 +1,7 @@
 import {firebase} from '../../firebase/config';
 import React, { useState, useEffect } from 'react';
 import {
+  RefreshControl,
   Image,
   Text,
   TouchableOpacity,
@@ -92,6 +93,12 @@ const Feed = () => {
       <SafeAreaView style={styles.container}>
 
          <FlatList
+                 refreshControl={
+                   <RefreshControl
+                     refreshing={refreshing}
+                     onRefresh={onRefresh}
+                   />
+                 }
             data={post}
             renderItem={({item}) => (
                <PostFormat
