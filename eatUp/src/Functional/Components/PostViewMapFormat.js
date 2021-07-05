@@ -267,6 +267,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     borderColor: "#ff5757",
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 25,
   },
 });
