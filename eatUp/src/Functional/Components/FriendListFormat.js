@@ -16,7 +16,7 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const FriendListFormat = ({friends, onPress}) => {
+const FriendListFormat = ({friends, navigation}) => {
 
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendList = firebase.firestore().collection('users').doc(currentUsername)
@@ -64,6 +64,7 @@ const unfriend = () => {
         alert("You have unfollowed " + friends + "!")
   }
 
+
   return (
     <View style={styles.friendContainer} key={userFriendData? userFriendData.username: ''}>
       <View style={styles.friendInfoContainer}>
@@ -76,7 +77,7 @@ const unfriend = () => {
               }}
         />
         <View style={styles.friendInfoText}>
-          <TouchableOpacity style = {styles.button} onPress={onPress}>
+          <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('OtherUser', {friend: friends})}>
             <Text style={styles.friendName}>
               {userFriendData ? userFriendData.username || 'Test' : 'Test'}
             </Text>

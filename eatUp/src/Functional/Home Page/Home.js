@@ -21,16 +21,17 @@ import Search from "./Search";
 import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
 
-export default function Home(props) {
+export default function Home({navigation, route}) {
   React.useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       alert("Refreshed");
       getUserDetails();
       PostPlaces();
       WantToGoPlace();
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [navigation]);
+
 
   var initRegion = {
     latitude: 1.3649170000000002,
@@ -46,6 +47,8 @@ export default function Home(props) {
   const [postMarkerFilter, setPostMarkerFilter] = useState(true);
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
   const [markerPressed, setMarkerPressed] = useState(null);
+
+  const username = firebase.auth().currentUser.displayName;
 
   const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
   const postMarkerFilterIcon = postMarkerFilter ? "eye" : "eye-outline";
@@ -76,7 +79,7 @@ export default function Home(props) {
     }
   };
 
-  const username = firebase.auth().currentUser.displayName;
+
 
   const getUserDetails = async () => {
     await firebase
@@ -197,6 +200,8 @@ export default function Home(props) {
     }
   };
 
+
+
   useEffect(() => {
     getUserDetails();
   }, []);
@@ -209,12 +214,15 @@ export default function Home(props) {
     PostPlaces();
   }, []);
 
+
+
+
   const LogoutUser = () => {
     firebase
       .auth()
       .signOut()
       .then(() => {
-        props.navigation.navigate("Start");
+        navigation.navigate("Start");
         alert("See you soon!");
       });
   };
@@ -231,7 +239,7 @@ export default function Home(props) {
         />
         <IconButton
           icon="cog-outline"
-          onPress={() => props.navigation.navigate("Settings")}
+          onPress={() => navigation.navigate("Settings")}
           color="#3e1f0d"
           size={30}
           style={{ margin: 0 }}
@@ -251,7 +259,7 @@ export default function Home(props) {
             borderRadius: 50,
           }}
           onPress={() => {
-            props.navigation.navigate("ChangeDisplayPic", {
+            navigation.navigate("ChangeDisplayPic", {
               picture: userData ? userData.displayPicture : null,
             });
           }}
@@ -335,7 +343,7 @@ export default function Home(props) {
         {markerPressed ? (
           <PostViewMapFormat
             markerPost={markerPressed}
-            onPress={() => alert("homepage post onpress")}
+            onPress={() => navigation.navigate('OtherUser', {friend: markerPressed.user})}
           />
         ) : (
           <View />

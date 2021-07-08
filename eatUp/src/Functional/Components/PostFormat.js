@@ -18,9 +18,10 @@ import { Divider } from "react-native-elements";
 const PostFormat = ({ post, onPress }) => {
   var currentUser = firebase.auth().currentUser;
   const [userData, setUserData] = useState(null);
+  const [likePost, setLikePost] = useState(post.liked)
 
   const likeIcon = post.liked ? "heart" : "heart-outline";
-  const likeIconColor = post.liked ? "#2e64e5" : "#333";
+  const likeColor = post.liked ? "#2e64e5" : "#333";
 
   const wantToGoIcon = post.wantToGo ? "star-face" : "star-outline";
   const wantToGoColor = post.wantToGo ? "#2e64e5" : "#333";
@@ -30,13 +31,10 @@ const PostFormat = ({ post, onPress }) => {
 
   if (post.likes == 1) {
     likeText = "1 Like";
-    // update firebase
   } else if (post.likes > 1) {
     likeText = post.likes + " Likes";
-    // update firebase
   } else {
-    likeText = "Like";
-    //update firebase
+    likeText= "Like";
   }
 
   if (post.comments == 1) {
@@ -153,7 +151,7 @@ const PostFormat = ({ post, onPress }) => {
         <IconButton
           icon={likeIcon}
           size={20}
-          color={likeIconColor}
+          color={likeColor}
           onPress={() => onLikePost(currentUser.displayName, post.id)}
         />
         <Text style={styles.statusText}>{likeText}</Text>

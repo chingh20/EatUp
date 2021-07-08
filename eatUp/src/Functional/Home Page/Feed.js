@@ -70,7 +70,7 @@ const Feed = (props) => {
 
                       list.push({
                       id: doc.id,
-                      user,
+                      user: user,
                       postPhoto,
                       postTag,
                       postDescription,
@@ -122,7 +122,7 @@ const Feed = (props) => {
             renderItem={({item}) => (
                <PostFormat
                  post={item}
-                 onPress={() => alert('to add navigation to other profiles')}
+                 onPress={() => props.navigation.navigate('OtherUser',{friend: item.user})}
                />
             )}
             keyExtractor={(item) => item.id}

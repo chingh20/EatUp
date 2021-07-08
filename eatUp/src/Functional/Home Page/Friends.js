@@ -16,7 +16,7 @@ import {firebase} from '../../firebase/config'
 import { StatusBar } from 'expo-status-bar'
 
 
-export default function Friends () {
+export default function Friends ({navigation}) {
     var user = firebase.auth().currentUser
     var userDisplayName = user.displayName
 
@@ -54,7 +54,7 @@ export default function Friends () {
     return (
     <SafeAreaView style={styles.container}>
 
-    <FriendSearch array={userFriendArray? userFriendArray.friends: []} />
+    <FriendSearch navigation={navigation} array={userFriendArray? userFriendArray.friends: []} />
 
      </SafeAreaView>
     );

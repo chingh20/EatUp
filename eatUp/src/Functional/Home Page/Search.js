@@ -11,7 +11,7 @@ const Search = ({navigation}) => {
      <Text> Search all other users! </Text>
      </View>
      <View style={styles.container}>
-     <SearchBar />
+     <SearchBar navigation={navigation} />
      </View>
 </SafeAreaView>
   );

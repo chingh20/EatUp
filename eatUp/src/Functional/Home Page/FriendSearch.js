@@ -4,7 +4,7 @@ import { firebase } from '../../firebase/config';
 import FriendListFormat from '../Components/FriendListFormat'
 
 
-export default function FriendSearch({array,navigation}) {
+export default function FriendSearch({array, navigation}) {
 
     var user = firebase.auth().currentUser
     var userDisplayName = user.displayName
@@ -22,10 +22,6 @@ export default function FriendSearch({array,navigation}) {
           }
     }
 
-    const onPressed = (otherUser) => {
-  //  navigation.navigate('OtherUser', {user: otherUser})
-    setUserFriends(array)
-    }
 
     return (
         <View>
@@ -39,8 +35,7 @@ export default function FriendSearch({array,navigation}) {
                 renderItem={({ item }) => (
                 <FriendListFormat
                 friends={item}
-                onPress = {(item) => onPressed(item)}
-                />
+                navigation= {navigation}/>
                 )}
                 keyExtractor={(item) => item}
             />
