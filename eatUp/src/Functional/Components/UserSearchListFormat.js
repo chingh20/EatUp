@@ -15,7 +15,7 @@ import { IconButton } from 'react-native-paper';
 import { firebase } from '../../firebase/config';
 import { Divider } from 'react-native-elements'
 
-const UserSearchListFormat = ({users, onPress}) => {
+const UserSearchListFormat = ({ users, onPress}) => {
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendList = firebase.firestore().collection('users').doc(currentUsername)
 
