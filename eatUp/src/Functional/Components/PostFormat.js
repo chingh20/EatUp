@@ -18,16 +18,28 @@ import { Divider } from "react-native-elements";
 const PostFormat = ({ post, onPress }) => {
   var currentUser = firebase.auth().currentUser;
   const [userData, setUserData] = useState(null);
-  const [likePost, setLikePost] = useState(post.liked)
+  const [likePost, setLikePost] = useState(post.liked);
+  const [likeIcon, setLikeIcon] = useState(post.liked ? "heart" : "heart-outline");
+  const [likeColor, setLikeColor] = useState(post.liked ? "#2e64e5" : "#333");
+  const [wantToGo, setWantToGo] = useState(post.wantToGo);
+  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star-face" : "star-outline");
+  const [wantToGoColor, setWantToGoColor] = useState(post.wantToGo ? "#2e64e5" : "#333");
 
-  const likeIcon = post.liked ? "heart" : "heart-outline";
-  const likeColor = post.liked ? "#2e64e5" : "#333";
 
-  const wantToGoIcon = post.wantToGo ? "star-face" : "star-outline";
-  const wantToGoColor = post.wantToGo ? "#2e64e5" : "#333";
+  useEffect(() => {
+  setLikeIcon(likePost ? "heart" : "heart-outline");
+  setLikeColor(likePost ? "#2e64e5" : "#333");
+  }, [likePost])
+
+  useEffect(() => {
+  setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
+  setWantToGoColor( wantToGo? "#2e64e5" : "#333");
+  }, [wantToGo])
+
 
   var likeText = "";
   var commentText = "";
+
 
   if (post.likes == 1) {
     likeText = "1 Like";
@@ -64,13 +76,13 @@ const PostFormat = ({ post, onPress }) => {
   const onLikePost = (currentUsername, postId) => {
     const targetPost = firebase.firestore().collection("Posts").doc(postId);
 
-    post.liked
+    likePost
       ? targetPost.update({
           likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        })
+        }) && setLikePost(false)
       : targetPost.update({
           likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        });
+        }) && setLikePost(true);
   };
 
   const onWantToGo = (currentUsername, postId) => {
@@ -80,7 +92,7 @@ const PostFormat = ({ post, onPress }) => {
       .collection("users")
       .doc(currentUsername);
 
-    post.wantToGo
+    wantToGo
       ? targetPost.update({
           wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         }) &&
@@ -88,13 +100,15 @@ const PostFormat = ({ post, onPress }) => {
           wantToGo: firebase.firestore.FieldValue.arrayRemove(
             post.postLocation
           ),
-        })
+        }) &&
+        setWantToGo(false)
       : targetPost.update({
           wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         }) &&
         userFoodList.update({
           wantToGo: firebase.firestore.FieldValue.arrayUnion(post.postLocation),
-        });
+        }) &&
+        setWantToGo(true);
   };
 
   useEffect(() => {

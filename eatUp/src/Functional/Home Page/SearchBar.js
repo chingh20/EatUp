@@ -54,8 +54,11 @@ export default function SearchBar({navigation}) {
         if (friends == null){
         alert('Viewing profile is only available after adding friend')
         return;}
+        if (item.username == username) {
+        navigation.navigate('Home')
+        return;}
         if (friends.includes(item.username)){
-           navigation.navigate('OtherUser', {friend: item.username})
+           navigation.navigate('OtherUser', {otherUser: item.username, otherUserFriendArray: friends})
            setUsers([])
         } else {
          alert('Viewing profile is only available after adding friend')

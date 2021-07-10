@@ -26,7 +26,8 @@ export default function OtherUser({navigation, route}) {
     const unsubscribe = navigation.addListener("focus", async () => {
       let person ='';
       if (route.params) {
-          person = route.params.friend;
+          person = route.params.otherUser;
+          setFriendArray(route.params.otherUserFriendArray);
       } else {
           person = firebase.auth().currentUser.displayName;
       }
@@ -54,6 +55,9 @@ export default function OtherUser({navigation, route}) {
   const [postMarkerFilter, setPostMarkerFilter] = useState(true);
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
   const [markerPressed, setMarkerPressed] = useState(null);
+  const [friendArray, setFriendArray] = useState(null);
+
+  const currentUser = firebase.auth().currentUser.displayName;
 
 
   const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
@@ -212,6 +216,21 @@ export default function OtherUser({navigation, route}) {
 
 
 
+  const onUserPressed = (markerPressed) => {
+          if (friendArray == null){
+          alert('Viewing profile is only available after adding friend')
+          return;}
+          if (markerPressed.user == currentUser) {
+          alert(currentUser)
+          navigation.navigate('Home')
+          return;
+          }
+          if (friendArray.includes(markerPressed.user)){
+             navigation.navigate('OtherUser', {otherUser: markerPressed.user, otherUserFriendArray: friendArray})
+          } else {
+           alert('Viewing profile is only available after adding friend')
+          }
+  }
 
   return (
     <SafeAreaView style={styles.homecontainer}>
@@ -322,7 +341,7 @@ export default function OtherUser({navigation, route}) {
         {markerPressed ? (
           <PostViewMapFormat
             markerPost={markerPressed}
-            onPress={() => navigation.navigate('Home', {friend: markerPressed.user})}
+            onPress={() =>onUserPressed(markerPressed)}
           />
         ) : (
           <View />
