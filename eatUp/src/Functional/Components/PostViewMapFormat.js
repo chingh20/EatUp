@@ -18,27 +18,40 @@ import { Divider } from "react-native-elements";
 const PostViewMapFormat = ({ markerPost, onPress }) => {
   var currentUser = firebase.auth().currentUser;
   const [postUserData, setPostUserData] = useState(null);
+  const [likePost, setLikePost] = useState(markerPost.liked);
+  const [likeIcon, setLikeIcon] = useState(markerPost.liked ? "heart" : "heart-outline");
+  const [likeColor, setLikeColor] = useState(markerPost.liked ? "#2e64e5" : "#333");
+  const [wantToGo, setWantToGo] = useState(markerPost.wantToGo);
+  const [wantToGoIcon, setWantToGoIcon] = useState(markerPost.wantToGo ? "star-face" : "star-outline");
+  const [wantToGoColor, setWantToGoColor] = useState(markerPost.wantToGo ? "#2e64e5" : "#333");
+  const [likes, setLikes] = useState(markerPost.likes);
+  const [likeText, setLikeText] = useState('')
 
-  const likeIcon = markerPost.liked ? "heart" : "heart-outline";
-  const likeIconColor = markerPost.liked ? "#2e64e5" : "#333";
+  useEffect(() => {
+  setLikeIcon(likePost ? "heart" : "heart-outline");
+  setLikeColor(likePost ? "#2e64e5" : "#333");
+  setLikeText(showLikes(likes));
+  }, [likePost])
 
-  const wantToGoIcon = markerPost.wantToGo ? "star-face" : "star-outline";
-  const wantToGoColor = markerPost.wantToGo ? "#2e64e5" : "#333";
+  useEffect(() => {
+  setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
+  setWantToGoColor( wantToGo? "#2e64e5" : "#333");
+  }, [wantToGo])
 
-  var likeText = "";
+
+
+  function showLikes(likes) {
+        if (likes == 1) {
+          return "1 Like";
+        } else if (likes > 1) {
+          return likes + " Likes";
+        } else {
+          return "Like";
+        }
+    }
+
+
   var commentText = "";
-
-  if (markerPost.likes == 1) {
-    likeText = "1 Like";
-    // update firebase
-  } else if (markerPost.likes > 1) {
-    likeText = markerPost.likes + " Likes";
-    // update firebase
-  } else {
-    likeText = "Like";
-    //update firebase
-  }
-
   if (markerPost.comments == 1) {
     commentText = "1 Comment";
   } else if (markerPost.comments > 1) {
@@ -63,18 +76,30 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
       });
   };
 
-  const onLikePost = (currentUsername, postId) => {
-    const targetPost = firebase.firestore().collection("Posts").doc(postId);
-
-    markerPost.liked
-      ? targetPost.update({
-          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        })
-      : targetPost.update({
-          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        });
-  };
-
+ // writing to other user's docs??
+   const onLikePost = (currentUsername, postUser, postId) => {
+     const targetPublicPost = firebase.firestore().collection("Posts").doc(postId);
+     const targetPrivatePost = firebase.firestore().collection(postUser).doc(postId);
+     if (likePost) {
+            targetPublicPost.update({
+               likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+             })
+            targetPrivatePost.update({
+                likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+            })
+            setLikes(likes - 1)
+            setLikePost(false)
+     } else {
+            targetPublicPost.update({
+                likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+            })
+            targetPrivatePost.update({
+               likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+            })
+            setLikes(likes + 1)
+            setLikePost(true)
+     }
+}
   const onWantToGo = (currentUsername, postId) => {
     const targetPost = firebase.firestore().collection("Posts").doc(postId);
     const userFoodList = firebase
@@ -90,17 +115,23 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
           wantToGo: firebase.firestore.FieldValue.arrayRemove(
             markerPost.postLocation
           ),
-        })
+        }) &&
+        setWantToGo(false)
       : targetPost.update({
           wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         }) &&
         userFoodList.update({
           wantToGo: firebase.firestore.FieldValue.arrayUnion(markerPost.postLocation),
-        });
+        }) &&
+        setWantToGo(true);
   };
 
   useEffect(() => {
     getUser();
+    setLikePost(markerPost.liked);
+    setWantToGo(markerPost.wantToGo);
+    setLikes(markerPost.likes);
+    setLikeText(showLikes(markerPost.likes));
   }, [markerPost]);
 
   return (
@@ -153,8 +184,8 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
         <IconButton
           icon={likeIcon}
           size={20}
-          color={likeIconColor}
-          onPress={() => onLikePost(currentUser.displayName, markerPost.id)}
+          color={likeColor}
+          onPress={() => onLikePost(currentUser.displayName, markerPost.user, markerPost.id)}
         />
         <Text style={styles.statusText}>{likeText}</Text>
 
