@@ -7,6 +7,7 @@ export default function SearchBar({navigation}) {
 
     const [users, setUsers] = useState([]);
     const [userData, setUserData] = useState(null);
+    const [userFriendNetwork, setUserFriendNetwork] = useState(null);
     const username = firebase.auth().currentUser.displayName;
 
     const fetchUsers = (search) => {
@@ -29,10 +30,6 @@ export default function SearchBar({navigation}) {
     }
     }
 
-    useEffect(() => {
-        getUserDetails();
-    }, []);
-
       const getUserDetails = async () => {
         await firebase
           .firestore()
@@ -49,11 +46,24 @@ export default function SearchBar({navigation}) {
           });
       };
 
+      const getUserFriendNetwork = async () => {
+        await firebase
+          .firestore()
+          .collection("FriendNetwork")
+          .doc(username)
+          .get()
+          .then((documentSnapshot) => {
+            if (documentSnapshot.exists) {
+              setUserFriendNetwork(documentSnapshot.data());
+            }
+          })
+          .catch((e) => {
+            alert(e);
+          });
+      };
+
     const onPressed = (item) => {
-        const friends = userData ? userData.friends : null;
-        if (friends == null){
-        alert('Viewing profile is only available after adding friend')
-        return;}
+        const friends = userFriendNetwork ? userFriendNetwork.friends : [];
         if (item.username == username) {
         navigation.navigate('Home')
         return;}
@@ -64,6 +74,14 @@ export default function SearchBar({navigation}) {
          alert('Viewing profile is only available after adding friend')
         }
     }
+
+    useEffect(() => {
+        getUserDetails();
+    }, []);
+
+    useEffect(() => {
+        getUserFriendNetwork();
+    }, []);
 
     return (
         <View>
