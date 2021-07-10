@@ -17,14 +17,14 @@ import { Divider } from 'react-native-elements'
 
 const UserSearchListFormat = ({ users, onPress}) => {
   var currentUsername = firebase.auth().currentUser.displayName;
-  const userFriendList = firebase.firestore().collection('users').doc(currentUsername)
+  const friendNetwork = firebase.firestore().collection('FriendNetwork')
 
   const [userFriendArray, setUserFriendArray] = useState();
 
   const fetchUserFriendArray = async () => {
 
               await firebase.firestore()
-                .collection('users')
+                .collection('FriendNetwork')
                 .doc(currentUsername)
                 .get()
                 .then((documentSnapshot) => {
@@ -46,9 +46,16 @@ const UserSearchListFormat = ({ users, onPress}) => {
 
 
 
-  const onAddFriendPressed = () => {
-        userFriendList.update({friends: firebase.firestore.FieldValue.arrayUnion(users.username)})
-        alert("You have followed " + users.username + "!")
+  const onRequestAddFriendPressed = () => {
+        friendNetwork.doc(users.username).update({friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUsername)})
+        friendNetwork.doc(currentUsername).update({requesting: firebase.firestore.FieldValue.arrayUnion(users.username)})
+        alert("You have requested to follow " + users.username + "!")
+  }
+
+  const onRemoveRequestPressed = () => {
+        friendNetwork.doc(users.username).update({friendRequests: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
+        friendNetwork.doc(currentUsername).update({requesting: firebase.firestore.FieldValue.arrayRemove(users.username)})
+        alert("You have cancelled your request to follow " + users.username + "!")
   }
 
   return (
@@ -75,8 +82,12 @@ const UserSearchListFormat = ({ users, onPress}) => {
         (!userFriendArray.friends.includes(users.username) && currentUsername != users.username ? (
                    <IconButton icon="account-plus-outline"
                                        size={20}
-                                       onPress={onAddFriendPressed}/>
-               ) : null)
+                                       onPress={onRequestAddFriendPressed}/>
+               ) : (userFriendArray.requesting.includes(users.username) && currentUsername != users.username ? (
+                                     <IconButton icon="bell-remove"
+                                                         size={20}
+                                                         onPress={onRemoveRequestPressed}/>
+               ) : null))
         ) : null}
     </View>
   );

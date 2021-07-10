@@ -61,10 +61,10 @@ const Login = ({ navigation }) => {
           alert("Email address is not valid.");
           return;
         } else if (errorCode == "auth/user-not-found") {
-          alert("No user corresponds to the given email.");
+          alert("You have entered an invalid username or password!");
           return;
         } else if (errorCode == "auth/wrong-password") {
-          alert("Wrong password.");
+          alert("You have entered an invalid username or password!");
           return;
         } else {
           alert(errorMessage);

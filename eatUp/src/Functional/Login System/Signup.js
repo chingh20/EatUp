@@ -86,22 +86,31 @@ const Signup = ({ navigation }) => {
           var errorCode = error.code;
           var errorMessage = error.message;
           if (errorCode == "auth/weak-password") {
-            alert("The password is too weak.");
+            alert("The password is too weak!");
             return;
           } else if (errorCode == "auth/email-already-in-use") {
-            alert("An account with this email already exists.");
+            alert("Choose another e-mail address!");
             return;
           } else if (errorCode == "auth/invalid-email") {
-            alert("Email address is not valid.");
+            alert("Email address is not valid!");
             return;
           } else {
             alert(errorMessage);
           }
         });
     } else {
-      alert("Username has already been taken!");
+      alert("Choose another username!");
     }
   };
+
+  const friendNetworkFields = {
+     friends: [],
+     friendRequests: [],
+     requesting: [],
+  };
+
+   firebase.firestore().collection("FriendNetwork").doc(username.value).set(friendNetworkFields);
+
 
   return (
     <SafeAreaView style={styles.container}>

@@ -215,7 +215,21 @@ export default function Home({navigation, route}) {
   }, []);
 
 
-
+  const onUserPressed = (markerPressed) => {
+          const friends = userData ? userData.friends : null;
+          if (friends == null){
+          alert('Viewing profile is only available after adding friend');
+          return;}
+          if (markerPressed.user == username) {
+          navigation.navigate('Home');
+          return;
+          }
+          if (friends.includes(markerPressed.user)){
+             navigation.navigate('OtherUser', {otherUser: markerPressed.user, otherUserFriendArray: friends})
+          } else {
+           alert('Viewing profile is only available after adding friend');
+          }
+  }
 
   const LogoutUser = () => {
     firebase
@@ -343,7 +357,7 @@ export default function Home({navigation, route}) {
         {markerPressed ? (
           <PostViewMapFormat
             markerPost={markerPressed}
-            onPress={() => navigation.navigate('OtherUser', {friend: markerPressed.user})}
+            onPress={() => onUserPressed(markerPressed)}
           />
         ) : (
           <View />

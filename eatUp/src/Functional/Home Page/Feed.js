@@ -19,13 +19,13 @@ import { StatusBar } from 'expo-status-bar';
 
 
 const Feed = (props) => {
-  var user = firebase.auth().currentUser
-  var username = user.displayName
+  var username = firebase.auth().currentUser.displayName
 
   React.useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', () => {
         alert('Refreshed');
         fetchPost();
+        getUserDetails();
       });
       return unsubscribe;
     }, [props.navigation]);
@@ -43,6 +43,23 @@ const Feed = (props) => {
 
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState([]);
+  const [userData, setUserData] = useState(null);
+
+  const getUserDetails = async () => {
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(username)
+      .get()
+      .then((documentSnapshot) => {
+        if (documentSnapshot.exists) {
+          setUserData(documentSnapshot.data());
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
 
   const fetchPost = async () => {
           try {
@@ -104,6 +121,26 @@ const Feed = (props) => {
           } , []
       )
 
+      useEffect(() => {getUserDetails()},[])
+
+       const onUserPressed = (item) => {
+               let friendArray = userData? userData.friends : null;
+               if (friendArray == null){
+                  alert('Viewing profile is only available after adding friend')
+               return;}
+               if (item.user === username) {
+                  props.navigation.navigate('Home');
+               return;
+               }
+
+               if (friendArray.includes(item.user)){
+               alert(item.user)
+                  props.navigation.navigate('OtherUser', {otherUser: item.user, otherUserFriendArray: friendArray})
+               } else {
+                  alert('Viewing profile is only available after adding friend')
+               }
+       }
+
       const listHeader = () => {
         return null;
       }
@@ -122,7 +159,7 @@ const Feed = (props) => {
             renderItem={({item}) => (
                <PostFormat
                  post={item}
-                 onPress={() => props.navigation.navigate('OtherUser',{friend: item.user})}
+                 onPress={() => onUserPressed(item)}
                />
             )}
             keyExtractor={(item) => item.id}

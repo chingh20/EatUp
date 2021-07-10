@@ -16,10 +16,11 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const FriendListFormat = ({friends, navigation}) => {
+const FriendListFormat = ({friends, navigation, friendArray}) => {
 
   var currentUsername = firebase.auth().currentUser.displayName;
-  const userFriendList = firebase.firestore().collection('users').doc(currentUsername)
+  const userFriendList = firebase.firestore().collection('FriendNetwork').doc(currentUsername)
+  const targetFriendList = firebase.firestore().collection('FriendNetwork').doc(friends)
 
   const [userFriendData, setUserFriendData] = useState();
 
@@ -54,14 +55,20 @@ const unfriend = () => {
             style: "cancel"
           },
           { text: "Yes",
-            onPress: () => userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)}) }
+            onPress: () => userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)})
+                           &&
+                           targetFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(currentUsername)})}
         ]
       );
   }
 
-  const onUnfriendPressed = () => {
-        userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)})
-        alert("You have unfollowed " + friends + "!")
+
+  const onUsernamePressed = (friends) => {
+        if(currentUsername == friends) {
+        navigation.navigate('Home')
+        } else {
+        navigation.navigate('OtherUser', {otherUser: friends, otherUserFriendArray: friendArray})
+        }
   }
 
 
@@ -77,7 +84,7 @@ const unfriend = () => {
               }}
         />
         <View style={styles.friendInfoText}>
-          <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('OtherUser', {friend: friends})}>
+          <TouchableOpacity style = {styles.button} onPress={() => onUsernamePressed(friends)}>
             <Text style={styles.friendName}>
               {userFriendData ? userFriendData.username || 'Test' : 'Test'}
             </Text>

@@ -25,7 +25,7 @@ export default function Friends ({navigation}) {
   const fetchUserFriendArray = async () => {
 
             await firebase.firestore()
-              .collection('users')
+              .collection('FriendNetwork')
               .doc(userDisplayName)
               .get()
               .then((documentSnapshot) => {
@@ -47,9 +47,6 @@ export default function Friends ({navigation}) {
           } , []
       )
 
-      const listHeader = () => {
-        return null;
-      }
 
     return (
     <SafeAreaView style={styles.container}>

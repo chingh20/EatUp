@@ -17,7 +17,7 @@ import { Divider } from "react-native-elements";
 
 const PostViewMapFormat = ({ markerPost, onPress }) => {
   var currentUser = firebase.auth().currentUser;
-  const [userData, setUserData] = useState(null);
+  const [postUserData, setPostUserData] = useState(null);
 
   const likeIcon = markerPost.liked ? "heart" : "heart-outline";
   const likeIconColor = markerPost.liked ? "#2e64e5" : "#333";
@@ -55,7 +55,7 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
       .get()
       .then((documentSnapshot) => {
         if (documentSnapshot.exists) {
-          setUserData(documentSnapshot.data());
+          setPostUserData(documentSnapshot.data());
         }
       })
       .catch((error) => {
@@ -101,7 +101,7 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [markerPost]);
 
   return (
     <View style={styles.postContainer} key={markerPost.id}>
@@ -121,8 +121,8 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
         <Image
           style={styles.userImage}
           source={{
-            uri: userData
-              ? userData.displayPicture ||
+            uri: postUserData
+              ? postUserData.displayPicture ||
                 "https://reactnative.dev/img/tiny_logo.png"
               : "https://reactnative.dev/img/tiny_logo.png",
           }}
@@ -130,7 +130,7 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
         <View style={styles.userInfoText}>
           <TouchableOpacity onPress={onPress}>
             <Text style={styles.userName}>
-              {userData ? userData.username || "Test" : "Test"}
+              {postUserData ? postUserData.username || "Test" : "Test"}
             </Text>
           </TouchableOpacity>
           <Text style={styles.time}>
