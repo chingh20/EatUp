@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
+  Alert,
   Image,
   Text,
   TouchableOpacity,
@@ -11,7 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import { IconButton } from "react-native-paper";
-import { firebase } from "../../firebase/config";
+import { firebase, storage } from "../../firebase/config";
 import moment from "moment";
 import { Divider } from "react-native-elements";
 
@@ -24,7 +25,7 @@ const PostFormat = ({ post, onPress }) => {
   const [wantToGo, setWantToGo] = useState(post.wantToGo);
   const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star-face" : "star-outline");
   const [wantToGoColor, setWantToGoColor] = useState(post.wantToGo ? "#2e64e5" : "#333");
-
+  const [likes, setLikes] = useState(post.likes);
 
   useEffect(() => {
   setLikeIcon(likePost ? "heart" : "heart-outline");
@@ -36,15 +37,13 @@ const PostFormat = ({ post, onPress }) => {
   setWantToGoColor( wantToGo? "#2e64e5" : "#333");
   }, [wantToGo])
 
-
   var likeText = "";
   var commentText = "";
 
-
-  if (post.likes == 1) {
+  if (likes == 1) {
     likeText = "1 Like";
-  } else if (post.likes > 1) {
-    likeText = post.likes + " Likes";
+  } else if (likes > 1) {
+    likeText = likes + " Likes";
   } else {
     likeText= "Like";
   }
@@ -55,6 +54,25 @@ const PostFormat = ({ post, onPress }) => {
     commentText = post.comments + " Comments";
   } else {
     commentText = "Comment";
+  }
+
+  function likeTextUpdate(liked) {
+  alert('function')
+    if (liked) {
+        if (post.likes == 0) {
+            setLikeText("1 Like");
+        } else {
+            setLikeText(post.likes + 1 + " Likes");
+        }
+    } else {
+        if (post.likes == 2) {
+          setLikeText("1 Like");
+        } else if (post.likes > 2) {
+          setLikeText(post.likes - 1 + " Likes");
+        } else {
+          setLikeText("Like");
+        }
+    }
   }
 
   const getUser = async () => {
@@ -79,7 +97,9 @@ const PostFormat = ({ post, onPress }) => {
     likePost
       ? targetPost.update({
           likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        }) && setLikePost(false)
+        }) &&
+        setLikePost(false)
+
       : targetPost.update({
           likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         }) && setLikePost(true);
@@ -114,6 +134,31 @@ const PostFormat = ({ post, onPress }) => {
   useEffect(() => {
     getUser();
   }, []);
+
+  const onDeletePressed = (currentUsername, postId) => {
+   let imageName = currentUsername + "-" + postId;
+   Alert.alert(
+          "DELETE",
+          "Are you sure to delete this post?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "Yes",
+
+              onPress: () => storage.ref()
+                                    .child(`postPhotos/${imageName}`)
+                                    .delete()
+                                    .then(() => { firebase.firestore().collection("Posts").doc(postId).delete()
+                                                  &&
+                                                  firebase.firestore().collection(currentUsername).doc(postId).delete() })
+                                    .catch((error) => { alert(error)
+                                    alert('Delete unsuccessful!')})
+            }
+          ])
+ }
 
   return (
     <View style={styles.postContainer} key={post.id}>
@@ -190,7 +235,7 @@ const PostFormat = ({ post, onPress }) => {
           <IconButton
             icon="delete"
             size={20}
-            onPress={() => alert("delete feature to be added!")}
+            onPress={() => onDeletePressed(currentUser.displayName, post.id)}
           />
         ) : null}
       </View>

@@ -41,6 +41,7 @@ export default function Home({navigation, route}) {
   };
 
   const [userData, setUserData] = useState(null);
+  const [userFriendNetwork, setUserFriendNetwork] = useState(null);
   const [wantToGo, setWantToGo] = useState(null);
   const [postPlaces, setPostPlaces] = useState(null);
   const [starMarkerFilter, setStarMarkerFilter] = useState(true);
@@ -90,6 +91,22 @@ export default function Home({navigation, route}) {
       .then((documentSnapshot) => {
         if (documentSnapshot.exists) {
           setUserData(documentSnapshot.data());
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+
+  const getUserFriendNetwork = async () => {
+    await firebase
+      .firestore()
+      .collection("FriendNetwork")
+      .doc(username)
+      .get()
+      .then((documentSnapshot) => {
+        if (documentSnapshot.exists) {
+          setUserFriendNetwork(documentSnapshot.data());
         }
       })
       .catch((e) => {
@@ -207,6 +224,10 @@ export default function Home({navigation, route}) {
   }, []);
 
   useEffect(() => {
+    getUserFriendNetwork();
+  }, []);
+
+  useEffect(() => {
     WantToGoPlace();
   }, []);
 
@@ -216,13 +237,9 @@ export default function Home({navigation, route}) {
 
 
   const onUserPressed = (markerPressed) => {
-          const friends = userData ? userData.friends : null;
-          if (friends == null){
-          alert('Viewing profile is only available after adding friend');
-          return;}
+          const friends = userFriendNetwork ? userFriendNetwork.friends : null;
           if (markerPressed.user == username) {
           navigation.navigate('Home');
-          return;
           }
           if (friends.includes(markerPressed.user)){
              navigation.navigate('OtherUser', {otherUser: markerPressed.user, otherUserFriendArray: friends})

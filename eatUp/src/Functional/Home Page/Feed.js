@@ -44,6 +44,23 @@ const Feed = (props) => {
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [userFriendNetwork, setUserFriendNetwork] = useState(null);
+
+  const getUserFriendNetwork = async () => {
+    await firebase
+      .firestore()
+      .collection("FriendNetwork")
+      .doc(username)
+      .get()
+      .then((documentSnapshot) => {
+        if (documentSnapshot.exists) {
+          setUserFriendNetwork(documentSnapshot.data());
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
 
   const getUserDetails = async () => {
     await firebase
@@ -121,19 +138,20 @@ const Feed = (props) => {
           } , []
       )
 
+      useEffect(() =>
+         {
+          getUserFriendNetwork();
+          } , []
+      )
+
       useEffect(() => {getUserDetails()},[])
 
        const onUserPressed = (item) => {
-               let friendArray = userData? userData.friends : null;
-               if (friendArray == null){
-                  alert('Viewing profile is only available after adding friend')
-               return;}
-               if (item.user === username) {
+               const friendArray = userFriendNetwork? userFriendNetwork.friends : [];
+               if (item.user == username) {
                   props.navigation.navigate('Home');
-               return;
                }
-
-               if (friendArray.includes(item.user)){
+               else if (friendArray.includes(item.user)){
                alert(item.user)
                   props.navigation.navigate('OtherUser', {otherUser: item.user, otherUserFriendArray: friendArray})
                } else {
