@@ -144,9 +144,9 @@ export default function OtherUser({navigation, route}) {
               postLocation,
               postGeoCoordinates,
               timestamp: timestamp,
-              liked: likes.includes(person),
+              liked: likes.includes(currentUser),
               likes: likes.length,
-              wantToGo: wantToGo.includes(person),
+              wantToGo: wantToGo.includes(currentUser),
               wantToGoCount: wantToGo.length,
               comments,
             });
@@ -196,9 +196,9 @@ export default function OtherUser({navigation, route}) {
               postLocation,
               postGeoCoordinates,
               timestamp: timestamp,
-              liked: likes.includes(person),
+              liked: likes.includes(currentUser),
               likes: likes.length,
-              wantToGo: wantToGo.includes(person),
+              wantToGo: wantToGo.includes(currentUser),
               wantToGoCount: wantToGo.length,
               comments,
             });

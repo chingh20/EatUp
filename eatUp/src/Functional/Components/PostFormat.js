@@ -26,26 +26,35 @@ const PostFormat = ({ post, onPress }) => {
   const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star-face" : "star-outline");
   const [wantToGoColor, setWantToGoColor] = useState(post.wantToGo ? "#2e64e5" : "#333");
   const [likes, setLikes] = useState(post.likes);
+  const [likeText, setLikeText] = useState('')
 
   useEffect(() => {
   setLikeIcon(likePost ? "heart" : "heart-outline");
   setLikeColor(likePost ? "#2e64e5" : "#333");
+  setLikeText(showLikes(likes))
   }, [likePost])
+
+//  useEffect(() => {
+//    setLikeText(showLikes(likes))
+//  }, [likes])
+
+
 
   useEffect(() => {
   setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
   setWantToGoColor( wantToGo? "#2e64e5" : "#333");
   }, [wantToGo])
 
-  var likeText = "";
   var commentText = "";
 
-  if (likes == 1) {
-    likeText = "1 Like";
-  } else if (likes > 1) {
-    likeText = likes + " Likes";
-  } else {
-    likeText= "Like";
+  function showLikes(likes) {
+      if (likes == 1) {
+        return "1 Like";
+      } else if (likes > 1) {
+        return likes + " Likes";
+      } else {
+        return "Like";
+      }
   }
 
   if (post.comments == 1) {
@@ -54,25 +63,6 @@ const PostFormat = ({ post, onPress }) => {
     commentText = post.comments + " Comments";
   } else {
     commentText = "Comment";
-  }
-
-  function likeTextUpdate(liked) {
-  alert('function')
-    if (liked) {
-        if (post.likes == 0) {
-            setLikeText("1 Like");
-        } else {
-            setLikeText(post.likes + 1 + " Likes");
-        }
-    } else {
-        if (post.likes == 2) {
-          setLikeText("1 Like");
-        } else if (post.likes > 2) {
-          setLikeText(post.likes - 1 + " Likes");
-        } else {
-          setLikeText("Like");
-        }
-    }
   }
 
   const getUser = async () => {
@@ -90,19 +80,37 @@ const PostFormat = ({ post, onPress }) => {
         alert(error);
       });
   };
-
-  const onLikePost = (currentUsername, postId) => {
-    const targetPost = firebase.firestore().collection("Posts").doc(postId);
-
-    likePost
-      ? targetPost.update({
-          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        }) &&
-        setLikePost(false)
-
-      : targetPost.update({
-          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        }) && setLikePost(true);
+// writing to other user's docs??
+  const onLikePost = (currentUsername, postUser, postId) => {
+    const targetPublicPost = firebase.firestore().collection("Posts").doc(postId);
+    const targetPrivatePost = firebase.firestore().collection(postUser).doc(postId);
+    if (likePost) {
+           targetPublicPost.update({
+              likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+            })
+           targetPrivatePost.update({
+               likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+           })
+           setLikes(likes - 1)
+           setLikePost(false)
+    } else {
+           targetPublicPost.update({
+               likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+           })
+           targetPrivatePost.update({
+              likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+           })
+           setLikes(likes + 1)
+           setLikePost(true)
+    }
+//      ? targetPost.update({
+//          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+//        }) &&
+//        setLikes(postlikes - 1) &&
+//        setLikePost(false)
+//      : targetPost.update({
+//          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+//        })  && setLikePost(true);
   };
 
   const onWantToGo = (currentUsername, postId) => {
@@ -211,7 +219,7 @@ const PostFormat = ({ post, onPress }) => {
           icon={likeIcon}
           size={20}
           color={likeColor}
-          onPress={() => onLikePost(currentUser.displayName, post.id)}
+          onPress={() => onLikePost(currentUser.displayName,post.user, post.id)}
         />
         <Text style={styles.statusText}>{likeText}</Text>
 

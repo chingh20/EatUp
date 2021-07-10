@@ -28,6 +28,7 @@ export default function Home({navigation, route}) {
       getUserDetails();
       PostPlaces();
       WantToGoPlace();
+      setMarkerPressed(null);
     });
     return unsubscribe;
   }, [navigation]);
