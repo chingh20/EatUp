@@ -69,33 +69,51 @@ const UserSearchListFormat = ({ users, onPress }) => {
   };
 
   const onRequestAddFriendPressed = () => {
-    friendNetwork
-      .doc(users.username)
-      .update({
-        friendRequests:
-          firebase.firestore.FieldValue.arrayUnion(currentUsername),
-      });
-    friendNetwork
-      .doc(currentUsername)
-      .update({
-        requesting: firebase.firestore.FieldValue.arrayUnion(users.username),
-      });
+    friendNetwork.doc(users.username).update({
+      friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+    });
+    friendNetwork.doc(currentUsername).update({
+      requesting: firebase.firestore.FieldValue.arrayUnion(users.username),
+    });
     alert("You have requested to follow " + users.username + "!");
   };
 
   const onRemoveRequestPressed = () => {
-    friendNetwork
-      .doc(users.username)
-      .update({
-        friendRequests:
-          firebase.firestore.FieldValue.arrayRemove(currentUsername),
-      });
-    friendNetwork
-      .doc(currentUsername)
-      .update({
-        requesting: firebase.firestore.FieldValue.arrayRemove(users.username),
-      });
+    friendNetwork.doc(users.username).update({
+      friendRequests:
+        firebase.firestore.FieldValue.arrayRemove(currentUsername),
+    });
+    friendNetwork.doc(currentUsername).update({
+      requesting: firebase.firestore.FieldValue.arrayRemove(users.username),
+    });
     alert("You have cancelled your request to follow " + users.username + "!");
+  };
+
+  const unfriend = () => {
+    Alert.alert("UNFOLLOW?", "Unfollow " + friends + "?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Yes",
+        onPress: () =>
+          friendNetwork
+            .doc(currentUsername)
+            .update({
+              friends: firebase.firestore.FieldValue.arrayRemove(
+                users.username
+              ),
+            }) &&
+          friendNetwork
+            .doc(users.username)
+            .update({
+              friends:
+                firebase.firestore.FieldValue.arrayRemove(currentUsername),
+            }),
+      },
+    ]);
   };
 
   return (
@@ -133,17 +151,20 @@ const UserSearchListFormat = ({ users, onPress }) => {
             />
           </View>
         ) : userFriendArray.requesting.includes(users.username) ? (
-          <IconButton
-            icon="undo"
-            size={20}
-            onPress={onRemoveRequestPressed}
-          />
+          <IconButton icon="undo" size={20} onPress={onRemoveRequestPressed} />
         ) : !userFriendArray.friends.includes(users.username) &&
           currentUsername != users.username ? (
           <IconButton
             icon="account-plus-outline"
             size={20}
             onPress={onRequestAddFriendPressed}
+          />
+        ) : userFriendArray.friends.includes(users.username) &&
+          currentUsername != users.username ? (
+          <IconButton
+            icon="account-remove-outline"
+            size={20}
+            onPress={unfriend}
           />
         ) : null
       ) : null}

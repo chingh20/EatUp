@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native'
 import { firebase } from '../../firebase/config';
 import FriendListFormat from '../Components/FriendListFormat'
-import Request from './Request'
+
 
 
 export default function FriendSearch({array, navigation}) {
@@ -40,7 +40,6 @@ export default function FriendSearch({array, navigation}) {
                 friendArray = {array}/>
                 )}
                 keyExtractor={(item) => item}
-                ListFooterComponent={<Request />}
             />
         </View>
     )

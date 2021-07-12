@@ -17,6 +17,7 @@ import { Avatar } from "react-native-elements";
 import ChangeDisplayPic from "./ChangeDisplayPic";
 import GooglePlacesInput from "./googleMap";
 import defaultUserImage from "../../../assets/default-user-image.png";
+import FastFoodIcon from "../../../assets/FastFoodIcon.jpeg";
 import Search from "./Search";
 import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
@@ -259,6 +260,13 @@ export default function Home({navigation, route}) {
       });
   };
 
+  const markerIcon = (postTag) => {
+        if (postTag == "Fast Food") {
+        return FastFoodIcon
+        } else {
+        return null}
+  }
+
   return (
     <SafeAreaView style={styles.homecontainer}>
       <View style={styles.upper}>
@@ -324,8 +332,11 @@ export default function Home({navigation, route}) {
                     longitude: post.postGeoCoordinates.longitude,
                   }}
                 >
-                  <Callout tooltip style={{ width: 150 }}>
-                    <Text style={styles.name}>{post.postLocation}</Text>
+
+                  <Callout tooltip style={styles.calloutBox}>
+                  <Image style={{ width: 30, height:30 }} source={markerIcon(post.postTag)} />
+                    <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                    <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
                   </Callout>
                 </Marker>
               ))
@@ -341,9 +352,10 @@ export default function Home({navigation, route}) {
                 }}
                 onPress={() => onMarkerPressed(post)}
               >
-                <Callout style={{ width: 150 }}>
+                <Callout tooltip style={styles.calloutBox}>
                   <View>
-                    <Text style={styles.name}>{post.postLocation}</Text>
+                    <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                    <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
                   </View>
                 </Callout>
               </Marker>
@@ -434,14 +446,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  button: {
+  calloutBox: {
     width: 150,
-    marginTop: 30,
-    marginBottom: 10,
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ff5757",
-    padding: 15,
-    borderRadius: 50,
+    borderColor: "#3e1f0d",
+    borderWidth: 1,
+    backgroundColor: "#fffdf5",
+    padding: 10,
+    borderRadius: 20,
   },
+  tagTextCallout: {
+  fontSize: 12,
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: 'bold',
+  },
+
+  locationTextCallout: {
+  fontSize: 18,
+      alignItems: "center",
+      justifyContent: "center",
+  },
+
 });

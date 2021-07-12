@@ -203,8 +203,8 @@ export default function Post({ navigation, route }) {
     { key: index++, label: "Korean" },
     { key: index++, label: "Western" },
     { key: index++, label: "Fast Food" },
-    { key: index++, label: "Drinks"},
-    { key: index++, label: "Desserts"}
+    { key: index++, label: "Drinks" },
+    { key: index++, label: "Desserts" },
   ];
 
   return (
@@ -218,21 +218,22 @@ export default function Post({ navigation, route }) {
           keyboardShouldPersistTaps="always"
         >
           {image.value ? (
-            <View style={styles.container}>
+            <View style={styles.imageContainer}>
               <Image
                 source={{ uri: image.value }}
                 style={{ width: 300, height: 300 }}
               />
-
-              <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
-                <Text style={styles.nobtnText}> Choose Again </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.nobutton} onPress={takePicture}>
-                <Text style={styles.nobtnText}> Camera </Text>
-              </TouchableOpacity>
+              <View style={styles.retake}>
+                <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
+                  <Text style={styles.nobtnText}> Choose Again </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.nobutton} onPress={takePicture}>
+                  <Text style={styles.nobtnText}> Camera </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ) : (
-            <View style={styles.container}>
+            <View style={styles.imageContainer}>
               <TouchableOpacity style={styles.button} onPress={selectImage}>
                 <Text style={styles.btnText}> Pick from Gallery </Text>
               </TouchableOpacity>
@@ -242,7 +243,7 @@ export default function Post({ navigation, route }) {
               <Text style={styles.errorText}> {image.error}</Text>
             </View>
           )}
-          <View style={styles.container}>
+          <View style={styles.detailContainer}>
             <ModalSelector
               data={data}
               initValue="Select the type of food!"
@@ -300,11 +301,29 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   container: {
-    flex: 1,
+    flex: 2.5,
     backgroundColor: "#fffbf1",
     alignItems: "center",
     justifyContent: "center",
     marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  retake: {
+    flexDirection: "row",
+    backgroundColor: "#fffbf1",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imageContainer: {
+    flex: 1.5,
+    backgroundColor: "#fffbf1",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  detailContainer: {
+    flex: 1,
+    backgroundColor: "#fffbf1",
+    alignItems: "center",
+    justifyContent: "center",
   },
   textInput: {
     borderWidth: 1,
@@ -330,15 +349,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
   },
-  image: {
-    height: 250,
-    width: 350,
-    marginBottom: 10,
-  },
   nobutton: {
     color: "#3e1f0d",
     fontSize: 20,
-    marginTop: 30,
+    padding: 15,
     alignItems: "center",
     justifyContent: "center",
   },
