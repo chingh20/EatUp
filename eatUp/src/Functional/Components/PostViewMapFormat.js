@@ -19,45 +19,63 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
   var currentUser = firebase.auth().currentUser;
   const [postUserData, setPostUserData] = useState(null);
   const [likePost, setLikePost] = useState(markerPost.liked);
-  const [likeIcon, setLikeIcon] = useState(markerPost.liked ? "heart" : "heart-outline");
-  const [likeColor, setLikeColor] = useState(markerPost.liked ? "#2e64e5" : "#333");
-  const [wantToGo, setWantToGo] = useState(markerPost.wantToGo);
-  const [wantToGoIcon, setWantToGoIcon] = useState(markerPost.wantToGo ? "star-face" : "star-outline");
-  const [wantToGoColor, setWantToGoColor] = useState(markerPost.wantToGo ? "#2e64e5" : "#333");
+  const [likeIcon, setLikeIcon] = useState(
+    markerPost.liked ? "heart" : "heart-outline"
+  );
+  const [likeColor, setLikeColor] = useState(
+    markerPost.liked ? "#2e64e5" : "#333"
+  );
   const [likes, setLikes] = useState(markerPost.likes);
-  const [likeText, setLikeText] = useState('')
+  //const [likeText, setLikeText] = useState('')
+  const [wantToGo, setWantToGo] = useState(markerPost.wantToGo);
+  const [wantToGoIcon, setWantToGoIcon] = useState(
+    markerPost.wantToGo ? "star-face" : "star-outline"
+  );
+  const [wantToGoColor, setWantToGoColor] = useState(
+    markerPost.wantToGo ? "#2e64e5" : "#333"
+  );
+  const [wantToGos, setWantToGos] = useState(markerPost.wantToGoCount);
+  const [wantToGoText, setWantToGoText] = useState("");
 
   useEffect(() => {
-  setLikeIcon(likePost ? "heart" : "heart-outline");
-  setLikeColor(likePost ? "#2e64e5" : "#333");
-  setLikeText(showLikes(likes));
-  }, [likePost])
+    setLikeIcon(likePost ? "heart" : "heart-outline");
+    setLikeColor(likePost ? "#2e64e5" : "#333");
+    //setLikeText(showLikes(likes));
+  }, [likePost]);
 
   useEffect(() => {
-  setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
-  setWantToGoColor( wantToGo? "#2e64e5" : "#333");
-  }, [wantToGo])
+    setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
+    setWantToGoColor(wantToGo ? "#2e64e5" : "#333");
+    setWantToGoText(showWantToGos(wantToGos));
+  }, [wantToGo]);
 
+  //  function showLikes(likes) {
+  //        if (likes == 1) {
+  //          return "1";
+  //        } else if (likes > 1) {
+  //          return likes;
+  //        } else {
+  //          return "";
+  //        }
+  //  }
 
-
-  function showLikes(likes) {
-        if (likes == 1) {
-          return "1 Like";
-        } else if (likes > 1) {
-          return likes + " Likes";
-        } else {
-          return "Like";
-        }
+  function showWantToGos(wantToGos) {
+    if (wantToGos == 1) {
+      return 1 + " Wants To Go";
+    } else if (wantToGos > 1) {
+      return wantToGos + " Want To Go";
+    } else {
+      return "";
     }
-
+  }
 
   var commentText = "";
   if (markerPost.comments == 1) {
-    commentText = "1 Comment";
+    commentText = "1";
   } else if (markerPost.comments > 1) {
-    commentText = markerPost.comments + " Comments";
+    commentText = markerPost.comments;
   } else {
-    commentText = "Comment";
+    commentText = "";
   }
 
   const getUser = async () => {
@@ -76,132 +94,178 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
       });
   };
 
- // writing to other user's docs??
-   const onLikePost = (currentUsername, postUser, postId) => {
-     const targetPublicPost = firebase.firestore().collection("Posts").doc(postId);
-     const targetPrivatePost = firebase.firestore().collection(postUser).doc(postId);
-     if (likePost) {
-            targetPublicPost.update({
-               likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-             })
-            targetPrivatePost.update({
-                likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-            })
-            setLikes(likes - 1)
-            setLikePost(false)
-     } else {
-            targetPublicPost.update({
-                likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-            })
-            targetPrivatePost.update({
-               likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-            })
-            setLikes(likes + 1)
-            setLikePost(true)
-     }
-}
-  const onWantToGo = (currentUsername, postId) => {
-    const targetPost = firebase.firestore().collection("Posts").doc(postId);
+  const onLikePost = (currentUsername, postUser, postId) => {
+    const targetPublicPost = firebase
+      .firestore()
+      .collection("Posts")
+      .doc(postId);
+    const targetPrivatePost = firebase
+      .firestore()
+      .collection(postUser)
+      .doc(postId);
+    if (likePost) {
+      targetPublicPost.update({
+        likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+      });
+      targetPrivatePost.update({
+        likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+      });
+      setLikes(likes - 1);
+      setLikePost(false);
+    } else {
+      targetPublicPost.update({
+        likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+      });
+      targetPrivatePost.update({
+        likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+      });
+      setLikes(likes + 1);
+      setLikePost(true);
+    }
+  };
+
+  const onWantToGo = (currentUsername, postUser, postId, postLocation) => {
+    const targetPublicPost = firebase
+      .firestore()
+      .collection("Posts")
+      .doc(postId);
+    const targetPrivatePost = firebase
+      .firestore()
+      .collection(postUser)
+      .doc(postId);
     const userFoodList = firebase
       .firestore()
       .collection("users")
       .doc(currentUsername);
 
-    markerPost.wantToGo
-      ? targetPost.update({
-          wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        }) &&
-        userFoodList.update({
-          wantToGo: firebase.firestore.FieldValue.arrayRemove(
-            markerPost.postLocation
-          ),
-        }) &&
-        setWantToGo(false)
-      : targetPost.update({
-          wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        }) &&
-        userFoodList.update({
-          wantToGo: firebase.firestore.FieldValue.arrayUnion(markerPost.postLocation),
-        }) &&
-        setWantToGo(true);
+    if (wantToGo) {
+      targetPublicPost.update({
+        wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+      });
+      targetPrivatePost.update({
+        wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+      });
+      userFoodList.update({
+        wantToGo: firebase.firestore.FieldValue.arrayRemove(postLocation),
+      });
+      setWantToGos(wantToGos - 1);
+      setWantToGo(false);
+    } else {
+      targetPublicPost.update({
+        wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+      });
+      targetPrivatePost.update({
+        wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+      });
+      userFoodList.update({
+        wantToGo: firebase.firestore.FieldValue.arrayUnion(postLocation),
+      });
+      setWantToGos(wantToGos + 1);
+      setWantToGo(true);
+    }
   };
+
+const onDeletePressed = (currentUsername, postId, postPath) => {
+   Alert.alert(
+          "DELETE",
+          "Are you sure to delete this post?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "Yes",
+
+              onPress: () => firebase.storage().refFromURL(postPath)
+                                     .delete()
+                                     .then(() => { firebase.firestore().collection("Posts").doc(postId).delete()
+                                                  &&
+                                                  firebase.firestore().collection(currentUsername).doc(postId).delete() })
+                                     .catch((error) => { alert(error)
+                                     alert('Delete unsuccessful!')})
+            }
+          ])
+ }
 
   useEffect(() => {
     getUser();
     setLikePost(markerPost.liked);
     setWantToGo(markerPost.wantToGo);
     setLikes(markerPost.likes);
-    setLikeText(showLikes(markerPost.likes));
+    //  setLikeText(showLikes(markerPost.likes));
   }, [markerPost]);
 
   return (
-    <View style={styles.postContainer} key={markerPost.id}>
-    <View style={styles.imageView}>
-            {markerPost.postPhoto != null ? (
-              <Image style={styles.image} source={{ uri: markerPost.postPhoto }} />
-            ) : (
-              <Divider color="transparent" orientation="horizontal" width={2} />
-            )}
+   <View style={styles.container} key={markerPost.id}>
+    <View style={styles.postContainer}>
+      <View style={styles.imageView}>
+        {markerPost.postPhoto != null ? (
+          <Image style={styles.image} source={{ uri: markerPost.postPhoto }} />
+        ) : (
+          <Divider color="transparent" orientation="horizontal" width={2} />
+        )}
+      </View>
 
-            <Text style={styles.description}>{markerPost.postDescription}</Text>
-    </View>
+      <View style={styles.imageView}>
+        <View>
+          <View style={styles.userInfoContainer}>
+            <Image
+              style={styles.userImage}
+              source={{
+                uri: postUserData
+                  ? postUserData.displayPicture ||
+                    "https://reactnative.dev/img/tiny_logo.png"
+                  : "https://reactnative.dev/img/tiny_logo.png",
+              }}
+            />
+            <View style={styles.userInfoText}>
+              <TouchableOpacity onPress={onPress}>
+                <Text style={styles.userName}>
+                  {postUserData ? postUserData.username || "Test" : "Test"}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.time}>
+                {moment(markerPost.timestamp.toDate()).fromNow()}
+              </Text>
+            </View>
+          </View>
 
-    <View style= {styles.imageView}>
-      <View>
-      <View style={styles.userInfoContainer}>
-        <Image
-          style={styles.userImage}
-          source={{
-            uri: postUserData
-              ? postUserData.displayPicture ||
-                "https://reactnative.dev/img/tiny_logo.png"
-              : "https://reactnative.dev/img/tiny_logo.png",
-          }}
-        />
-        <View style={styles.userInfoText}>
-          <TouchableOpacity onPress={onPress}>
-            <Text style={styles.userName}>
-              {postUserData ? postUserData.username || "Test" : "Test"}
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.time}>
-            {moment(markerPost.timestamp.toDate()).fromNow()}
-          </Text>
+          <Text style={styles.description}>{markerPost.postDescription}</Text>
         </View>
       </View>
-
-      <View style={styles.tagContainer}>
-        <IconButton icon="tag-multiple" size={20} />
-        <Text style={styles.description}>{markerPost.postTag}</Text>
-      </View>
-
-      <View style={styles.tagContainer}>
-        <IconButton icon="flag-variant" size={20} />
-        <Text style={styles.description}>{markerPost.postLocation}</Text>
-      </View>
-
+ </View>
       <View style={styles.likeBar}>
+        <Text style={styles.statusText}>{likes}</Text>
         <IconButton
           icon={likeIcon}
           size={20}
           color={likeColor}
-          onPress={() => onLikePost(currentUser.displayName, markerPost.user, markerPost.id)}
+          onPress={() =>
+            onLikePost(currentUser.displayName, markerPost.user, markerPost.id)
+          }
         />
-        <Text style={styles.statusText}>{likeText}</Text>
 
+        <Text style={styles.statusText}>{commentText}</Text>
         <IconButton
           icon="comment"
           size={20}
           onPress={() => alert("comment to be added!")}
         />
-        <Text style={styles.statusText}>{commentText}</Text>
 
         {currentUser.displayName != markerPost.user ? (
           <IconButton
             icon={wantToGoIcon}
             size={20}
             color={wantToGoColor}
-            onPress={() => onWantToGo(currentUser.displayName, markerPost.id)}
+            onPress={() =>
+              onWantToGo(
+                currentUser.displayName,
+                markerPost.user,
+                markerPost.id,
+                markerPost.postLocation
+              )
+            }
           />
         ) : null}
 
@@ -209,19 +273,26 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
           <IconButton
             icon="delete"
             size={20}
-            onPress={() => alert("delete feature to be added!")}
+            onPress={() => onDeletePressed(currentUser.displayName, markerPost.id, markerPost.postPhoto)}
           />
         ) : null}
       </View>
-     </View>
-     </View>
-    </View>
+
+
+  </View>
   );
 };
 
 export default PostViewMapFormat;
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
+    borderRadius: 10,
+  },
   postContainer: {
     flexDirection: "row",
     flex: 1,
@@ -279,18 +350,17 @@ const styles = StyleSheet.create({
   likeBar: {
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "#ff5757",
-    borderRadius: 10,
-    width: '100%'
+    backgroundColor: "#fdf4da",
+    width: "100%",
   },
   statusText: {
-    color: "white",
+    color: "black",
     fontSize: 10,
     marginTop: 15,
-    marginRight: 15,
+    marginLeft: 15,
   },
   tagContainer: {
-    width: '100%',
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     padding: 1,

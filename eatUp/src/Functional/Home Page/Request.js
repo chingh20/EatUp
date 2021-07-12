@@ -4,44 +4,14 @@ import { firebase } from '../../firebase/config';
 import RequestFormat from '../Components/RequestFormat'
 
 
-export default function Request() {
-
-    var user = firebase.auth().currentUser
-    var userDisplayName = user.displayName
-
-    const [network, setNetwork] = useState(null)
-
-  const fetchUserFriendNetworkArray = async () => {
-
-            await firebase.firestore()
-              .collection('FriendNetwork')
-              .doc(userDisplayName)
-              .get()
-              .then((documentSnapshot) => {
-                 if (documentSnapshot.exists) {
-                    setNetwork(documentSnapshot.data());
-
-                 }
-              })
-              .catch((error) => {
-                 alert(error);
-              });
-
-      }
-
-
-      useEffect(() =>
-         {
-          fetchUserFriendNetworkArray();
-          } , []
-      )
+export default function Request({friendRequestsArray}) {
 
     return (
     <View>
     <Text> FRIEND REQUESTS! </Text>
 
      <FlatList
-                data={network ? network.friendRequests : null}
+                data={friendRequestsArray}
                 renderItem={({ item }) => (
                 <RequestFormat
                 requestFrom={item}

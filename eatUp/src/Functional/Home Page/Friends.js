@@ -14,6 +14,7 @@ import {
 import FriendSearch from './FriendSearch'
 import {firebase} from '../../firebase/config'
 import { StatusBar } from 'expo-status-bar'
+import Request from './Request'
 
 
 export default function Friends ({navigation}) {
@@ -50,8 +51,19 @@ export default function Friends ({navigation}) {
 
     return (
     <SafeAreaView style={styles.container}>
-
+    <View style={styles.friendContainer}>
     <FriendSearch navigation={navigation} array={userFriendArray? userFriendArray.friends: []} />
+    </View>
+
+
+    { userFriendArray
+    ? (userFriendArray.friendRequests.length > 0
+        ? (<View style={styles.requestContainer}>
+             <Request friendRequestsArray={userFriendArray.friendRequests}/>
+             </View>)
+        : null)
+    : null
+    }
 
      </SafeAreaView>
     );
@@ -59,19 +71,25 @@ export default function Friends ({navigation}) {
 
 }
 const styles = StyleSheet.create({
-     scroll: {
-       marginHorizontal: 20,
-       flexDirection: 'row',
-       alignItems: 'center',
-       justifyContent: 'center',
-       flexGrow: 1
-     },
      container: {
-       flex: 1,
+       flex: 3,
        backgroundColor: '#fffbf1',
        alignItems: 'center',
        justifyContent: 'center',
        marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+     },
+     friendContainer: {
+       flex: 2,
+       backgroundColor: '#fffbf1',
+       alignItems: 'center',
+       justifyContent: 'center',
+
+     },
+     requestContainer: {
+       flex: 1,
+       backgroundColor: '#fffbf1',
+       alignItems: 'center',
+       justifyContent: 'center',
 
      },
      textInput: {

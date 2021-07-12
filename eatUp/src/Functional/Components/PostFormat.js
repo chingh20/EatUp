@@ -22,27 +22,27 @@ const PostFormat = ({ post, onPress }) => {
   const [likePost, setLikePost] = useState(post.liked);
   const [likeIcon, setLikeIcon] = useState(post.liked ? "heart" : "heart-outline");
   const [likeColor, setLikeColor] = useState(post.liked ? "#2e64e5" : "#333");
+  const [likes, setLikes] = useState(post.likes);
+  const [likeText, setLikeText] = useState('');
   const [wantToGo, setWantToGo] = useState(post.wantToGo);
   const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star-face" : "star-outline");
   const [wantToGoColor, setWantToGoColor] = useState(post.wantToGo ? "#2e64e5" : "#333");
-  const [likes, setLikes] = useState(post.likes);
-  const [likeText, setLikeText] = useState('')
+  const [wantToGos, setWantToGos] = useState(post.wantToGoCount);
+  const [wantToGoText, setWantToGoText] = useState('');
+
 
   useEffect(() => {
   setLikeIcon(likePost ? "heart" : "heart-outline");
   setLikeColor(likePost ? "#2e64e5" : "#333");
-  setLikeText(showLikes(likes))
+  setLikeText(showLikes(likes));
   }, [likePost])
-
-//  useEffect(() => {
-//    setLikeText(showLikes(likes))
-//  }, [likes])
 
 
 
   useEffect(() => {
   setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
   setWantToGoColor( wantToGo? "#2e64e5" : "#333");
+  setWantToGoText(showWantToGos(wantToGos));
   }, [wantToGo])
 
   var commentText = "";
@@ -56,6 +56,17 @@ const PostFormat = ({ post, onPress }) => {
         return "Like";
       }
   }
+
+  function showWantToGos(wantToGos) {
+        if (wantToGos == 1) {
+          return 1 + " Wants To Go";
+        } else if (wantToGos > 1) {
+          return wantToGos + " Want To Go";
+        } else {
+          return "";
+        }
+  }
+
 
   if (post.comments == 1) {
     commentText = "1 Comment";
@@ -80,7 +91,7 @@ const PostFormat = ({ post, onPress }) => {
         alert(error);
       });
   };
-// writing to other user's docs??
+
   const onLikePost = (currentUsername, postUser, postId) => {
     const targetPublicPost = firebase.firestore().collection("Posts").doc(postId);
     const targetPrivatePost = firebase.firestore().collection(postUser).doc(postId);
@@ -103,48 +114,48 @@ const PostFormat = ({ post, onPress }) => {
            setLikes(likes + 1)
            setLikePost(true)
     }
-//      ? targetPost.update({
-//          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-//        }) &&
-//        setLikes(postlikes - 1) &&
-//        setLikePost(false)
-//      : targetPost.update({
-//          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-//        })  && setLikePost(true);
   };
 
-  const onWantToGo = (currentUsername, postId) => {
-    const targetPost = firebase.firestore().collection("Posts").doc(postId);
+  const onWantToGo = (currentUsername, postUser, postId, postLocation) => {
+    const targetPublicPost = firebase.firestore().collection("Posts").doc(postId);
+    const targetPrivatePost = firebase.firestore().collection(postUser).doc(postId);
     const userFoodList = firebase
       .firestore()
       .collection("users")
       .doc(currentUsername);
 
-    wantToGo
-      ? targetPost.update({
-          wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        }) &&
-        userFoodList.update({
-          wantToGo: firebase.firestore.FieldValue.arrayRemove(
-            post.postLocation
-          ),
-        }) &&
-        setWantToGo(false)
-      : targetPost.update({
-          wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        }) &&
-        userFoodList.update({
-          wantToGo: firebase.firestore.FieldValue.arrayUnion(post.postLocation),
-        }) &&
-        setWantToGo(true);
+    if (wantToGo) {
+           targetPublicPost.update({
+              wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+            })
+           targetPrivatePost.update({
+              wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+           })
+            userFoodList.update({
+              wantToGo: firebase.firestore.FieldValue.arrayRemove(postLocation),
+            })
+            setWantToGos(wantToGos - 1)
+            setWantToGo(false)
+    } else {
+            targetPublicPost.update({
+              wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+            })
+            targetPrivatePost.update({
+              wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+            })
+            userFoodList.update({
+              wantToGo: firebase.firestore.FieldValue.arrayUnion(postLocation),
+            })
+            setWantToGos(wantToGos + 1)
+            setWantToGo(true);
+    }
   };
 
   useEffect(() => {
     getUser();
   }, []);
 
-  const onDeletePressed = (currentUsername, postId) => {
-   let imageName = currentUsername + "-" + postId;
+  const onDeletePressed = (currentUsername, postId, postPath) => {
    Alert.alert(
           "DELETE",
           "Are you sure to delete this post?",
@@ -156,14 +167,13 @@ const PostFormat = ({ post, onPress }) => {
             },
             { text: "Yes",
 
-              onPress: () => storage.ref()
-                                    .child(`postPhotos/${imageName}`)
-                                    .delete()
-                                    .then(() => { firebase.firestore().collection("Posts").doc(postId).delete()
+              onPress: () => firebase.storage().refFromURL(postPath)
+                                     .delete()
+                                     .then(() => { firebase.firestore().collection("Posts").doc(postId).delete()
                                                   &&
                                                   firebase.firestore().collection(currentUsername).doc(postId).delete() })
-                                    .catch((error) => { alert(error)
-                                    alert('Delete unsuccessful!')})
+                                     .catch((error) => { alert(error)
+                                     alert('Delete unsuccessful!')})
             }
           ])
  }
@@ -219,7 +229,7 @@ const PostFormat = ({ post, onPress }) => {
           icon={likeIcon}
           size={20}
           color={likeColor}
-          onPress={() => onLikePost(currentUser.displayName,post.user, post.id)}
+          onPress={() => onLikePost(currentUser.displayName, post.user, post.id)}
         />
         <Text style={styles.statusText}>{likeText}</Text>
 
@@ -235,7 +245,7 @@ const PostFormat = ({ post, onPress }) => {
             icon={wantToGoIcon}
             size={20}
             color={wantToGoColor}
-            onPress={() => onWantToGo(currentUser.displayName, post.id)}
+            onPress={() => onWantToGo(currentUser.displayName, post.user, post.id, post.postLocation)}
           />
         ) : null}
 
@@ -243,9 +253,12 @@ const PostFormat = ({ post, onPress }) => {
           <IconButton
             icon="delete"
             size={20}
-            onPress={() => onDeletePressed(currentUser.displayName, post.id)}
+            onPress={() => onDeletePressed(currentUser.displayName, post.id, post.postPhoto)}
           />
         ) : null}
+      </View>
+      <View style={styles.wantToGoTextContainer}>
+        <Text style={styles.wantToGoDescription}>{wantToGoText}</Text>
       </View>
     </View>
   );
@@ -328,4 +341,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 25,
   },
+  wantToGoTextContainer: {
+   flexDirection: "row",
+   justifyContent: "center",
+   alignItems: "center",
+  },
+  wantToGoDescription: {
+     color: "#bc1824",
+     fontSize: 12,
+     fontWeight: 'bold',
+     padding: 15,
+     marginBottom: 5,
+    },
+
 });
