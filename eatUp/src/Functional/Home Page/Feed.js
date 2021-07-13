@@ -38,6 +38,9 @@ const Feed = (props) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+    alert('Refreshed');
+    fetchPost();
+    getUserDetails();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
@@ -112,6 +115,7 @@ const Feed = (props) => {
                       timestamp: timestamp,
                       liked: likes.includes(username),
                       likes: likes.length,
+                      wantToGoUsers: wantToGo,
                       wantToGo: wantToGo.includes(username),
                       wantToGoCount: wantToGo.length,
                       comments,

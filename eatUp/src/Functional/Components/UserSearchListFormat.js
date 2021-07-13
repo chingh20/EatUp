@@ -90,7 +90,7 @@ const UserSearchListFormat = ({ users, onPress }) => {
   };
 
   const unfriend = () => {
-    Alert.alert("UNFOLLOW?", "Unfollow " + friends + "?", [
+    Alert.alert("UNFOLLOW?", "Unfollow " + users + "?", [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),

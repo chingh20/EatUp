@@ -73,7 +73,7 @@ export default function Post({ navigation, route }) {
       .doc(username)
       .update({
         postLocations: firebase.firestore.FieldValue.arrayUnion(
-          post.geoCoordinates
+          id
         ),
       });
   };

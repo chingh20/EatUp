@@ -23,7 +23,7 @@ const RequestFormat = ({requestFrom}) => {
   const requesterFriendNetwork = firebase.firestore().collection('FriendNetwork').doc(requestFrom)
 
   const [requesterData, setRequesterData] = useState();
-
+  const [handledRequest, setHandledRequest] = useState(false)
 
   const getRequesterData = async () => {
     await firebase.firestore()
@@ -46,18 +46,28 @@ const RequestFormat = ({requestFrom}) => {
 
 
   const onNotAcceptPressed = (requestFrom) => {
+        try {
         userFriendNetwork.update({friendRequests: firebase.firestore.FieldValue.arrayRemove(requestFrom)})
         requesterFriendNetwork.update({requesting: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
         alert("You have removed request from " + requestFrom + "!")
+        setHandledRequest(true)
+        } catch(error) {
+        alert("Error occurred. Please contact xxx for assistance.")
+        }
   }
 
   const onAcceptPressed = (requestFrom) => {
+        try {
         userFriendNetwork.update({friendRequests: firebase.firestore.FieldValue.arrayRemove(requestFrom)})
         requesterFriendNetwork.update({requesting: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
 
         userFriendNetwork.update({friends: firebase.firestore.FieldValue.arrayUnion(requestFrom)})
         requesterFriendNetwork.update({friends: firebase.firestore.FieldValue.arrayUnion(currentUsername)})
         alert("You are friends with " + requestFrom + "!")
+        setHandledRequest(true)
+        } catch(error) {
+        alert("Error occurred. Please contact xxx for assistance.")
+        }
   }
 
   return (
@@ -85,7 +95,7 @@ const RequestFormat = ({requestFrom}) => {
         <IconButton icon="close-outline"
                     size={20}
                     onPress={() => onNotAcceptPressed(requestFrom)}/>
-    </View>
+   </View>
   );
 };
 
