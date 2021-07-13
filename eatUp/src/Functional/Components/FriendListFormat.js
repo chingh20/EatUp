@@ -23,7 +23,7 @@ const FriendListFormat = ({friends, navigation, friendArray}) => {
   const targetFriendList = firebase.firestore().collection('FriendNetwork').doc(friends)
 
   const [userFriendData, setUserFriendData] = useState();
-
+  const [unfriended, setUnfriended] = useState(false);
 
   const getUserFriendData = async () => {
     await firebase.firestore()
@@ -42,7 +42,9 @@ const FriendListFormat = ({friends, navigation, friendArray}) => {
 
   useEffect(() => {
     getUserFriendData();
-  }, []);
+    setUnfriended(false);
+  }, [friends]);
+
 
 const unfriend = () => {
   Alert.alert(
@@ -55,9 +57,16 @@ const unfriend = () => {
             style: "cancel"
           },
           { text: "Yes",
-            onPress: () => userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)})
-                           &&
-                           targetFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(currentUsername)})}
+            onPress: () => { try {
+                             userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)});
+                             targetFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(currentUsername)});
+                             setUnfriended(true);
+                             } catch(error) {
+                             alert('Error occurred while removing friend. Please contact xxx for assistance.');
+                             }
+                           }
+
+          }
         ]
       );
   }
@@ -73,7 +82,9 @@ const unfriend = () => {
 
 
   return (
-    <View style={styles.friendContainer} key={userFriendData? userFriendData.username: ''}>
+    <View  key={userFriendData? userFriendData.username: ''}>
+    {!unfriended ? (
+    <View style={styles.friendContainer}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
           source={{
@@ -91,9 +102,11 @@ const unfriend = () => {
           </TouchableOpacity>
         </View>
       </View>
-        <IconButton icon="account-remove-outline"
+      <IconButton icon="account-remove-outline"
                     size={20}
                     onPress={unfriend}/>
+
+    </View>) : null}
     </View>
   );
 };

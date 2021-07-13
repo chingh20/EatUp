@@ -8,9 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { firebase } from "../../firebase/config";
-import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import MapView from "react-native-map-clustering";
+import { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
 import { IconButton } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Avatar } from "react-native-elements";
@@ -34,12 +35,16 @@ export default function Home({navigation, route}) {
     return unsubscribe;
   }, [navigation]);
 
-
+  const mapRef = useRef();
   var initRegion = {
     latitude: 1.3649170000000002,
     longitude: 103.82287200000002,
     latitudeDelta: 0.3,
     longitudeDelta: 0.25,
+  };
+
+  const animateToRegion = () => {
+    mapRef.current.animateToRegion(initRegion, 2000);
   };
 
   const [userData, setUserData] = useState(null);
@@ -151,6 +156,7 @@ export default function Home({navigation, route}) {
               timestamp: timestamp,
               liked: likes.includes(username),
               likes: likes.length,
+              wantToGoUsers: wantToGo,
               wantToGo: wantToGo.includes(username),
               wantToGoCount: wantToGo.length,
               comments,
@@ -312,14 +318,16 @@ export default function Home({navigation, route}) {
         </Text>
 
         <MapView
+          ref={mapRef}
           style={styles.map}
           scrollEnabled={false}
           initialRegion={initRegion}
-          region={onBackToInitialRegionPressed ? initRegion : null}
           scrollEnabled={true}
           minZoomLevel={10}
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
+          clusterColor='#fffbf1'
+          clusterTextColor='black'
         >
           {wantToGo && starMarkerFilter
             ? wantToGo.map((post) => (
@@ -381,6 +389,15 @@ export default function Home({navigation, route}) {
           size={30}
           style={{ margin: 0 }}
         />
+        <IconButton
+          icon='crosshairs-gps'
+                  onPress={animateToRegion}
+                  color="#3e1f0d"
+                  size={30}
+                  style={{ margin: 0 }}
+        >
+
+        </IconButton>
       </View>
 
       <View style={styles.postcontainer}>

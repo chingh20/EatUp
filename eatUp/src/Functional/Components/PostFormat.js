@@ -21,27 +21,23 @@ const PostFormat = ({ post, onPress }) => {
   const [userData, setUserData] = useState(null);
   const [likePost, setLikePost] = useState(post.liked);
   const [likeIcon, setLikeIcon] = useState(post.liked ? "heart" : "heart-outline");
-  const [likeColor, setLikeColor] = useState(post.liked ? "#2e64e5" : "#333");
   const [likes, setLikes] = useState(post.likes);
   const [likeText, setLikeText] = useState('');
   const [wantToGo, setWantToGo] = useState(post.wantToGo);
-  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star-face" : "star-outline");
-  const [wantToGoColor, setWantToGoColor] = useState(post.wantToGo ? "#2e64e5" : "#333");
+  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star" : "star-outline");
   const [wantToGos, setWantToGos] = useState(post.wantToGoCount);
   const [wantToGoText, setWantToGoText] = useState('');
-
+  const [deleted, setDeleted] = useState(false);
 
   useEffect(() => {
   setLikeIcon(likePost ? "heart" : "heart-outline");
-  setLikeColor(likePost ? "#2e64e5" : "#333");
   setLikeText(showLikes(likes));
   }, [likePost])
 
 
 
   useEffect(() => {
-  setWantToGoIcon(wantToGo ? "star-face" : "star-outline");
-  setWantToGoColor( wantToGo? "#2e64e5" : "#333");
+  setWantToGoIcon(wantToGo ? "star-plus" : "star-plus-outline");
   setWantToGoText(showWantToGos(wantToGos));
   }, [wantToGo])
 
@@ -59,9 +55,9 @@ const PostFormat = ({ post, onPress }) => {
 
   function showWantToGos(wantToGos) {
         if (wantToGos == 1) {
-          return 1 + " Wants To Go";
+          return 1 + " Wants To Go!";
         } else if (wantToGos > 1) {
-          return wantToGos + " Want To Go";
+          return wantToGos + " Want To Go!";
         } else {
           return "";
         }
@@ -116,7 +112,7 @@ const PostFormat = ({ post, onPress }) => {
     }
   };
 
-  const onWantToGo = (currentUsername, postUser, postId, postLocation) => {
+  const onWantToGo = (currentUsername, postUser, postId) => {
     const targetPublicPost = firebase.firestore().collection("Posts").doc(postId);
     const targetPrivatePost = firebase.firestore().collection(postUser).doc(postId);
     const userFoodList = firebase
@@ -132,7 +128,7 @@ const PostFormat = ({ post, onPress }) => {
               wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
            })
             userFoodList.update({
-              wantToGo: firebase.firestore.FieldValue.arrayRemove(postLocation),
+              wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
             })
             setWantToGos(wantToGos - 1)
             setWantToGo(false)
@@ -144,7 +140,7 @@ const PostFormat = ({ post, onPress }) => {
               wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
             })
             userFoodList.update({
-              wantToGo: firebase.firestore.FieldValue.arrayUnion(postLocation),
+              wantToGo: firebase.firestore.FieldValue.arrayUnion(postId),
             })
             setWantToGos(wantToGos + 1)
             setWantToGo(true);
@@ -153,9 +149,10 @@ const PostFormat = ({ post, onPress }) => {
 
   useEffect(() => {
     getUser();
-  }, []);
+    setDeleted(false);
+  }, [post]);
 
-  const onDeletePressed = (currentUsername, postId, postPath) => {
+  const onDeletePressed = (currentUsername, postId, postPath, postWantToGoUsers) => {
    Alert.alert(
           "DELETE",
           "Are you sure to delete this post?",
@@ -167,18 +164,33 @@ const PostFormat = ({ post, onPress }) => {
             },
             { text: "Yes",
 
-              onPress: () => firebase.storage().refFromURL(postPath)
+              onPress: () => {firebase.storage().refFromURL(postPath)
                                      .delete()
-                                     .then(() => { firebase.firestore().collection("Posts").doc(postId).delete()
-                                                  &&
-                                                  firebase.firestore().collection(currentUsername).doc(postId).delete() })
+                                     .then(() => {
+                                     firebase.firestore().collection("Posts").doc(postId).delete()
+                                     firebase.firestore().collection(currentUsername).doc(postId).delete()
+                                     postWantToGoUsers.forEach((person) => {
+                                         firebase.firestore().collection('users').doc(person).update({
+                                             wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
+                                         })
+                                     })
+                                     firebase.firestore().collection('users').doc(currentUsername).update({
+                                         posts: firebase.firestore.FieldValue.arrayRemove(postId),
+                                     })
+                                     setDeleted(true)
+                                     })
                                      .catch((error) => { alert(error)
-                                     alert('Delete unsuccessful!')})
+                                     alert('Delete unsuccessful! Please contact xxx for assistance!')})
+                              }
             }
           ])
- }
+
+
+ };
 
   return (
+  <View>
+  {!deleted ?  (
     <View style={styles.postContainer} key={post.id}>
       <View style={styles.userInfoContainer}>
         <Image
@@ -201,7 +213,6 @@ const PostFormat = ({ post, onPress }) => {
           </Text>
         </View>
       </View>
-
 
       <View style={styles.tagContainer}>
         <IconButton icon="tag-multiple" size={20} />
@@ -228,7 +239,7 @@ const PostFormat = ({ post, onPress }) => {
         <IconButton
           icon={likeIcon}
           size={20}
-          color={likeColor}
+          color="#3e1f0d"
           onPress={() => onLikePost(currentUser.displayName, post.user, post.id)}
         />
         <Text style={styles.statusText}>{likeText}</Text>
@@ -236,6 +247,7 @@ const PostFormat = ({ post, onPress }) => {
         <IconButton
           icon="comment"
           size={20}
+          color="#3e1f0d"
           onPress={() => alert("comment to be added!")}
         />
         <Text style={styles.statusText}>{commentText}</Text>
@@ -244,8 +256,8 @@ const PostFormat = ({ post, onPress }) => {
           <IconButton
             icon={wantToGoIcon}
             size={20}
-            color={wantToGoColor}
-            onPress={() => onWantToGo(currentUser.displayName, post.user, post.id, post.postLocation)}
+            color="#3e1f0d"
+            onPress={() => onWantToGo(currentUser.displayName, post.user, post.id)}
           />
         ) : null}
 
@@ -253,7 +265,8 @@ const PostFormat = ({ post, onPress }) => {
           <IconButton
             icon="delete"
             size={20}
-            onPress={() => onDeletePressed(currentUser.displayName, post.id, post.postPhoto)}
+            color="#3e1f0d"
+            onPress={() => onDeletePressed(currentUser.displayName, post.id, post.postPhoto,post.wantToGoUsers)}
           />
         ) : null}
       </View>
@@ -261,7 +274,9 @@ const PostFormat = ({ post, onPress }) => {
         <Text style={styles.wantToGoDescription}>{wantToGoText}</Text>
       </View>
     </View>
-  );
+ ) : null}
+ </View>
+ );
 };
 
 export default PostFormat;

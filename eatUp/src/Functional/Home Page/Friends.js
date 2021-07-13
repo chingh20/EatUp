@@ -23,6 +23,14 @@ export default function Friends ({navigation}) {
 
   const [userFriendArray, setUserFriendArray] = useState();
 
+  React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+        alert('Refreshed');
+        fetchUserFriendArray();
+        });
+        return unsubscribe;
+ }, [navigation]);
+
   const fetchUserFriendArray = async () => {
 
             await firebase.firestore()
@@ -32,7 +40,6 @@ export default function Friends ({navigation}) {
               .then((documentSnapshot) => {
                  if (documentSnapshot.exists) {
                     setUserFriendArray(documentSnapshot.data());
-
                  }
               })
               .catch((error) => {
