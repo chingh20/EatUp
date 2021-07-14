@@ -15,31 +15,31 @@ import { IconButton } from "react-native-paper";
 import { firebase } from "../../firebase/config";
 import { Divider } from "react-native-elements";
 
-const UserSearchListFormat = ({ users, onPress }) => {
+const UserSearchListFormat = ({ users, onPress, userFriendArray }) => {
   var currentUsername = firebase.auth().currentUser.displayName;
-  const friendNetwork = firebase.firestore().collection("FriendNetwork");
-
-  const [userFriendArray, setUserFriendArray] = useState();
-
-  const fetchUserFriendArray = async () => {
-    await firebase
-      .firestore()
-      .collection("FriendNetwork")
-      .doc(currentUsername)
-      .get()
-      .then((documentSnapshot) => {
-        if (documentSnapshot.exists) {
-          setUserFriendArray(documentSnapshot.data());
-        }
-      })
-      .catch((error) => {
-        alert(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchUserFriendArray();
-  }, []);
+//  const friendNetwork = firebase.firestore().collection("FriendNetwork");
+//
+//  const [userFriendArray, setUserFriendArray] = useState();
+//
+//  const fetchUserFriendArray = async () => {
+//    await firebase
+//      .firestore()
+//      .collection("FriendNetwork")
+//      .doc(currentUsername)
+//      .get()
+//      .then((documentSnapshot) => {
+//        if (documentSnapshot.exists) {
+//          setUserFriendArray(documentSnapshot.data());
+//        }
+//      })
+//      .catch((error) => {
+//        alert(error);
+//      });
+//  };
+//
+//  useEffect(() => {
+//    fetchUserFriendArray();
+//  }, []);
 
   const onNotAcceptPressed = () => {
     friendNetwork.doc(currentUsername).update({

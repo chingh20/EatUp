@@ -8,9 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { firebase } from "../../firebase/config";
-import MapView, { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
+import MapView from "react-native-map-clustering";
+import { PROVIDER_GOOGLE, Marker, Callout } from "react-native-maps";
 import { IconButton } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Avatar } from "react-native-elements";
@@ -20,6 +21,7 @@ import defaultUserImage from "../../../assets/default-user-image.png";
 import Search from "./Search";
 import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
+import FastFoodIcon from "../../../assets/FastFoodIcon.jpeg";
 
 export default function OtherUser({navigation, route}) {
   React.useEffect(() => {
@@ -39,12 +41,16 @@ export default function OtherUser({navigation, route}) {
     return unsubscribe;
   }, [navigation, route]);
 
-
+  const mapRef = useRef();
   var initRegion = {
     latitude: 1.3649170000000002,
     longitude: 103.82287200000002,
     latitudeDelta: 0.3,
     longitudeDelta: 0.25,
+  };
+
+  const animateToRegion = () => {
+    mapRef.current.animateToRegion(initRegion, 2000);
   };
 
   const [username, setUserName] = useState(null);
@@ -80,12 +86,6 @@ export default function OtherUser({navigation, route}) {
       setPostMarkerFilter(false);
     } else {
       setPostMarkerFilter(true);
-    }
-  };
-
-  const onBackToInitialRegionPressed = () => {
-    if (!backToInitialRegion) {
-      setBackToInitialRegion(true);
     }
   };
 
@@ -146,6 +146,7 @@ export default function OtherUser({navigation, route}) {
               timestamp: timestamp,
               liked: likes.includes(currentUser),
               likes: likes.length,
+              wantToGoUsers: wantToGo,
               wantToGo: wantToGo.includes(currentUser),
               wantToGoCount: wantToGo.length,
               comments,
@@ -198,6 +199,7 @@ export default function OtherUser({navigation, route}) {
               timestamp: timestamp,
               liked: likes.includes(currentUser),
               likes: likes.length,
+              wantToGoUsers: wantToGo,
               wantToGo: wantToGo.includes(currentUser),
               wantToGoCount: wantToGo.length,
               comments,
@@ -230,6 +232,13 @@ export default function OtherUser({navigation, route}) {
           } else {
            alert('Viewing profile is only available after adding friend')
           }
+  }
+
+  const markerIcon = (postTag) => {
+        if (postTag == "Fast Food") {
+        return FastFoodIcon
+        } else {
+        return null}
   }
 
   return (
@@ -270,32 +279,37 @@ export default function OtherUser({navigation, route}) {
       </View>
 
         <MapView
+          ref={mapRef}
           style={styles.map}
           scrollEnabled={false}
           initialRegion={initRegion}
-          region={onBackToInitialRegionPressed ? initRegion : null}
           scrollEnabled={true}
           minZoomLevel={10}
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
+          clusterColor='#fffbf1'
+          clusterTextColor='black'
         >
-          {wantToGo && starMarkerFilter
-            ? wantToGo.map((post) => (
-                <Marker
-                  onPress={() => onMarkerPressed(post)}
-                  pinColor={"#fffcc7"}
-                  key={post.id}
-                  coordinate={{
-                    latitude: post.postGeoCoordinates.latitude,
-                    longitude: post.postGeoCoordinates.longitude,
-                  }}
-                >
-                  <Callout tooltip style={{ width: 150 }}>
-                    <Text style={styles.name}>{post.postLocation}</Text>
-                  </Callout>
-                </Marker>
-              ))
-            : null}
+           {wantToGo && starMarkerFilter
+                      ? wantToGo.map((post) => (
+                          <Marker
+                            onPress={() => onMarkerPressed(post)}
+                            pinColor={"#fffcc7"}
+                            key={post.id}
+                            coordinate={{
+                              latitude: post.postGeoCoordinates.latitude,
+                              longitude: post.postGeoCoordinates.longitude,
+                            }}
+                          >
+
+                              <Callout tooltip style={styles.calloutBox}>
+                              <Image style={{ width: 30, height:30 }} source={markerIcon(post.postTag)} />
+                              <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                              <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
+                              </Callout>
+                          </Marker>
+                        ))
+                      : null}
 
           {postPlaces && postMarkerFilter ? (
             postPlaces.map((post) => (
@@ -307,11 +321,11 @@ export default function OtherUser({navigation, route}) {
                 }}
                 onPress={() => onMarkerPressed(post)}
               >
-                <Callout style={{ width: 150 }}>
-                  <View>
-                    <Text style={styles.name}>{post.postLocation}</Text>
-                  </View>
-                </Callout>
+              <Callout tooltip style={styles.calloutBox}>
+                 <Image style={{ width: 30, height:30 }} source={markerIcon(post.postTag)} />
+                 <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                 <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
+              </Callout>
               </Marker>
             ))
           ) : (
@@ -334,6 +348,13 @@ export default function OtherUser({navigation, route}) {
           color="#3e1f0d"
           size={30}
           style={{ margin: 0 }}
+        />
+        <IconButton
+          icon='crosshairs-gps'
+                  onPress={animateToRegion}
+                  color="#3e1f0d"
+                  size={30}
+                  style={{ margin: 0 }}
         />
       </View>
 
@@ -411,14 +432,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  button: {
+  calloutBox: {
     width: 150,
-    marginTop: 30,
-    marginBottom: 10,
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ff5757",
-    padding: 15,
-    borderRadius: 50,
+    borderColor: "#3e1f0d",
+    borderWidth: 1,
+    backgroundColor: "#fffdf5",
+    padding: 10,
+    borderRadius: 20,
+  },
+  tagTextCallout: {
+  fontSize: 12,
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight: 'bold',
+  },
+
+  locationTextCallout: {
+  fontSize: 18,
+      alignItems: "center",
+      justifyContent: "center",
   },
 });

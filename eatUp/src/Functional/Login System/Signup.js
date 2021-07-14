@@ -65,9 +65,9 @@ const Signup = ({ navigation }) => {
             mapTheme: "default",
             displayPicture: Image.resolveAssetSource(defaultPicture).uri,
             friends: [],
-            cuisinesTried: [],
+            customTags: [],
             wantToGo: [],
-            postLocations: [],
+            posts: [],
           };
 
           usersRef
