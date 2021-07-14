@@ -81,13 +81,6 @@ export default function Home({navigation, route}) {
     }
   };
 
-  const onBackToInitialRegionPressed = () => {
-    if (!backToInitialRegion) {
-      setBackToInitialRegion(true);
-    }
-  };
-
-
 
   const getUserDetails = async () => {
     await firebase
@@ -360,17 +353,17 @@ export default function Home({navigation, route}) {
                 }}
                 onPress={() => onMarkerPressed(post)}
               >
-                <Callout tooltip style={styles.calloutBox}>
-                  <View>
-                    <Text style={styles.tagTextCallout}>{post.postTag}</Text>
-                    <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
-                  </View>
-                </Callout>
+              <Callout tooltip style={styles.calloutBox}>
+                 <Image style={{ width: 30, height:30 }} source={markerIcon(post.postTag)} />
+                 <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                 <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
+              </Callout>
               </Marker>
             ))
           ) : (
             <View />
           )}
+
         </MapView>
       </View>
 
@@ -395,9 +388,7 @@ export default function Home({navigation, route}) {
                   color="#3e1f0d"
                   size={30}
                   style={{ margin: 0 }}
-        >
-
-        </IconButton>
+        />
       </View>
 
       <View style={styles.postcontainer}>

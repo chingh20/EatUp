@@ -16,7 +16,7 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const RequestFormat = ({requestFrom}) => {
+const RequestFormat = ({requestFrom, updateFriendsNow}) => {
 
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendNetwork = firebase.firestore().collection('FriendNetwork').doc(currentUsername)
@@ -42,7 +42,8 @@ const RequestFormat = ({requestFrom}) => {
 
   useEffect(() => {
     getRequesterData();
-  }, []);
+    setHandledRequest(false);
+  },[requestFrom]);
 
 
   const onNotAcceptPressed = (requestFrom) => {
@@ -51,6 +52,7 @@ const RequestFormat = ({requestFrom}) => {
         requesterFriendNetwork.update({requesting: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
         alert("You have removed request from " + requestFrom + "!")
         setHandledRequest(true)
+        updateFriendsNow()
         } catch(error) {
         alert("Error occurred. Please contact xxx for assistance.")
         }
@@ -65,13 +67,16 @@ const RequestFormat = ({requestFrom}) => {
         requesterFriendNetwork.update({friends: firebase.firestore.FieldValue.arrayUnion(currentUsername)})
         alert("You are friends with " + requestFrom + "!")
         setHandledRequest(true)
+        updateFriendsNow()
         } catch(error) {
         alert("Error occurred. Please contact xxx for assistance.")
         }
   }
 
   return (
-    <View style={styles.friendContainer} key={requesterData? requesterData.username: ''}>
+    <View key={requesterData? requesterData.username: ''}>
+   {!handledRequest? (
+   <View style={styles.friendContainer}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
           source={{
@@ -95,6 +100,7 @@ const RequestFormat = ({requestFrom}) => {
         <IconButton icon="close-outline"
                     size={20}
                     onPress={() => onNotAcceptPressed(requestFrom)}/>
+    </View>  ) : null}
    </View>
   );
 };

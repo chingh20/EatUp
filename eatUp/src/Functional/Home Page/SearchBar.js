@@ -6,9 +6,12 @@ import UserSearchListFormat from '../Components/UserSearchListFormat'
 export default function SearchBar({navigation}) {
 
     const [users, setUsers] = useState([]);
+    const [searchText, setSearchText] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userFriendNetwork, setUserFriendNetwork] = useState(null);
     const username = firebase.auth().currentUser.displayName;
+
+    handleSearchTextUpdate = (search) => setSearchText(search);
 
     const fetchUsers = (search) => {
     if(search.length > 0 && search != " ") {
@@ -68,8 +71,9 @@ export default function SearchBar({navigation}) {
         navigation.navigate('Home')
         return;}
         if (friends.includes(item.username)){
-           navigation.navigate('OtherUser', {otherUser: item.username, otherUserFriendArray: friends})
            setUsers([])
+           handleSearchTextUpdate(null)
+           navigation.navigate('OtherUser', {otherUser: item.username, otherUserFriendArray: friends})
         } else {
          alert('Viewing profile is only available after adding friend')
         }
@@ -88,7 +92,7 @@ export default function SearchBar({navigation}) {
             <TextInput
                 style= {styles.textInput}
                 placeholder="Search"
-                onChangeText={(search) => fetchUsers(search)} />
+                onChangeText={(search) => fetchUsers(handleSearchTextUpdate(search))} />
 
      <FlatList
                 data={users}
@@ -96,6 +100,7 @@ export default function SearchBar({navigation}) {
                 <UserSearchListFormat
                 users={item}
                 onPress = {() => onPressed(item)}
+                userFriendArray ={userFriendNetwork}
                 />
                 )}
                 keyExtractor={(item) => item.username}

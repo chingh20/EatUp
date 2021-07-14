@@ -22,6 +22,7 @@ export default function Friends ({navigation}) {
     var userDisplayName = user.displayName
 
   const [userFriendArray, setUserFriendArray] = useState();
+  const [updateFriends, setUpdateFriends] = useState(false)
 
   React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -46,14 +47,24 @@ export default function Friends ({navigation}) {
                  alert(error);
               });
 
-      }
+  }
 
 
-      useEffect(() =>
-         {
+  useEffect(() =>
+     {
           fetchUserFriendArray();
           } , []
-      )
+  )
+
+  useEffect(() =>
+  {
+  fetchUserFriendArray();
+  },[updateFriends]
+  )
+
+ const updateFriendsFunction = () => {
+    setUpdateFriends(true);
+  }
 
 
     return (
@@ -66,7 +77,7 @@ export default function Friends ({navigation}) {
     { userFriendArray
     ? (userFriendArray.friendRequests.length > 0
         ? (<View style={styles.requestContainer}>
-             <Request friendRequestsArray={userFriendArray.friendRequests}/>
+             <Request friendRequestsArray={userFriendArray.friendRequests} updateFriendsNow={updateFriendsFunction}/>
              </View>)
         : null)
     : null

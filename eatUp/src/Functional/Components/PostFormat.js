@@ -24,7 +24,7 @@ const PostFormat = ({ post, onPress }) => {
   const [likes, setLikes] = useState(post.likes);
   const [likeText, setLikeText] = useState('');
   const [wantToGo, setWantToGo] = useState(post.wantToGo);
-  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "star" : "star-outline");
+  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo ? "crown" : "crown-outline");
   const [wantToGos, setWantToGos] = useState(post.wantToGoCount);
   const [wantToGoText, setWantToGoText] = useState('');
   const [deleted, setDeleted] = useState(false);
@@ -37,7 +37,7 @@ const PostFormat = ({ post, onPress }) => {
 
 
   useEffect(() => {
-  setWantToGoIcon(wantToGo ? "star-plus" : "star-plus-outline");
+  setWantToGoIcon(wantToGo ? "crown" : "crown-outline");
   setWantToGoText(showWantToGos(wantToGos));
   }, [wantToGo])
 

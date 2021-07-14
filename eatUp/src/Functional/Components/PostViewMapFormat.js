@@ -28,7 +28,7 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
 
   const [wantToGo, setWantToGo] = useState(markerPost.wantToGo);
   const [wantToGoIcon, setWantToGoIcon] = useState(
-    markerPost.wantToGo ? "star-plus" : "star-plus-outline"
+    markerPost.wantToGo ? "crown" : "crown-outline"
   );
 
   const [wantToGos, setWantToGos] = useState(markerPost.wantToGoCount);
@@ -41,7 +41,7 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
   }, [likePost]);
 
   useEffect(() => {
-    setWantToGoIcon(wantToGo ? "star-plus" : "star-plus-outline");
+    setWantToGoIcon(wantToGo ? "crown" : "crown-outline");
     setWantToGoText(showWantToGos(wantToGos));
   }, [wantToGo]);
 
@@ -335,8 +335,9 @@ export default PostViewMapFormat;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
+    borderRadius: 10,
   },
   postContainer: {
     flexDirection: "row",
@@ -351,14 +352,14 @@ const styles = StyleSheet.create({
   userInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
+    padding: 5,
+    marginBottom: 1,
     justifyContent: "flex-start",
-    borderRadius: 10,
   },
   userImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   userInfoText: {
     flexDirection: "column",
@@ -367,17 +368,16 @@ const styles = StyleSheet.create({
   },
   userName: {
     color: "#bc1824",
-    fontSize: 20,
+    fontSize: 18,
   },
   time: {
     color: "#d26d4d",
-    fontSize: 10,
+    fontSize: 8,
   },
   description: {
     color: "#3e1f0d",
     fontSize: 15,
-    padding: 10,
-    marginBottom: 5,
+    padding: 1,
   },
   image: {
     width: 160,
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   imageView: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   likeBar: {
@@ -419,7 +419,6 @@ const styles = StyleSheet.create({
     color: "#bc1824",
     fontSize: 12,
     fontWeight: "bold",
-    padding: 15,
-    marginBottom: 5,
+    padding: 5,
   },
 });

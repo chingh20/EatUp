@@ -72,7 +72,7 @@ export default function Post({ navigation, route }) {
       .collection("users")
       .doc(username)
       .update({
-        postLocations: firebase.firestore.FieldValue.arrayUnion(
+        posts: firebase.firestore.FieldValue.arrayUnion(
           id
         ),
       });
@@ -205,6 +205,7 @@ export default function Post({ navigation, route }) {
     { key: index++, label: "Fast Food" },
     { key: index++, label: "Drinks" },
     { key: index++, label: "Desserts" },
+    { key: index++, label: "Japanese"},
   ];
 
   return (

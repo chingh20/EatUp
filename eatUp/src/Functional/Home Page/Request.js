@@ -4,7 +4,7 @@ import { firebase } from '../../firebase/config';
 import RequestFormat from '../Components/RequestFormat'
 
 
-export default function Request({friendRequestsArray}) {
+export default function Request({friendRequestsArray, updateFriendsNow}) {
 
     return (
     <View>
@@ -15,6 +15,7 @@ export default function Request({friendRequestsArray}) {
                 renderItem={({ item }) => (
                 <RequestFormat
                 requestFrom={item}
+                updateFriendsNow={updateFriendsNow}
                 />
                 )}
                 keyExtractor={(item) => (item)}
