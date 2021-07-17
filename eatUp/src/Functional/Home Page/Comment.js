@@ -1,6 +1,7 @@
-import {firebase} from '../../firebase/config';
-import React, { useState, useEffect } from 'react';
+import { firebase } from "../../firebase/config";
+import React, { useState, useEffect, useCallback } from "react";
 import {
+  IconButton,
   RefreshControl,
   Image,
   Text,
@@ -11,24 +12,23 @@ import {
   Platform,
   View,
   ScrollView,
-  FlatList
-} from 'react-native';
-import PostFormat from '../Components/PostFormat'
-import { StatusBar } from 'expo-status-bar';
+  FlatList,
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { CustomizedTextInput as TextInput } from "../Components/CustomizedTextInput";
+import CommentBar from "./CommentBar";
+import CommentFormat from "../Components/CommentFormat";
 
-
-
-const Feed = (props) => {
-  var username = firebase.auth().currentUser.displayName
+const Comment = ({ navigation, route }) => {
+  const currentUser = firebase.auth().currentUser.displayName;
 
   React.useEffect(() => {
-      const unsubscribe = props.navigation.addListener('focus', () => {
+      const unsubscribe = navigation.addListener('focus', () => {
         alert('Refreshed');
-        fetchPost();
-        getUserDetails();
+     //   fetchComments();
       });
       return unsubscribe;
-    }, [props.navigation]);
+    }, [navigation]);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -39,86 +39,40 @@ const Feed = (props) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     alert('Refreshed');
-    fetchPost();
-    getUserDetails();
+   // fetchComments();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [post, setPost] = useState([]);
-  const [userData, setUserData] = useState(null);
-  const [userFriendNetwork, setUserFriendNetwork] = useState(null);
+  const [comment, setComment] = useState([]);
 
-  const getUserFriendNetwork = async () => {
-    await firebase
-      .firestore()
-      .collection("FriendNetwork")
-      .doc(username)
-      .get()
-      .then((documentSnapshot) => {
-        if (documentSnapshot.exists) {
-          setUserFriendNetwork(documentSnapshot.data());
-        }
-      })
-      .catch((e) => {
-        alert(e);
-      });
-  };
 
-  const getUserDetails = async () => {
-    await firebase
-      .firestore()
-      .collection("users")
-      .doc(username)
-      .get()
-      .then((documentSnapshot) => {
-        if (documentSnapshot.exists) {
-          setUserData(documentSnapshot.data());
-        }
-      })
-      .catch((e) => {
-        alert(e);
-      });
-  };
-
-  const fetchPost = async () => {
+  const fetchComments = async () => {
           try {
             const list = [];
 
             await firebase.firestore()
               .collection('Posts')
+              .doc(route.params.postId)
+              .collection('Comments')
               .orderBy('timestamp', 'desc')
               .get()
               .then((querySnapshot) => {
                   querySnapshot.forEach((doc) => {
                       const {
-                          id,
-                          postPhoto,
-                          postTag,
-                          postDescription,
-                          postLocation,
                           likes,
-                          wantToGo,
                           user,
                           timestamp,
-                          comments
+                          commentText
                       } = doc.data();
 
 
                       list.push({
-                      id: doc.id,
-                      user: user,
-                      postPhoto,
-                      postTag,
-                      postDescription,
-                      postLocation,
+                      commenter: user,
                       timestamp: timestamp,
-                      liked: likes.includes(username),
+                      liked: likes.includes(currentUser),
                       likes: likes.length,
-                      wantToGoUsers: wantToGo,
-                      wantToGo: wantToGo.includes(username),
-                      wantToGoCount: wantToGo.length,
-                      comments,
+                      commentText: commentText,
                       });
                     });
                   })
@@ -126,7 +80,7 @@ const Feed = (props) => {
                   alert(error)
                   });
 
-              setPost(list);
+              setComment(list);
               if (loading) {
                 setLoading(false);
               }
@@ -136,38 +90,27 @@ const Feed = (props) => {
               }
       }
 
-      useEffect(() =>
-         {
-          fetchPost();
-          } , []
+      useEffect(() => {
+      if(route.params) {
+           if (route.params.postComments > 0) {
+              fetchComments();
+           }
+      }},[]
       )
-
-      useEffect(() =>
-         {
-          getUserFriendNetwork();
-          } , []
-      )
-
-      useEffect(() => {getUserDetails()},[])
 
        const onUserPressed = (item) => {
-               const friendArray = userFriendNetwork? userFriendNetwork.friends : [];
-               if (item.user == username) {
-                  props.navigation.navigate('Home');
+               const friendArray = route.params.userFriends;
+               if (item.user == currentUser) {
+                  navigation.navigate('Home');
                }
                else if (friendArray.includes(item.user)){
-               alert(item.user)
-                  props.navigation.navigate('OtherUser', {otherUser: item.user, otherUserFriendArray: friendArray})
+
+                  navigation.navigate('OtherUser', {otherUser: item.user, otherUserFriendArray: friendArray})
                } else {
                   alert('Viewing profile is only available after adding friend')
                }
        }
 
-       const onCommentPressed = (item) => {
-           alert('Comment')
-           props.navigation.navigate('Comment',
-           {postId: item.id, postOwner: item.user, userFriends: userFriendNetwork? userFriendNetwork.friends : [], postComment: item.comments});
-       }
 
       const listHeader = () => {
         return null;
@@ -175,6 +118,21 @@ const Feed = (props) => {
 
       return (
       <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+
+      <View style={styles.upper}>
+        <IconButton
+          icon="arrow-left"
+          onPress={() => navigation.navigate('Home')}
+          color="#3e1f0d"
+          size={30}
+          style={{ marginRight: 5 }}
+        />
+        <Text>Comments</Text>
+      </View>
 
          <FlatList
                  refreshControl={
@@ -183,24 +141,31 @@ const Feed = (props) => {
                      onRefresh={onRefresh}
                    />
                  }
-            data={post}
-            renderItem={({item}) => (
-               <PostFormat
-                 post={item}
+            data={comment}
+            renderItem={(item) => (
+               <CommentFormat
+                 commentDoc={item}
+                 postId={route.params.postId}
+                 owner={route.params.postOwner}
                  onPress={() => onUserPressed(item)}
-                 onComment={() => onCommentPressed(item)}
                />
             )}
-            keyExtractor={(item) => item.id}
-            ListHeaderComponent={listHeader}
-            ListFooterComponent={listHeader}
+            keyExtractor={(item) => item.user}
+//            ListHeaderComponent={
+//            <CommentBar
+//            postId={route.params? route.params.postId:null}
+//            owner={route.params? route.params.postOwner:null} />}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="always"
          />
+      </KeyboardAvoidingView>
       </SafeAreaView>
       )
 
  }
-export default Feed;
+
+
+export default Comment;
 
 const styles = StyleSheet.create({
   scroll: {
@@ -260,7 +225,11 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           justifyContent: 'center',
           marginTop:20
-    }
+    },
+     upper: {
+       flexDirection: "row",
+       backgroundColor: "#fffbf1",
+       alignItems: "flex-start",
+       justifyContent: "flex-start",
+     },
 });
-
-

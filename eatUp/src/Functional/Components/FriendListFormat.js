@@ -16,14 +16,13 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const FriendListFormat = ({friends, navigation, friendArray}) => {
+const FriendListFormat = ({friends, navigation, friendArray,  updateFriends}) => {
 
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendList = firebase.firestore().collection('FriendNetwork').doc(currentUsername)
   const targetFriendList = firebase.firestore().collection('FriendNetwork').doc(friends)
 
   const [userFriendData, setUserFriendData] = useState();
-  const [unfriended, setUnfriended] = useState(false);
 
   const getUserFriendData = async () => {
     await firebase.firestore()
@@ -42,7 +41,6 @@ const FriendListFormat = ({friends, navigation, friendArray}) => {
 
   useEffect(() => {
     getUserFriendData();
-    setUnfriended(false);
   }, [friends]);
 
 
@@ -60,7 +58,7 @@ const unfriend = () => {
             onPress: () => { try {
                              userFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(friends)});
                              targetFriendList.update({friends: firebase.firestore.FieldValue.arrayRemove(currentUsername)});
-                             setUnfriended(true);
+                             updateFriends();
                              } catch(error) {
                              alert('Error occurred while removing friend. Please contact xxx for assistance.');
                              }
@@ -83,7 +81,6 @@ const unfriend = () => {
 
   return (
     <View  key={userFriendData? userFriendData.username: ''}>
-    {!unfriended ? (
     <View style={styles.friendContainer}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
@@ -105,8 +102,7 @@ const unfriend = () => {
       <IconButton icon="account-remove-outline"
                     size={20}
                     onPress={unfriend}/>
-
-    </View>) : null}
+    </View>
     </View>
   );
 };

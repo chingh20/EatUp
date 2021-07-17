@@ -20,18 +20,6 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
-  const onLoginPressed = () => {
-    const emailError = emailCheck(email.value);
-    const passwordError = passwordCheck(password.value);
-
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
-      return;
-    }
-    loginUser();
-  };
-
   const loginUser = () => {
     firebase
       .auth()
@@ -58,16 +46,16 @@ const Login = ({ navigation }) => {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (errorCode == "auth/invalid-email") {
-          alert("Email address is not valid.");
+          setEmail({ ...email, error: "Email address is invalid." });
           return;
         } else if (errorCode == "auth/user-not-found") {
-          alert("You have entered an invalid username or password!");
+          setEmail({ ...email, error: "Email address is invalid." });
           return;
         } else if (errorCode == "auth/wrong-password") {
-          alert("You have entered an invalid username or password!");
+          setPassword({ ...password, error: "Password is incorrect." });;
           return;
         } else {
-          alert(errorMessage);
+          alert("Something wrong happened! Please contact xxx for assistance.");
         }
       });
   };
@@ -119,7 +107,7 @@ const Login = ({ navigation }) => {
           >
             <Text style={styles.nobuttontext}> Forgot Password?</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={onLoginPressed}>
+          <TouchableOpacity style={styles.button} onPress={loginUser}>
             <Text style={styles.btnText}>Let's Go!</Text>
           </TouchableOpacity>
         </ScrollView>

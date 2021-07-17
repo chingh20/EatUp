@@ -15,7 +15,7 @@ export default function Request({friendRequestsArray, updateFriendsNow}) {
                 renderItem={({ item }) => (
                 <RequestFormat
                 requestFrom={item}
-                updateFriendsNow={updateFriendsNow}
+                updateFriends={updateFriendsNow}
                 />
                 )}
                 keyExtractor={(item) => (item)}

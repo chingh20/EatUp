@@ -28,6 +28,7 @@ export default function Home({navigation, route}) {
     const unsubscribe = navigation.addListener("focus", () => {
       alert("Refreshed");
       getUserDetails();
+      getUserFriendNetwork();
       PostPlaces();
       WantToGoPlace();
       setMarkerPressed(null);
@@ -83,15 +84,14 @@ export default function Home({navigation, route}) {
 
 
   const getUserDetails = async () => {
+   if (username == null) return;
     await firebase
       .firestore()
       .collection("users")
       .doc(username)
       .get()
       .then((documentSnapshot) => {
-        if (documentSnapshot.exists) {
-          setUserData(documentSnapshot.data());
-        }
+         setUserData(documentSnapshot.data());
       })
       .catch((e) => {
         alert(e);
@@ -99,15 +99,14 @@ export default function Home({navigation, route}) {
   };
 
   const getUserFriendNetwork = async () => {
+    if (username == null) return;
     await firebase
       .firestore()
       .collection("FriendNetwork")
       .doc(username)
       .get()
       .then((documentSnapshot) => {
-        if (documentSnapshot.exists) {
           setUserFriendNetwork(documentSnapshot.data());
-        }
       })
       .catch((e) => {
         alert(e);
@@ -117,7 +116,7 @@ export default function Home({navigation, route}) {
   const PostPlaces = async () => {
     try {
       const PostPlacesArray = [];
-
+      if (username == null) return;
       await firebase
         .firestore()
         .collection(username)
@@ -159,7 +158,6 @@ export default function Home({navigation, route}) {
         .catch((error) => {
           alert(error);
         });
-
       setPostPlaces(PostPlacesArray);
     } catch (e) {
       console.log(e);
@@ -169,7 +167,7 @@ export default function Home({navigation, route}) {
   const WantToGoPlace = async () => {
     try {
       const wantToGoArray = [];
-
+      if (username == null) return;
       await firebase
         .firestore()
         .collection("Posts")
@@ -211,7 +209,6 @@ export default function Home({navigation, route}) {
         .catch((error) => {
           alert(error);
         });
-
       setWantToGo(wantToGoArray);
     } catch (e) {
       console.log(e);
@@ -235,6 +232,8 @@ export default function Home({navigation, route}) {
   useEffect(() => {
     PostPlaces();
   }, []);
+
+  useEffect
 
 
   const onUserPressed = (markerPressed) => {
@@ -306,7 +305,7 @@ export default function Home({navigation, route}) {
         />
         <Text>
           {" "}
-          Following {userData ? userData.friends.length : null} other Food
+          Following {userFriendNetwork? userFriendNetwork.friends.length : null} other Food
           Lover(s)!{" "}
         </Text>
 

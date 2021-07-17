@@ -64,7 +64,6 @@ const Signup = ({ navigation }) => {
             username: username.value,
             mapTheme: "default",
             displayPicture: Image.resolveAssetSource(defaultPicture).uri,
-            friends: [],
             customTags: [],
             wantToGo: [],
             posts: [],
@@ -74,6 +73,15 @@ const Signup = ({ navigation }) => {
             .doc(username.value)
             .set(data)
             .then(() => {
+
+  const friendNetworkFields = {
+     friends: [],
+     friendRequests: [],
+     requesting: [],
+  };
+
+   firebase.firestore().collection("FriendNetwork").doc(username.value).set(friendNetworkFields);
+
               alert("Welcome to EATUP, " + username.value + "!");
               navigation.navigate("Home", { data });
             })
@@ -86,30 +94,22 @@ const Signup = ({ navigation }) => {
           var errorCode = error.code;
           var errorMessage = error.message;
           if (errorCode == "auth/weak-password") {
-            alert("The password is too weak!");
+            setPassword({ ...password, error: "Password should be more than 8 characters!" });
             return;
           } else if (errorCode == "auth/email-already-in-use") {
-            alert("Choose another e-mail address!");
+            setEmail({ ...email, error: "Email address is invalid." });
             return;
           } else if (errorCode == "auth/invalid-email") {
-            alert("Email address is not valid!");
+            setEmail({ ...email, error: "Email address is invalid." });
             return;
           } else {
             alert(errorMessage);
           }
         });
     } else {
-      alert("Choose another username!");
+    setUsername({ ...username, error: "Choose another username!" });
     }
   };
-
-  const friendNetworkFields = {
-     friends: [],
-     friendRequests: [],
-     requesting: [],
-  };
-
-   firebase.firestore().collection("FriendNetwork").doc(username.value).set(friendNetworkFields);
 
 
   return (

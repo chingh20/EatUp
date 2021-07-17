@@ -16,14 +16,14 @@ import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
 
-const RequestFormat = ({requestFrom, updateFriendsNow}) => {
+const RequestFormat = ({requestFrom, updateFriends}) => {
 
   var currentUsername = firebase.auth().currentUser.displayName;
   const userFriendNetwork = firebase.firestore().collection('FriendNetwork').doc(currentUsername)
   const requesterFriendNetwork = firebase.firestore().collection('FriendNetwork').doc(requestFrom)
 
   const [requesterData, setRequesterData] = useState();
-  const [handledRequest, setHandledRequest] = useState(false)
+
 
   const getRequesterData = async () => {
     await firebase.firestore()
@@ -42,7 +42,6 @@ const RequestFormat = ({requestFrom, updateFriendsNow}) => {
 
   useEffect(() => {
     getRequesterData();
-    setHandledRequest(false);
   },[requestFrom]);
 
 
@@ -51,8 +50,7 @@ const RequestFormat = ({requestFrom, updateFriendsNow}) => {
         userFriendNetwork.update({friendRequests: firebase.firestore.FieldValue.arrayRemove(requestFrom)})
         requesterFriendNetwork.update({requesting: firebase.firestore.FieldValue.arrayRemove(currentUsername)})
         alert("You have removed request from " + requestFrom + "!")
-        setHandledRequest(true)
-        updateFriendsNow()
+        updateFriends()
         } catch(error) {
         alert("Error occurred. Please contact xxx for assistance.")
         }
@@ -66,8 +64,7 @@ const RequestFormat = ({requestFrom, updateFriendsNow}) => {
         userFriendNetwork.update({friends: firebase.firestore.FieldValue.arrayUnion(requestFrom)})
         requesterFriendNetwork.update({friends: firebase.firestore.FieldValue.arrayUnion(currentUsername)})
         alert("You are friends with " + requestFrom + "!")
-        setHandledRequest(true)
-        updateFriendsNow()
+        updateFriends()
         } catch(error) {
         alert("Error occurred. Please contact xxx for assistance.")
         }
@@ -75,7 +72,6 @@ const RequestFormat = ({requestFrom, updateFriendsNow}) => {
 
   return (
     <View key={requesterData? requesterData.username: ''}>
-   {!handledRequest? (
    <View style={styles.friendContainer}>
       <View style={styles.friendInfoContainer}>
         <Image style={styles.friendImage}
@@ -100,7 +96,7 @@ const RequestFormat = ({requestFrom, updateFriendsNow}) => {
         <IconButton icon="close-outline"
                     size={20}
                     onPress={() => onNotAcceptPressed(requestFrom)}/>
-    </View>  ) : null}
+    </View>
    </View>
   );
 };
