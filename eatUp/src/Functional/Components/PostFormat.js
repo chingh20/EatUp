@@ -16,7 +16,7 @@ import { firebase, storage } from "../../firebase/config";
 import moment from "moment";
 import { Divider } from "react-native-elements";
 
-const PostFormat = ({ post, onPress }) => {
+const PostFormat = ({ post, onPress, onComment }) => {
   var currentUser = firebase.auth().currentUser;
   const [userData, setUserData] = useState(null);
   const [likePost, setLikePost] = useState(post.liked);
@@ -248,7 +248,7 @@ const PostFormat = ({ post, onPress }) => {
           icon="comment"
           size={20}
           color="#3e1f0d"
-          onPress={() => alert("comment to be added!")}
+          onPress={onComment}
         />
         <Text style={styles.statusText}>{commentText}</Text>
 

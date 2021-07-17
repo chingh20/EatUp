@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  RefreshControl,
   Image,
   Text,
   TouchableOpacity,
@@ -22,7 +23,6 @@ export default function Friends ({navigation}) {
     var userDisplayName = user.displayName
 
   const [userFriendArray, setUserFriendArray] = useState();
-  const [updateFriends, setUpdateFriends] = useState(false)
 
   React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -31,6 +31,19 @@ export default function Friends ({navigation}) {
         });
         return unsubscribe;
  }, [navigation]);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+   const wait = (timeout) => {
+       return new Promise(resolve => setTimeout(resolve, timeout));
+   }
+
+   const onRefresh = React.useCallback(() => {
+     setRefreshing(true);
+     alert('Refreshed');
+     fetchUserFriendArray();
+     wait(2000).then(() => setRefreshing(false));
+   }, []);
 
   const fetchUserFriendArray = async () => {
 
@@ -56,21 +69,18 @@ export default function Friends ({navigation}) {
           } , []
   )
 
-  useEffect(() =>
-  {
-  fetchUserFriendArray();
-  },[updateFriends]
-  )
-
  const updateFriendsFunction = () => {
-    setUpdateFriends(true);
+    fetchUserFriendArray();
+    alert("friend list updated!");
   }
 
 
     return (
     <SafeAreaView style={styles.container}>
     <View style={styles.friendContainer}>
-    <FriendSearch navigation={navigation} array={userFriendArray? userFriendArray.friends: []} />
+    <FriendSearch navigation={navigation}
+    array={userFriendArray? userFriendArray.friends: []}
+    updateFriendsNow={updateFriendsFunction} />
     </View>
 
 

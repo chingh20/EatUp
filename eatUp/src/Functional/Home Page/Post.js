@@ -49,6 +49,7 @@ export default function Post({ navigation, route }) {
     });
 
     let url = await reference.getDownloadURL();
+
     const uploadData = {
       id: id,
       postPhoto: url,
@@ -58,24 +59,36 @@ export default function Post({ navigation, route }) {
       postGeoCoordinates: post.geoCoordinates,
       likes: [],
       wantToGo: [],
-      comments: null,
+      comments: 0,
       user: username,
       timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
     };
 
-    firebase.firestore().collection(username).doc(id).set(uploadData);
+    firebase.firestore().collection(username).doc(id).set(uploadData).then(() => {
+        firebase.firestore().collection("Posts").doc(id).set(uploadData);
 
-    firebase.firestore().collection("Posts").doc(id).set(uploadData);
+        if (newTag.value != "") {
+         firebase
+              .firestore()
+              .collection("users")
+              .doc(username)
+              .update({
+                posts: firebase.firestore.FieldValue.arrayUnion(id),
+                customTags: firebase.firestore.FieldValue.arrayUnion(newTag.value),
+              });
+        } else {
+         firebase
+              .firestore()
+              .collection("users")
+              .doc(username)
+              .update({
+                posts: firebase.firestore.FieldValue.arrayUnion(id),
+              });
+        }
 
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(username)
-      .update({
-        posts: firebase.firestore.FieldValue.arrayUnion(
-          id
-        ),
-      });
+     })
+     .catch((e)=>{alert(e)})
+
   };
 
   const selectImage = async () => {
@@ -96,8 +109,17 @@ export default function Post({ navigation, route }) {
   const [location, setLocation] = useState({ value: "", error: "" });
   const [description, setDescription] = useState({ value: "", error: "" });
   const [geolocation, setGeolocation] = useState({ value: "", error: "" });
+  const [userData, setUserData] = useState(null);
+  const [newTag, setNewTag] = useState({ value: "", error: "" });
 
-  const handleTagUpdate = (text) => setTag({ value: text, error: "" });
+
+  const handleTagUpdate = (text) => {
+      setTag({ value: text, error: "" });
+  }
+  const handleNewTagUpdate = (text) => {
+      setNewTag({ value: text, error: "" });
+  }
+
   const handleImageUpdate = (image) => setImage({ value: image, error: "" });
   const handleLocationUpdate = (text) =>
     setLocation({ value: text, error: "" });
@@ -121,7 +143,7 @@ export default function Post({ navigation, route }) {
   }
 
   function geolocationCheck(geolocation) {
-    if (!geolocation) return "Loading geolocation...";
+    if (!geolocation) return "Geolocation must be loaded to post";
   }
 
   useEffect(() => {
@@ -142,6 +164,7 @@ export default function Post({ navigation, route }) {
     }
   }, [route.params]);
 
+  useEffect(() => {getUserDetails()},[])
   let text = "";
   if (!geolocation.value) {
     text = "Waiting for geolocation...";
@@ -149,6 +172,7 @@ export default function Post({ navigation, route }) {
 
   const onSubmit = async () => {
     const tagError = titleCheck(tag.value);
+    const newTagError = (tag.value == "New Tags!") ? titleCheck(newTag.value) : null;
     const imageError = imageCheck(image.value);
     const locationError = titleCheck(location.value);
     const descriptionError = titleCheck(description.value);
@@ -156,12 +180,14 @@ export default function Post({ navigation, route }) {
 
     if (
       tagError ||
+      newTagError ||
       imageError ||
       locationError ||
       descriptionError ||
       geolocationError
     ) {
-      setTag({ ...tag, error: tagError });
+
+      setNewTag({ ...newTag, error: newTagError });
       setImage({ ...image, error: imageError });
       setLocation({ ...location, error: locationError });
       setDescription({ ...description, error: descriptionError });
@@ -172,7 +198,7 @@ export default function Post({ navigation, route }) {
     try {
       const post = {
         photo: image.value,
-        tag: tag.value,
+        tag: newTag.value? newTag.value : tag.value,
         location: location.value,
         description: description.value,
         geoCoordinates: geolocation
@@ -185,10 +211,12 @@ export default function Post({ navigation, route }) {
 
       upload(post);
 
+
       handleImageUpdate(null);
       handleLocationUpdate("");
       handleDescriptionUpdate("");
       handleTagUpdate("");
+      handleNewTagUpdate("");
       handleGeolocationUpdate("");
     } catch (e) {
       alert(e);
@@ -196,17 +224,59 @@ export default function Post({ navigation, route }) {
     }
   };
 
-  let index = 0;
-  const data = [
-    { key: index++, label: "Indian" },
-    { key: index++, label: "Chinese" },
-    { key: index++, label: "Korean" },
-    { key: index++, label: "Western" },
-    { key: index++, label: "Fast Food" },
-    { key: index++, label: "Drinks" },
-    { key: index++, label: "Desserts" },
-    { key: index++, label: "Japanese"},
-  ];
+
+  const getUserDetails = async () => {
+   if (username == null) return;
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(username)
+      .get()
+      .then((documentSnapshot) => {
+         setUserData(documentSnapshot.data());
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+
+    const defaultData = [
+      { key: 0, label: "Indian" },
+      { key: 1, label: "Chinese" },
+      { key: 2, label: "Korean" },
+      { key: 3, label: "Western" },
+      { key: 4, label: "Fast Food" },
+      { key: 5, label: "Drinks" },
+      { key: 6, label: "Desserts" },
+      { key: 7, label: "Japanese" },
+      { key: 8, label: "New Tags!" },
+    ];
+
+  const modalSelectorData = (tags) => {
+
+   const totalTags = tags.length
+   if (totalTags > 0) {
+       let index = 0;
+       const data = [
+         { key: index++, label: "Indian" },
+         { key: index++, label: "Chinese" },
+         { key: index++, label: "Korean" },
+         { key: index++, label: "Western" },
+         { key: index++, label: "Fast Food" },
+         { key: index++, label: "Drinks" },
+         { key: index++, label: "Desserts" },
+         { key: index++, label: "Japanese" },
+       ];
+
+     for (let i = 0; i < totalTags; i++) {
+        data.push({ key: index++, label: tags[i] })
+     }
+     data.push({ key: index++, label: "New Tags!" })
+     return data;
+   } else {
+     return defaultData;
+   }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -246,7 +316,7 @@ export default function Post({ navigation, route }) {
           )}
           <View style={styles.detailContainer}>
             <ModalSelector
-              data={data}
+              data={userData? modalSelectorData(userData.customTags) : defaultData}
               initValue="Select the type of food!"
               touchableStyle={styles.picker}
               accessible={true}
@@ -267,6 +337,17 @@ export default function Post({ navigation, route }) {
               />
             </ModalSelector>
 
+            {tag.value == "New Tags!" ?
+             <TextInput
+               placeholder="Enter your new tag!"
+               style={styles.textInput}
+               value={newTag.value}
+               onChangeText={handleNewTagUpdate}
+               error={!!newTag.error}
+               errorText={newTag.error}
+             /> : null
+            }
+
             <TextInput
               placeholder="Enter location of the post"
               style={styles.textInput}
@@ -284,6 +365,7 @@ export default function Post({ navigation, route }) {
               errorText={description.error}
             />
             <Text>{text} </Text>
+            <Text style={styles.errorText}>{geolocation.error}</Text>
             <TouchableOpacity style={styles.button} onPress={onSubmit}>
               <Text style={styles.btnText}> Add post </Text>
             </TouchableOpacity>

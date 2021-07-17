@@ -5,13 +5,12 @@ import FriendListFormat from '../Components/FriendListFormat'
 
 
 
-export default function FriendSearch({array, navigation}) {
+export default function FriendSearch({array, navigation, updateFriendsNow}) {
 
     var user = firebase.auth().currentUser
     var userDisplayName = user.displayName
 
     const [userFriends, setUserFriends] = useState(null)
-
 
 
     const fetchUsers = (search) => {
@@ -37,9 +36,12 @@ export default function FriendSearch({array, navigation}) {
                 <FriendListFormat
                 friends={item}
                 navigation= {navigation}
-                friendArray = {array}/>
+                friendArray = {array}
+                updateFriends={updateFriendsNow}
+                />
                 )}
                 keyExtractor={(item) => item}
+                keyboardShouldPersistTaps="always"
             />
         </View>
     )

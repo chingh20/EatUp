@@ -6,14 +6,29 @@ import UserSearchListFormat from '../Components/UserSearchListFormat'
 export default function SearchBar({navigation}) {
 
     const [users, setUsers] = useState([]);
-    const [searchText, setSearchText] = useState(null);
+    const [searchText, setSearchText] = useState('');
     const [userData, setUserData] = useState(null);
     const [userFriendNetwork, setUserFriendNetwork] = useState(null);
     const username = firebase.auth().currentUser.displayName;
 
-    handleSearchTextUpdate = (search) => setSearchText(search);
+    const handleSearchTextUpdate = (search) => {
+    setSearchText(search);
+    return search;
+    }
+
+     React.useEffect(() => {
+        const unsubscribe = navigation.addListener("focus", () => {
+         // alert("Refreshed");
+          getUserDetails();
+          getUserFriendNetwork();
+          handleSearchTextUpdate('');
+          fetchUsers('');
+        });
+        return unsubscribe;
+      }, [navigation]);
 
     const fetchUsers = (search) => {
+    if (search == '') { setUsers([])};
     if(search.length > 0 && search != " ") {
     firebase.firestore()
                 .collection('users')
@@ -28,8 +43,6 @@ export default function SearchBar({navigation}) {
                   });
                     setUsers(user);
                 })
-    } else {
-    setUsers([])
     }
     }
 
@@ -65,6 +78,10 @@ export default function SearchBar({navigation}) {
           });
       };
 
+    const updateFriends = () => {
+        getUserFriendNetwork();
+    }
+
     const onPressed = (item) => {
         const friends = userFriendNetwork ? userFriendNetwork.friends : [];
         if (item.username == username) {
@@ -72,7 +89,7 @@ export default function SearchBar({navigation}) {
         return;}
         if (friends.includes(item.username)){
            setUsers([])
-           handleSearchTextUpdate(null)
+           handleSearchTextUpdate('')
            navigation.navigate('OtherUser', {otherUser: item.username, otherUserFriendArray: friends})
         } else {
          alert('Viewing profile is only available after adding friend')
@@ -92,6 +109,7 @@ export default function SearchBar({navigation}) {
             <TextInput
                 style= {styles.textInput}
                 placeholder="Search"
+                value={searchText}
                 onChangeText={(search) => fetchUsers(handleSearchTextUpdate(search))} />
 
      <FlatList
@@ -101,10 +119,11 @@ export default function SearchBar({navigation}) {
                 users={item}
                 onPress = {() => onPressed(item)}
                 userFriendArray ={userFriendNetwork}
+                updateFriendArray ={updateFriends}
                 />
                 )}
                 keyExtractor={(item) => item.username}
-                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="always"
             />
         </View>
     )

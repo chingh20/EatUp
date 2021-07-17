@@ -62,9 +62,23 @@ export default function OtherUser({navigation, route}) {
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
   const [markerPressed, setMarkerPressed] = useState(null);
   const [friendArray, setFriendArray] = useState(null);
-
+  const [userFriendNetwork, setUserFriendNetwork] = useState(null);
   const currentUser = firebase.auth().currentUser.displayName;
 
+    const getUserFriendNetwork = async () => {
+      if (username == null) return;
+      await firebase
+        .firestore()
+        .collection("FriendNetwork")
+        .doc(username)
+        .get()
+        .then((documentSnapshot) => {
+            setUserFriendNetwork(documentSnapshot.data());
+        })
+        .catch((e) => {
+          alert(e);
+        });
+    };
 
   const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
   const postMarkerFilterIcon = postMarkerFilter ? "eye" : "eye-outline";
@@ -272,7 +286,7 @@ export default function OtherUser({navigation, route}) {
         <Text style={styles.name}>{username}</Text>
         <Text>
         {" "}
-        Following {userData ? userData.friends.length : null} other Food
+        Following {userFriendNetwork ? userFriendNetwork.friends.length : null} other Food
         Lover(s)!{" "}
         </Text>
         </View>
