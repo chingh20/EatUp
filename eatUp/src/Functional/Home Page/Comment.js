@@ -1,5 +1,5 @@
 import { firebase } from "../../firebase/config";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconButton,
   RefreshControl,
@@ -16,8 +16,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { CustomizedTextInput as TextInput } from "../Components/CustomizedTextInput";
-import CommentBar from "./CommentBar";
-import CommentFormat from "../Components/CommentFormat";
+
 
 const Comment = ({ navigation, route }) => {
   const currentUser = firebase.auth().currentUser.displayName;
@@ -44,10 +43,12 @@ const Comment = ({ navigation, route }) => {
   }, []);
 
   const [loading, setLoading] = useState(true);
+
   const [comment, setComment] = useState([]);
 
 
   const fetchComments = async () => {
+  alert(route.params.postId)
           try {
             const list = [];
 
@@ -65,7 +66,6 @@ const Comment = ({ navigation, route }) => {
                           timestamp,
                           commentText
                       } = doc.data();
-
 
                       list.push({
                       commenter: user,
@@ -86,35 +86,32 @@ const Comment = ({ navigation, route }) => {
               }
 
               } catch (e) {
-              console.log(e)
+              alert(e)
               }
       }
 
-      useEffect(() => {
-      if(route.params) {
-           if (route.params.postComments > 0) {
-              fetchComments();
-           }
-      }},[]
-      )
+//      useEffect(() => {
+//      if(route.params) {
+//           if (route.params.postComments > 0) {
+//           alert(route.params.postComments)
+//            // fetchComments();
+//            return;
+//           }
+//      }},[]
+//      )
 
        const onUserPressed = (item) => {
                const friendArray = route.params.userFriends;
                if (item.user == currentUser) {
                   navigation.navigate('Home');
                }
-               else if (friendArray.includes(item.user)){
-
+               else if (friendArray && friendArray.includes(item.user)){
                   navigation.navigate('OtherUser', {otherUser: item.user, otherUserFriendArray: friendArray})
                } else {
                   alert('Viewing profile is only available after adding friend')
                }
        }
 
-
-      const listHeader = () => {
-        return null;
-      }
 
       return (
       <SafeAreaView style={styles.container}>
@@ -134,34 +131,9 @@ const Comment = ({ navigation, route }) => {
         <Text>Comments</Text>
       </View>
 
-         <FlatList
-                 refreshControl={
-                   <RefreshControl
-                     refreshing={refreshing}
-                     onRefresh={onRefresh}
-                   />
-                 }
-            data={comment}
-            renderItem={(item) => (
-               <CommentFormat
-                 commentDoc={item}
-                 postId={route.params.postId}
-                 owner={route.params.postOwner}
-                 onPress={() => onUserPressed(item)}
-               />
-            )}
-            keyExtractor={(item) => item.user}
-//            ListHeaderComponent={
-//            <CommentBar
-//            postId={route.params? route.params.postId:null}
-//            owner={route.params? route.params.postOwner:null} />}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="always"
-         />
       </KeyboardAvoidingView>
       </SafeAreaView>
       )
-
  }
 
 
