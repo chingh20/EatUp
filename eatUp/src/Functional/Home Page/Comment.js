@@ -1,7 +1,6 @@
 import { firebase } from "../../firebase/config";
 import React, { useState, useEffect } from "react";
 import {
-  IconButton,
   RefreshControl,
   Image,
   Text,
@@ -14,8 +13,11 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
+import { IconButton } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { CustomizedTextInput as TextInput } from "../Components/CustomizedTextInput";
+import CommentBar from "./CommentBar";
+import CommentFormat from "../Components/CommentFormat";
 
 
 const Comment = ({ navigation, route }) => {
@@ -24,7 +26,7 @@ const Comment = ({ navigation, route }) => {
   React.useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
         alert('Refreshed');
-     //   fetchComments();
+        fetchComments();
       });
       return unsubscribe;
     }, [navigation]);
@@ -38,7 +40,7 @@ const Comment = ({ navigation, route }) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     alert('Refreshed');
-   // fetchComments();
+    fetchComments();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
@@ -90,15 +92,15 @@ const Comment = ({ navigation, route }) => {
               }
       }
 
-//      useEffect(() => {
-//      if(route.params) {
-//           if (route.params.postComments > 0) {
-//           alert(route.params.postComments)
-//            // fetchComments();
-//            return;
-//           }
-//      }},[]
-//      )
+      useEffect(() => {
+      if(route.params) {
+           if (route.params.postComments > 0) {
+           alert(route.params.postComments)
+             fetchComments();
+            return;
+           }
+      }},[]
+      )
 
        const onUserPressed = (item) => {
                const friendArray = route.params.userFriends;
@@ -130,6 +132,32 @@ const Comment = ({ navigation, route }) => {
         />
         <Text>Comments</Text>
       </View>
+       <FlatList
+                        refreshControl={
+                          <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                          />
+                        }
+                   data={comment}
+                   renderItem={({item}) => (
+                      <CommentFormat
+                        commentDoc={item}
+                        postId={route.params.postId}
+                        owner={route.params.postOwner}
+                        onPress={() => onUserPressed(item)}
+                      />
+                   )}
+                   keyExtractor={(item) => item.user}
+                   ListHeaderComponent={
+                   <CommentBar
+                   postId={route.params? route.params.postId:null}
+                   owner={route.params? route.params.postOwner:null} />}
+                   showsVerticalScrollIndicator={false}
+                   keyboardShouldPersistTaps="always"
+                />
+
+
 
       </KeyboardAvoidingView>
       </SafeAreaView>
@@ -137,7 +165,6 @@ const Comment = ({ navigation, route }) => {
  }
 
 
-export default Comment;
 
 const styles = StyleSheet.create({
   scroll: {
@@ -205,3 +232,6 @@ const styles = StyleSheet.create({
        justifyContent: "flex-start",
      },
 });
+
+
+export default Comment;

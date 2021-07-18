@@ -165,7 +165,7 @@ const Feed = (props) => {
 
        const onCommentPressed = (item) => {
            alert('Comment')
-           props.navigation.navigate('Comment', {postId: item.id, postOwner: item.user, postComment: item.comments});
+           props.navigation.navigate('Comment', {postId: item.id, postOwner: item.user, postComment: item.comments, userFriends: userFriendNetwork? userFriendNetwork.friends : []});
        }
 
       const listHeader = () => {

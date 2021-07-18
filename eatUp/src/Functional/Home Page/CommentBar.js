@@ -1,7 +1,6 @@
 import { firebase } from "../../firebase/config";
 import React, { useState, useEffect } from "react";
 import {
-  IconButton,
   RefreshControl,
   Image,
   Text,
@@ -15,6 +14,7 @@ import {
   FlatList,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { IconButton } from "react-native-paper";
 import { CustomizedTextInput as TextInput } from "../Components/CustomizedTextInput";
 
 const CommentBar = ({postId, owner}) => {
@@ -36,7 +36,7 @@ const CommentBar = ({postId, owner}) => {
       .collection(owner)
       .doc(postId)
       .collection("Comments")
-      .doc(username)
+      .doc(currentUser)
       .set(uploadData)
       .then(() => {
         firebase
@@ -44,7 +44,7 @@ const CommentBar = ({postId, owner}) => {
           .collection("Posts")
           .doc(postId)
           .collection("Comments")
-          .doc(username)
+          .doc(currentUser)
           .set(uploadData);
 
         firebase.firestore().collection(owner).doc(postId).update({comments: firebase.firestore.FieldValue.increment(1)})
