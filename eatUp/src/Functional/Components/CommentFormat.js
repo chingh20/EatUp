@@ -18,7 +18,7 @@ import { Divider } from "react-native-elements";
 
 const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
   var currentUser = firebase.auth().currentUser;
-  const [userData, setUserData] = useState(null);
+
   const [likeComment, setLikeComment] = useState(commentDoc.liked);
   const [likeIcon, setLikeIcon] = useState(
     commentDoc.liked ? "heart" : "heart-outline"
@@ -31,7 +31,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
   useEffect(() => {
     setLikeIcon(likeComment ? "heart" : "heart-outline");
     setLikeText(showLikes(likes));
-  }, [likePost]);
+  }, [likeComment]);
 
   function showLikes(likes) {
     if (likes == 1) {
@@ -64,7 +64,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
         likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
       });
       setLikes(likes - 1);
-      setLikePost(false);
+      setLikeComment(false);
     } else {
       targetPublicPostComment.update({
         likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
@@ -73,13 +73,13 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
         likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
       });
       setLikes(likes + 1);
-      setLikePost(true);
+      setLikeComment(true);
     }
   };
 
   useEffect(() => {
     setDeleted(false);
-  }, [post]);
+  }, [commentDoc]);
 
   const onDeletePressed = (currentUsername, postId, postOwner) => {
     Alert.alert("DELETE", "Are you sure to delete this post?", [
@@ -104,13 +104,12 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
                 .firestore()
                 .collection(postOwner)
                 .doc(postId)
-                .collection(currentUsername)
-                .doc(postId)
+                .collection('Comments')
+                .doc(currentUsername)
                 .delete();
 
               firebase.firestore().collection(postOwner).doc(postId).update({comments: firebase.firestore.FieldValue.increment(-1)})
               firebase.firestore().collection("Posts").doc(postId).update({comments: firebase.firestore.FieldValue.increment(-1)})
-
               setDeleted(true);
             })
             .catch((error) => {
@@ -155,7 +154,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
                   size={20}
                   color="#3e1f0d"
                   onPress={() =>
-                    onLikePost(
+                    onLikeComment(
                       currentUser.displayName,
                       owner,
                       postId,

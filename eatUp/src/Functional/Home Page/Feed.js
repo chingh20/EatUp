@@ -106,7 +106,7 @@ const Feed = (props) => {
 
 
                       list.push({
-                      id: doc.id,
+                      id: id,
                       user: user,
                       postPhoto,
                       postTag,
@@ -165,8 +165,7 @@ const Feed = (props) => {
 
        const onCommentPressed = (item) => {
            alert('Comment')
-           props.navigation.navigate('Comment',
-           {postId: item.id, postOwner: item.user, userFriends: userFriendNetwork? userFriendNetwork.friends : [], postComment: item.comments});
+           props.navigation.navigate('Comment', {postId: item.id, postOwner: item.user, postComment: item.comments});
        }
 
       const listHeader = () => {
@@ -177,12 +176,12 @@ const Feed = (props) => {
       <SafeAreaView style={styles.container}>
 
          <FlatList
-                 refreshControl={
+            refreshControl={
                    <RefreshControl
                      refreshing={refreshing}
                      onRefresh={onRefresh}
                    />
-                 }
+            }
             data={post}
             renderItem={({item}) => (
                <PostFormat
