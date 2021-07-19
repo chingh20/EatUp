@@ -24,11 +24,15 @@ const CommentBar = ({postId, owner}) => {
   const handleCommentUpdate = (text) => setComment({ value: text, error: "" });
 
   const upload = async (commentText) => {
+
+  const uploadTime = firebase.firestore.Timestamp.fromDate(new Date())
+  const commentName = currentUser + "-" + uploadTime
+
     const uploadData = {
       commentText: commentText,
       likes: [],
       user: currentUser,
-      timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
+      timestamp: uploadTime,
     };
 
     firebase
@@ -36,7 +40,7 @@ const CommentBar = ({postId, owner}) => {
       .collection(owner)
       .doc(postId)
       .collection("Comments")
-      .doc(currentUser)
+      .doc(commentName)
       .set(uploadData)
       .then(() => {
         firebase
@@ -44,7 +48,7 @@ const CommentBar = ({postId, owner}) => {
           .collection("Posts")
           .doc(postId)
           .collection("Comments")
-          .doc(currentUser)
+          .doc(commentName)
           .set(uploadData);
 
         firebase.firestore().collection(owner).doc(postId).update({comments: firebase.firestore.FieldValue.increment(1)})
@@ -65,6 +69,7 @@ const CommentBar = ({postId, owner}) => {
 
     if (commentError) {
       setComment({ ...comment, error: commentError });
+      return;
     }
 
     try {
@@ -93,7 +98,6 @@ const CommentBar = ({postId, owner}) => {
         onPress={onSubmit}
         color="#3e1f0d"
         size={30}
-        style={{ padding: 2 }}
        />
     </View>
   );
@@ -104,8 +108,8 @@ export default CommentBar;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fffbf1",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
     flexDirection:"row",
   },
   textInput: {

@@ -43,19 +43,19 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
     }
   }
 
-  const onLikeComment = (currentUsername, postUser, postId, commenter) => {
+  const onLikeComment = (currentUsername, postUser, postId, commentId) => {
     const targetPublicPostComment = firebase
       .firestore()
       .collection("Posts")
       .doc(postId)
       .collection("Comments")
-      .doc(commenter);
+      .doc(commentId);
     const targetPrivatePostComment = firebase
       .firestore()
       .collection(postUser)
       .doc(postId)
       .collection("Comments")
-      .doc(commenter);
+      .doc(commentId);
     if (likeComment) {
       targetPublicPostComment.update({
         likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
@@ -81,7 +81,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
     setDeleted(false);
   }, [commentDoc]);
 
-  const onDeletePressed = (currentUsername, postId, postOwner) => {
+  const onDeletePressed = (postId, postOwner, commentId) => {
     Alert.alert("DELETE", "Are you sure to delete this post?", [
       {
         text: "Cancel",
@@ -97,19 +97,31 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
             .collection("Posts")
             .doc(postId)
             .collection("Comments")
-            .doc(currentUsername)
+            .doc(commentId)
             .delete()
             .then(() => {
               firebase
                 .firestore()
                 .collection(postOwner)
                 .doc(postId)
-                .collection('Comments')
-                .doc(currentUsername)
+                .collection("Comments")
+                .doc(commentId)
                 .delete();
 
-              firebase.firestore().collection(postOwner).doc(postId).update({comments: firebase.firestore.FieldValue.increment(-1)})
-              firebase.firestore().collection("Posts").doc(postId).update({comments: firebase.firestore.FieldValue.increment(-1)})
+              firebase
+                .firestore()
+                .collection(postOwner)
+                .doc(postId)
+                .update({
+                  comments: firebase.firestore.FieldValue.increment(-1),
+                });
+              firebase
+                .firestore()
+                .collection("Posts")
+                .doc(postId)
+                .update({
+                  comments: firebase.firestore.FieldValue.increment(-1),
+                });
               setDeleted(true);
             })
             .catch((error) => {
@@ -132,40 +144,39 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
 
             <Text style={styles.description}>{commentDoc.commentText}</Text>
           </View>
+                      <View style={styles.likeBar}>
+                        <Text style={styles.time}>
+                          {moment(commentDoc.timestamp.toDate()).fromNow()}
+                        </Text>
 
-          <View style={styles.likeBar}>
-            <Text style={styles.time}>
-              {moment(commentDoc.timestamp.toDate()).fromNow()}
-            </Text>
-
-            {currentUser.displayName == commentDoc.user ? (
-              <IconButton
-                icon="delete"
-                size={20}
-                color="#3e1f0d"
-                onPress={() =>
-                  onDeletePressed(currentUser.displayName, postId, owner)
-                }
-              />
-            ) : (
-              <View>
-                <IconButton
-                  icon={likeIcon}
-                  size={20}
-                  color="#3e1f0d"
-                  onPress={() =>
-                    onLikeComment(
-                      currentUser.displayName,
-                      owner,
-                      postId,
-                      commentDoc.user
-                    )
-                  }
-                />
-                <Text style={styles.statusText}>{likeText}</Text>
-              </View>
-            )}
-          </View>
+                        {currentUser.displayName == commentDoc.user ? (
+                          <IconButton
+                            icon="delete"
+                            size={20}
+                            color="#3e1f0d"
+                            onPress={() =>
+                              onDeletePressed(postId, owner, currentUser.displayName + "-" + commentDoc.timestamp)
+                            }
+                          />
+                        ) : (
+                          <View>
+                            <IconButton
+                              icon={likeIcon}
+                              size={20}
+                              color="#3e1f0d"
+                              onPress={() =>
+                                onLikeComment(
+                                  currentUser.displayName,
+                                  owner,
+                                  postId,
+                                  commentDoc.user + "-" + commentDoc.timestamp
+                                )
+                              }
+                            />
+                            <Text style={styles.statusText}>{likeText}</Text>
+                          </View>
+                        )}
+                      </View>
         </View>
       ) : null}
     </View>
@@ -178,12 +189,13 @@ const styles = StyleSheet.create({
   postContainer: {
     flex: 1,
     width: 350,
-    height: 70,
+
     backgroundColor: "#fdf4da",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "stretch",
     marginBottom: 5,
     borderRadius: 10,
+    flexDirection: "column",
   },
 
   userInfoText: {
@@ -210,6 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#ff5757",
+    height: 30,
     borderRadius: 10,
   },
   statusText: {

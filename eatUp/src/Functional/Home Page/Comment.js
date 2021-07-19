@@ -45,12 +45,12 @@ const Comment = ({ navigation, route }) => {
   }, []);
 
   const [loading, setLoading] = useState(true);
-
+  const [load, setLoad] = useState(false);
   const [comment, setComment] = useState([]);
 
 
   const fetchComments = async () => {
-  alert(route.params.postId)
+  setLoad(true)
           try {
             const list = [];
 
@@ -70,7 +70,7 @@ const Comment = ({ navigation, route }) => {
                       } = doc.data();
 
                       list.push({
-                      commenter: user,
+                      user: user,
                       timestamp: timestamp,
                       liked: likes.includes(currentUser),
                       likes: likes.length,
@@ -95,7 +95,6 @@ const Comment = ({ navigation, route }) => {
       useEffect(() => {
       if(route.params) {
            if (route.params.postComments > 0) {
-           alert(route.params.postComments)
              fetchComments();
             return;
            }
@@ -132,7 +131,7 @@ const Comment = ({ navigation, route }) => {
         />
         <Text>Comments</Text>
       </View>
-       <FlatList
+       {load ? <FlatList
                         refreshControl={
                           <RefreshControl
                             refreshing={refreshing}
@@ -155,7 +154,7 @@ const Comment = ({ navigation, route }) => {
                    owner={route.params? route.params.postOwner:null} />}
                    showsVerticalScrollIndicator={false}
                    keyboardShouldPersistTaps="always"
-                />
+                /> : null}
 
 
 
