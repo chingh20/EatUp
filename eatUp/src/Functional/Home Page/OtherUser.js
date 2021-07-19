@@ -23,15 +23,15 @@ import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
 import FastFoodIcon from "../../../assets/FastFoodIcon.jpeg";
 
-export default function OtherUser({navigation, route}) {
+export default function OtherUser({ navigation, route }) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      let person ='';
+      let person = "";
       if (route.params) {
-          person = route.params.otherUser;
-          setFriendArray(route.params.otherUserFriendArray);
+        person = route.params.otherUser;
+        setFriendArray(route.params.otherUserFriendArray);
       } else {
-          person = firebase.auth().currentUser.displayName;
+        person = firebase.auth().currentUser.displayName;
       }
       getUsername(person);
       getUserDetails(person);
@@ -65,20 +65,20 @@ export default function OtherUser({navigation, route}) {
   const [userFriendNetwork, setUserFriendNetwork] = useState(null);
   const currentUser = firebase.auth().currentUser.displayName;
 
-    const getUserFriendNetwork = async () => {
-      if (username == null) return;
-      await firebase
-        .firestore()
-        .collection("FriendNetwork")
-        .doc(username)
-        .get()
-        .then((documentSnapshot) => {
-            setUserFriendNetwork(documentSnapshot.data());
-        })
-        .catch((e) => {
-          alert(e);
-        });
-    };
+  const getUserFriendNetwork = async () => {
+    if (username == null) return;
+    await firebase
+      .firestore()
+      .collection("FriendNetwork")
+      .doc(username)
+      .get()
+      .then((documentSnapshot) => {
+        setUserFriendNetwork(documentSnapshot.data());
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
 
   const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
   const postMarkerFilterIcon = postMarkerFilter ? "eye" : "eye-outline";
@@ -103,11 +103,9 @@ export default function OtherUser({navigation, route}) {
     }
   };
 
-
   const getUsername = (person) => {
-      setUserName(person);
-  }
-
+    setUserName(person);
+  };
 
   const getUserDetails = async (person) => {
     await firebase
@@ -230,37 +228,49 @@ export default function OtherUser({navigation, route}) {
     }
   };
 
-
-
   const onUserPressed = (markerPressed) => {
-          if (friendArray == null){
-          alert('Viewing profile is only available after adding friend')
-          return;}
-          if (markerPressed.user == currentUser) {
-          alert(currentUser)
-          navigation.navigate('Home')
-          return;
-          }
-          if (friendArray.includes(markerPressed.user)){
-             navigation.navigate('OtherUser', {otherUser: markerPressed.user, otherUserFriendArray: friendArray})
-          } else {
-           alert('Viewing profile is only available after adding friend')
-          }
-  }
+    if (friendArray == null) {
+      alert("Viewing profile is only available after adding friend");
+      return;
+    }
+    if (markerPressed.user == currentUser) {
+      alert(currentUser);
+      navigation.navigate("Home");
+      return;
+    }
+    if (friendArray.includes(markerPressed.user)) {
+      navigation.navigate("OtherUser", {
+        otherUser: markerPressed.user,
+        otherUserFriendArray: friendArray,
+      });
+    } else {
+      alert("Viewing profile is only available after adding friend");
+    }
+  };
+
+  const onCommentPressed = (item) => {
+    navigation.navigate("Comment", {
+      postId: item.id,
+      postOwner: item.user,
+      postComment: item.comments,
+      userFriends: userFriendNetwork ? userFriendNetwork.friends : [],
+    });
+  };
 
   const markerIcon = (postTag) => {
-        if (postTag == "Fast Food") {
-        return FastFoodIcon
-        } else {
-        return null}
-  }
+    if (postTag == "Fast Food") {
+      return FastFoodIcon;
+    } else {
+      return null;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.homecontainer}>
       <View style={styles.upper}>
         <IconButton
           icon="home-import-outline"
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate("Home")}
           color="#3e1f0d"
           size={30}
           style={{ margin: 0 }}
@@ -268,29 +278,30 @@ export default function OtherUser({navigation, route}) {
       </View>
 
       <View style={styles.middle}>
-      <View style={styles.userInfo}>
-        <Avatar
-          rounded
-          size="large"
-          avatarStyle={{ width: 100, height: 100, borderRadius: 50 }}
-          containerStyle={{
-            width: 100,
-            height: 100,
-            borderWidth: 1,
-            borderRadius: 50,
-            marginBottom: 10,
-          }}
-          source={{ uri: userData ? userData.displayPicture : null }}
-        />
-        <View style={styles.userInfoText}>
-        <Text style={styles.name}>{username}</Text>
-        <Text>
-        {" "}
-        Following {userFriendNetwork ? userFriendNetwork.friends.length : null} other Food
-        Lover(s)!{" "}
-        </Text>
+        <View style={styles.userInfo}>
+          <Avatar
+            rounded
+            size="large"
+            avatarStyle={{ width: 100, height: 100, borderRadius: 50 }}
+            containerStyle={{
+              width: 100,
+              height: 100,
+              borderWidth: 1,
+              borderRadius: 50,
+              marginBottom: 10,
+            }}
+            source={{ uri: userData ? userData.displayPicture : null }}
+          />
+          <View style={styles.userInfoText}>
+            <Text style={styles.name}>{username}</Text>
+            <Text>
+              {" "}
+              Following{" "}
+              {userFriendNetwork ? userFriendNetwork.friends.length : null}{" "}
+              other Food Lover(s)!{" "}
+            </Text>
+          </View>
         </View>
-      </View>
 
         <MapView
           ref={mapRef}
@@ -301,29 +312,33 @@ export default function OtherUser({navigation, route}) {
           minZoomLevel={10}
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
-          clusterColor='#fffbf1'
-          clusterTextColor='black'
+          clusterColor="#fffbf1"
+          clusterTextColor="black"
         >
-           {wantToGo && starMarkerFilter
-                      ? wantToGo.map((post) => (
-                          <Marker
-                            onPress={() => onMarkerPressed(post)}
-                            pinColor={"#fffcc7"}
-                            key={post.id}
-                            coordinate={{
-                              latitude: post.postGeoCoordinates.latitude,
-                              longitude: post.postGeoCoordinates.longitude,
-                            }}
-                          >
-
-                              <Callout tooltip style={styles.calloutBox}>
-                              <Image style={{ width: 30, height:30 }} source={markerIcon(post.postTag)} />
-                              <Text style={styles.tagTextCallout}>{post.postTag}</Text>
-                              <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
-                              </Callout>
-                          </Marker>
-                        ))
-                      : null}
+          {wantToGo && starMarkerFilter
+            ? wantToGo.map((post) => (
+                <Marker
+                  onPress={() => onMarkerPressed(post)}
+                  pinColor={"#fffcc7"}
+                  key={post.id}
+                  coordinate={{
+                    latitude: post.postGeoCoordinates.latitude,
+                    longitude: post.postGeoCoordinates.longitude,
+                  }}
+                >
+                  <Callout tooltip style={styles.calloutBox}>
+                    <Image
+                      style={{ width: 30, height: 30 }}
+                      source={markerIcon(post.postTag)}
+                    />
+                    <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                    <Text style={styles.locationTextCallout}>
+                      {post.postLocation}
+                    </Text>
+                  </Callout>
+                </Marker>
+              ))
+            : null}
 
           {postPlaces && postMarkerFilter ? (
             postPlaces.map((post) => (
@@ -335,11 +350,16 @@ export default function OtherUser({navigation, route}) {
                 }}
                 onPress={() => onMarkerPressed(post)}
               >
-              <Callout tooltip style={styles.calloutBox}>
-                 <Image style={{ width: 30, height:30 }} source={markerIcon(post.postTag)} />
-                 <Text style={styles.tagTextCallout}>{post.postTag}</Text>
-                 <Text style={styles.locationTextCallout}>{post.postLocation}</Text>
-              </Callout>
+                <Callout tooltip style={styles.calloutBox}>
+                  <Image
+                    style={{ width: 30, height: 30 }}
+                    source={markerIcon(post.postTag)}
+                  />
+                  <Text style={styles.tagTextCallout}>{post.postTag}</Text>
+                  <Text style={styles.locationTextCallout}>
+                    {post.postLocation}
+                  </Text>
+                </Callout>
               </Marker>
             ))
           ) : (
@@ -364,11 +384,11 @@ export default function OtherUser({navigation, route}) {
           style={{ margin: 0 }}
         />
         <IconButton
-          icon='crosshairs-gps'
-                  onPress={animateToRegion}
-                  color="#3e1f0d"
-                  size={30}
-                  style={{ margin: 0 }}
+          icon="crosshairs-gps"
+          onPress={animateToRegion}
+          color="#3e1f0d"
+          size={30}
+          style={{ margin: 0 }}
         />
       </View>
 
@@ -376,7 +396,8 @@ export default function OtherUser({navigation, route}) {
         {markerPressed ? (
           <PostViewMapFormat
             markerPost={markerPressed}
-            onPress={() =>onUserPressed(markerPressed)}
+            onPress={() => onUserPressed(markerPressed)}
+            onCommentPressed={() => onCommentPressed(markerPressed)}
           />
         ) : (
           <View />
@@ -458,15 +479,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   tagTextCallout: {
-  fontSize: 12,
-      alignItems: "center",
-      justifyContent: "center",
-      fontWeight: 'bold',
+    fontSize: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
   },
 
   locationTextCallout: {
-  fontSize: 18,
-      alignItems: "center",
-      justifyContent: "center",
+    fontSize: 18,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

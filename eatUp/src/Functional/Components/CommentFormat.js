@@ -44,6 +44,10 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
   }
 
   const onLikeComment = (currentUsername, postUser, postId, commentId) => {
+    if (!currentUsername || !postUser || !postId || !commentId) {
+      alert("Error occurred! Please contact xxx for assistance.");
+      return;
+    }
     const targetPublicPostComment = firebase
       .firestore()
       .collection("Posts")
@@ -56,22 +60,43 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
       .doc(postId)
       .collection("Comments")
       .doc(commentId);
+
     if (likeComment) {
-      targetPublicPostComment.update({
-        likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-      });
-      targetPrivatePostComment.update({
-        likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-      });
+      targetPublicPostComment
+        .update({
+          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+        })
+       .catch((e) => {
+             alert(e)
+             alert("An error occurred! Please contact xxx for assistance.")
+        });
+      targetPrivatePostComment
+        .update({
+          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+        })
+        .catch((e) => {
+              alert(e)
+              alert("An error occurred! Please contact xxx for assistance.")
+        });
       setLikes(likes - 1);
       setLikeComment(false);
     } else {
-      targetPublicPostComment.update({
-        likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-      });
-      targetPrivatePostComment.update({
-        likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-      });
+      targetPublicPostComment
+        .update({
+          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+        })
+        .catch((e) => {
+              alert(e)
+              alert("An error occurred! Please contact xxx for assistance.")
+        });
+      targetPrivatePostComment
+        .update({
+          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+        })
+        .catch((e) => {
+             alert(e)
+             alert("An error occurred! Please contact xxx for assistance.")
+        });
       setLikes(likes + 1);
       setLikeComment(true);
     }
@@ -133,6 +158,10 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
     ]);
   };
 
+   useEffect(() => {
+     setDeleted(false);
+   }, [commentDoc]);
+
   return (
     <View>
       {!deleted ? (
@@ -144,39 +173,59 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
 
             <Text style={styles.description}>{commentDoc.commentText}</Text>
           </View>
-                      <View style={styles.likeBar}>
-                        <Text style={styles.time}>
-                          {moment(commentDoc.timestamp.toDate()).fromNow()}
-                        </Text>
+          <View style={styles.likeBar}>
+            <Text style={styles.time}>
+              {moment(commentDoc.timestamp.toDate()).fromNow()}
+            </Text>
 
-                        {currentUser.displayName == commentDoc.user ? (
-                          <IconButton
-                            icon="delete"
-                            size={20}
-                            color="#3e1f0d"
-                            onPress={() =>
-                              onDeletePressed(postId, owner, currentUser.displayName + "-" + commentDoc.timestamp)
-                            }
-                          />
-                        ) : (
-                          <View>
-                            <IconButton
-                              icon={likeIcon}
-                              size={20}
-                              color="#3e1f0d"
-                              onPress={() =>
-                                onLikeComment(
-                                  currentUser.displayName,
-                                  owner,
-                                  postId,
-                                  commentDoc.user + "-" + commentDoc.timestamp
-                                )
-                              }
-                            />
-                            <Text style={styles.statusText}>{likeText}</Text>
-                          </View>
-                        )}
-                      </View>
+            {currentUser.displayName == commentDoc.user ? (
+              <View style={{ flexDirection: "row" }}>
+                <IconButton
+                  icon={likeIcon}
+                  size={20}
+                  color="#3e1f0d"
+                  onPress={() =>
+                    onLikeComment(
+                      currentUser.displayName,
+                      owner,
+                      postId,
+                      commentDoc.user + "-" + commentDoc.timestamp
+                    )
+                  }
+                />
+                <Text style={styles.statusText}>{likeText}</Text>
+                <IconButton
+                  icon="delete"
+                  size={20}
+                  color="#3e1f0d"
+                  onPress={() =>
+                    onDeletePressed(
+                      postId,
+                      owner,
+                      currentUser.displayName + "-" + commentDoc.timestamp
+                    )
+                  }
+                />
+              </View>
+            ) : (
+              <View style={{ flexDirection: "row" }}>
+                <IconButton
+                  icon={likeIcon}
+                  size={20}
+                  color="#3e1f0d"
+                  onPress={() =>
+                    onLikeComment(
+                      currentUser.displayName,
+                      owner,
+                      postId,
+                      commentDoc.user + "-" + commentDoc.timestamp
+                    )
+                  }
+                />
+                <Text style={styles.statusText}>{likeText}</Text>
+              </View>
+            )}
+          </View>
         </View>
       ) : null}
     </View>
@@ -188,8 +237,9 @@ export default CommentFormat;
 const styles = StyleSheet.create({
   postContainer: {
     flex: 1,
-    width: 350,
-
+    // width: 350,
+    marginRight: 20,
+    marginLeft: 20,
     backgroundColor: "#fdf4da",
     justifyContent: "space-between",
     alignItems: "stretch",
@@ -206,11 +256,15 @@ const styles = StyleSheet.create({
   userName: {
     color: "#bc1824",
     fontSize: 15,
+    marginLeft: 10,
+    marginTop: 10,
     fontWeight: "bold",
   },
   time: {
     color: "white",
     fontSize: 10,
+    marginLeft: 10,
+    flexDirection: "column",
   },
   description: {
     color: "#3e1f0d",
@@ -221,6 +275,7 @@ const styles = StyleSheet.create({
   likeBar: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: "#ff5757",
     height: 30,
     borderRadius: 10,

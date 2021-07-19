@@ -38,9 +38,10 @@ const Login = ({ navigation }) => {
             navigation.navigate("Home", { user });
             alert("Login");
           })
-          .catch((error) => {
-            alert(error);
-          });
+           .catch((e) => {
+                  alert(e)
+                  alert("An error occurred! Please contact xxx for assistance.")
+           });
       })
       .catch((error) => {
         var errorCode = error.code;
@@ -55,7 +56,7 @@ const Login = ({ navigation }) => {
           setPassword({ ...password, error: "Password is incorrect." });;
           return;
         } else {
-          alert("Something wrong happened! Please contact xxx for assistance.");
+          alert("An error occurred! Please contact xxx for assistance.")
         }
       });
   };

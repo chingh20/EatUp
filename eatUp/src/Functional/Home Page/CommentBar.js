@@ -17,7 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import { IconButton } from "react-native-paper";
 import { CustomizedTextInput as TextInput } from "../Components/CustomizedTextInput";
 
-const CommentBar = ({postId, owner}) => {
+const CommentBar = ({postId, owner, refresh}) => {
   const currentUser = firebase.auth().currentUser.displayName;
 
   const [comment, setComment] = useState({ value: "", error: "" });
@@ -56,6 +56,7 @@ const CommentBar = ({postId, owner}) => {
       })
       .catch((e) => {
         alert(e);
+        alert("Error occurred! Please contact xxx for assistance.")
       });
   };
 
@@ -73,9 +74,8 @@ const CommentBar = ({postId, owner}) => {
     }
 
     try {
-
       upload(comment.value);
-
+      refresh();
       handleCommentUpdate("");
     } catch (e) {
       alert(e);
@@ -111,13 +111,15 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "flex-start",
     flexDirection:"row",
+    marginLeft:20,
+    marginRight: 20,
   },
   textInput: {
     borderWidth: 1,
     borderColor: "#3e1f0d",
     fontSize: 20,
     marginBottom: 15,
-    width: 300,
+    width: '100%',
     height: 40,
   },
   button: {

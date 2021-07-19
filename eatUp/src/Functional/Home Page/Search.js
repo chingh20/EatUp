@@ -1,17 +1,72 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { IconButton } from "react-native-paper";
 import SearchBar from './SearchBar'
 
 
 const Search = ({navigation}) => {
+
+   const [searchUsers, setSearchUsers] = useState(true)
+   const [searchLocations, setSearchLocations] = useState(false)
+   const [searchTags, setSearchTags] = useState(false)
+
+   const onSearchingUsers = () => {
+        setSearchUsers(true)
+        setSearchLocations(false)
+        setSearchTags(false)
+   }
+
+   const onSearchingLocations = () => {
+        setSearchUsers(false)
+        setSearchLocations(true)
+        setSearchTags(false)
+   }
+
+   const onSearchingTags = () => {
+        setSearchUsers(false)
+        setSearchLocations(false)
+        setSearchTags(true)
+   }
+
+  const userSearchFilterIcon = searchUsers ? "account" : "account-outline";
+  const locationSearchFilterIcon = searchLocations ? "flag-variant" : "flag-variant-outline";
+  const tagSearchFilterIcon = searchTags ? "tag-multiple" : "tag-multiple-outline";
+
+
   return (
-  <SafeAreaView style = {styles.homecontainer}>
-     <View style={styles.container}>
-     <Text> Search all other users! </Text>
-     </View>
-     <View style={styles.container}>
-     <SearchBar navigation={navigation} />
+  <SafeAreaView style={styles.homecontainer}>
+       <View style={styles.container}>
+          <View style={styles.filterIcon}>
+            <IconButton
+              icon={userSearchFilterIcon}
+              size={20}
+              color="#3e1f0d"
+              onPress={onSearchingUsers}
+            />
+
+            <IconButton
+              icon={locationSearchFilterIcon}
+              size={20}
+              color="#3e1f0d"
+              onPress={onSearchingLocations}
+            />
+
+            <IconButton
+              icon={tagSearchFilterIcon}
+              size={20}
+              color="#3e1f0d"
+              onPress={onSearchingTags}
+            />
+          </View>
+
+     <SearchBar
+        navigation={navigation}
+        searchUsers={searchUsers}
+        searchLocations={searchLocations}
+        searchTags={searchTags}
+        />
+
      </View>
 </SafeAreaView>
   );
@@ -28,8 +83,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fffbf1',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  filterIcon: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   button: {
      width: 200,

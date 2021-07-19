@@ -16,7 +16,7 @@ import { firebase } from "../../firebase/config";
 import moment from "moment";
 import { Divider } from "react-native-elements";
 
-const PostViewMapFormat = ({ markerPost, onPress }) => {
+const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
   var currentUser = firebase.auth().currentUser;
   const [postUserData, setPostUserData] = useState(null);
   const [likePost, setLikePost] = useState(markerPost.liked);
@@ -290,7 +290,7 @@ const PostViewMapFormat = ({ markerPost, onPress }) => {
               icon="comment"
               size={20}
               color="#3e1f0d"
-              onPress={() => alert("comment to be added!")}
+              onPress={onCommentPressed}
             />
 
             {currentUser.displayName != markerPost.user ? (
