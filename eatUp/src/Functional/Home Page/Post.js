@@ -121,8 +121,7 @@ export default function Post({ navigation, route }) {
   }
 
   const handleImageUpdate = (image) => setImage({ value: image, error: "" });
-  const handleLocationUpdate = (text) =>
-    setLocation({ value: text, error: "" });
+  const handleLocationUpdate = (text) => setLocation({ value: text, error: "" });
   const handleDescriptionUpdate = (text) =>
     setDescription({ value: text, error: "" });
   const handleGeolocationUpdate = (geoPoint) =>
@@ -280,14 +279,16 @@ export default function Post({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
+       <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+                 keyboardVerticalOffset={100}
+        >
         <ScrollView
           contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="always"
+        //  keyboardShouldPersistTaps="always"
         >
+
           {image.value ? (
             <View style={styles.imageContainer}>
               <Image
@@ -370,6 +371,7 @@ export default function Post({ navigation, route }) {
               <Text style={styles.btnText}> Add post </Text>
             </TouchableOpacity>
           </View>
+
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -381,7 +383,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    flexGrow: 1,
+    flexGrow: 3,
   },
   container: {
     flex: 2.5,

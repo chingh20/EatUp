@@ -122,9 +122,6 @@ const Feed = (props) => {
                       });
                     });
                   })
-                  .catch((error)=> {
-                  alert(error)
-                  });
 
               setPost(list);
               if (loading) {
@@ -132,7 +129,7 @@ const Feed = (props) => {
               }
 
               } catch (e) {
-              console.log(e)
+                alert("An error occurred! Please contact xxx for assistance.")
               }
       }
 
@@ -156,7 +153,6 @@ const Feed = (props) => {
                   props.navigation.navigate('Home');
                }
                else if (friendArray.includes(item.user)){
-               alert(item.user)
                   props.navigation.navigate('OtherUser', {otherUser: item.user, otherUserFriendArray: friendArray})
                } else {
                   alert('Viewing profile is only available after adding friend')
@@ -164,7 +160,6 @@ const Feed = (props) => {
        }
 
        const onCommentPressed = (item) => {
-           alert('Comment')
            props.navigation.navigate('Comment', {postId: item.id, postOwner: item.user, postComment: item.comments, userFriends: userFriendNetwork? userFriendNetwork.friends : []});
        }
 

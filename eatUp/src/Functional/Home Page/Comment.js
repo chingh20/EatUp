@@ -94,7 +94,7 @@ const Comment = ({ navigation, route }) => {
 
       useEffect(() => {
       if(route.params) {
-           if (route.params.postComments > 0) {
+           if (route.params.postComment > 0) {
              fetchComments();
             return;
            }
@@ -113,6 +113,10 @@ const Comment = ({ navigation, route }) => {
                }
        }
 
+      const refreshComments = () => {
+                   fetchComments();
+                   alert("refreshed!");
+      }
 
       return (
       <SafeAreaView style={styles.container}>
@@ -124,12 +128,12 @@ const Comment = ({ navigation, route }) => {
       <View style={styles.upper}>
         <IconButton
           icon="arrow-left"
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.goBack()}
           color="#3e1f0d"
           size={30}
-          style={{ marginRight: 5 }}
+          style={{ alignItems: 'flex-start', }}
         />
-        <Text>Comments</Text>
+        <Text style = {styles.nobutton}>Comments</Text>
       </View>
        {load ? <FlatList
                         refreshControl={
@@ -147,17 +151,15 @@ const Comment = ({ navigation, route }) => {
                         onPress={() => onUserPressed(item)}
                       />
                    )}
-                   keyExtractor={(item) => item.user}
+                   keyExtractor={(item) => item.user+"-"+item.timestamp}
                    ListHeaderComponent={
                    <CommentBar
                    postId={route.params? route.params.postId:null}
-                   owner={route.params? route.params.postOwner:null} />}
+                   owner={route.params? route.params.postOwner:null}
+                   refresh={refreshComments}/>}
                    showsVerticalScrollIndicator={false}
                    keyboardShouldPersistTaps="always"
                 /> : null}
-
-
-
       </KeyboardAvoidingView>
       </SafeAreaView>
       )
@@ -176,8 +178,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fffbf1',
-    alignItems: 'center',
-    justifyContent: 'center',
+//    alignItems: 'center',
+   justifyContent: 'center',
     marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
 
   },
@@ -213,9 +215,10 @@ const styles = StyleSheet.create({
     nobutton: {
            color: '#3e1f0d',
            fontSize: 20,
-           marginTop: 30,
+           marginTop: 15,
            alignItems: 'center',
            justifyContent: 'center',
+           fontWeight: 'bold',
         },
     errorText: {
           fontSize: 20,
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
      upper: {
        flexDirection: "row",
        backgroundColor: "#fffbf1",
-       alignItems: "flex-start",
+      // alignItems: "stretch",
        justifyContent: "flex-start",
      },
 });

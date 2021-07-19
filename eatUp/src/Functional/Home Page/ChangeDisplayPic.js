@@ -17,7 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import { storage } from "../../firebase/config";
 import defaultUserImage from "../../../assets/default-user-image.png";
 
-const ChangeDisplayPic = ({ navigation, route }, props) => {
+const ChangeDisplayPic = ({ navigation, route }) => {
   var user = firebase.auth().currentUser;
   var username = user.displayName;
   const defaultUserImageUri = Image.resolveAssetSource(defaultUserImage).uri;
@@ -85,9 +85,9 @@ const ChangeDisplayPic = ({ navigation, route }, props) => {
       const avatarImage = image.value;
 
       changePic(avatarImage);
-
       handleImageUpdate(avatarImage);
-      navigation.navigate("Home");
+
+      navigation.navigate("Home", {pic:avatarImage});
     } catch (e) {
       console.error(e);
     }
