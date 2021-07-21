@@ -39,14 +39,15 @@ const ChangeDisplayPic = ({ navigation, route }) => {
       xhr.send(null);
     });
 
-    await reference.put(blob).catch((error) => {
+    await reference.put(blob).then(()=>{
+      let url = reference.getDownloadURL();
+      firebase.firestore().collection("users").doc(username).update({
+            displayPicture: url,
+      });
+    }).catch((error) => {
       alert(error);
     });
 
-    let url = await reference.getDownloadURL();
-    firebase.firestore().collection("users").doc(username).update({
-      displayPicture: url,
-    });
   };
 
   const selectImage = async () => {
@@ -86,8 +87,8 @@ const ChangeDisplayPic = ({ navigation, route }) => {
 
       changePic(avatarImage);
       handleImageUpdate(avatarImage);
+      navigation.navigate("Home");
 
-      navigation.navigate("Home", {pic:avatarImage});
     } catch (e) {
       console.error(e);
     }

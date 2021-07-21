@@ -23,16 +23,16 @@ import Search from "./Search";
 import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
 
-export default function Home({ navigation, route}) {
+export default function Home({ navigation, route}, props) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       alert("Refreshed");
-      if(route.params) {
-      alert(route.params.pic)
-      setUserPicture(route.params.pic);
-      } else {
-      alert('hi')
-      }
+//      if(props.route.params) {
+//      alert(route.params.pic)
+//      setUserPicture(route.params.pic);
+//      } else {
+//      alert('hi')
+//      }
       getUserDetails();
       getUserFriendNetwork();
       PostPlaces();

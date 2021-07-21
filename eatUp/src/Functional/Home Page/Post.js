@@ -14,11 +14,11 @@ import {
 import { firebase, storage } from "../../firebase/config";
 import { StatusBar } from "expo-status-bar";
 import * as ImagePicker from "expo-image-picker";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { CustomizedTextInput as TextInput } from "../Components/CustomizedTextInput";
 import uuid from "uuid";
 import ModalSelector from "react-native-modal-selector";
 import * as Location from "expo-location";
+
 
 export default function Post({ navigation, route }) {
   var username = firebase.auth().currentUser.displayName;
@@ -278,19 +278,19 @@ export default function Post({ navigation, route }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style= {styles.container}>
        <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={styles.container}
-                 keyboardVerticalOffset={100}
-        >
+       >
         <ScrollView
           contentContainerStyle={styles.scroll}
-        //  keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps="always"
         >
-
+        <View>
+       <View style={styles.imageContainer}>
           {image.value ? (
-            <View style={styles.imageContainer}>
+            <View>
               <Image
                 source={{ uri: image.value }}
                 style={{ width: 300, height: 300 }}
@@ -301,11 +301,11 @@ export default function Post({ navigation, route }) {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.nobutton} onPress={takePicture}>
                   <Text style={styles.nobtnText}> Camera </Text>
-                </TouchableOpacity>
+               </TouchableOpacity>
               </View>
             </View>
           ) : (
-            <View style={styles.imageContainer}>
+            <View >
               <TouchableOpacity style={styles.button} onPress={selectImage}>
                 <Text style={styles.btnText}> Pick from Gallery </Text>
               </TouchableOpacity>
@@ -315,6 +315,7 @@ export default function Post({ navigation, route }) {
               <Text style={styles.errorText}> {image.error}</Text>
             </View>
           )}
+          </View>
           <View style={styles.detailContainer}>
             <ModalSelector
               data={userData? modalSelectorData(userData.customTags) : defaultData}
@@ -357,6 +358,7 @@ export default function Post({ navigation, route }) {
               error={!!location.error}
               errorText={location.error}
             />
+
             <TextInput
               placeholder="Enter description"
               style={styles.textInput}
@@ -365,14 +367,15 @@ export default function Post({ navigation, route }) {
               error={!!description.error}
               errorText={description.error}
             />
-            <Text>{text} </Text>
-            <Text style={styles.errorText}>{geolocation.error}</Text>
-            <TouchableOpacity style={styles.button} onPress={onSubmit}>
-              <Text style={styles.btnText}> Add post </Text>
-            </TouchableOpacity>
-          </View>
 
-        </ScrollView>
+          <Text>{text} </Text>
+              <Text style={styles.errorText}>{geolocation.error}</Text>
+              <TouchableOpacity style={styles.button} onPress={onSubmit}>
+              <Text style={styles.btnText}> Add post </Text>
+          </TouchableOpacity>
+        </View>
+        </View>
+      </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -383,7 +386,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    flexGrow: 3,
+  flexGrow: 2,
   },
   container: {
     flex: 2.5,
@@ -403,6 +406,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fffbf1",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 20,
   },
   detailContainer: {
     flex: 1,
