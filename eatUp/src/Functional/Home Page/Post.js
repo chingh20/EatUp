@@ -406,8 +406,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fffbf1",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 30,
+    marginBottom: 30,
   },
   detailContainer: {
     flex: 1,

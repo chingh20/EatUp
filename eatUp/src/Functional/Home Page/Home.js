@@ -27,12 +27,6 @@ export default function Home({ navigation, route}, props) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       alert("Refreshed");
-//      if(props.route.params) {
-//      alert(route.params.pic)
-//      setUserPicture(route.params.pic);
-//      } else {
-//      alert('hi')
-//      }
       getUserDetails();
       getUserFriendNetwork();
       PostPlaces();
@@ -58,26 +52,26 @@ export default function Home({ navigation, route}, props) {
   const [userFriendNetwork, setUserFriendNetwork] = useState(null);
   const [wantToGo, setWantToGo] = useState(null);
   const [postPlaces, setPostPlaces] = useState(null);
-  const [starMarkerFilter, setStarMarkerFilter] = useState(true);
+  const [crownMarkerFilter, setCrownMarkerFilter] = useState(true);
   const [postMarkerFilter, setPostMarkerFilter] = useState(true);
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
   const [markerPressed, setMarkerPressed] = useState(null);
-  const [userPicture, setUserPicture] = useState(null);
+
 
   const username = firebase.auth().currentUser.displayName;
 
-  const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
+  const crownMarkerFilterIcon = crownMarkerFilter ? "crown" : "crown-outline";
   const postMarkerFilterIcon = postMarkerFilter ? "eye" : "eye-outline";
 
   const onMarkerPressed = (id) => {
     setMarkerPressed(id);
   };
 
-  const onStarMarkerFilterPressed = () => {
-    if (starMarkerFilter) {
-      setStarMarkerFilter(false);
+  const onCrownMarkerFilterPressed = () => {
+    if (crownMarkerFilter) {
+      setCrownMarkerFilter(false);
     } else {
-      setStarMarkerFilter(true);
+      setCrownMarkerFilter(true);
     }
   };
 
@@ -317,7 +311,7 @@ export default function Home({ navigation, route}, props) {
               picture: userData ? userData.displayPicture : null,
             });
           }}
-          source={{ uri: userPicture? userPicture : (userData ? userData.displayPicture : null) }}
+          source={{ uri: userData ? userData.displayPicture : null }}
         />
         <Text>
           {" "}
@@ -338,7 +332,7 @@ export default function Home({ navigation, route}, props) {
           clusterColor="#fffbf1"
           clusterTextColor="black"
         >
-          {wantToGo && starMarkerFilter
+          {wantToGo && crownMarkerFilter
             ? wantToGo.map((post) => (
                 <Marker
                   onPress={() => onMarkerPressed(post)}
@@ -393,8 +387,8 @@ export default function Home({ navigation, route}, props) {
 
       <View style={styles.filter}>
         <IconButton
-          icon={starMarkerFilterIcon}
-          onPress={onStarMarkerFilterPressed}
+          icon={crownMarkerFilterIcon}
+          onPress={onCrownMarkerFilterPressed}
           color="#3e1f0d"
           size={30}
           style={{ margin: 0 }}
