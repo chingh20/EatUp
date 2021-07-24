@@ -46,8 +46,7 @@ const ChangeDisplayPic = ({ navigation, route }) => {
     let url = await reference.getDownloadURL();
     firebase.firestore().collection("users").doc(username).update({
           displayPicture: url,
-    }).catch((error) => alert(error));
-
+    }).then(()=>{navigation.navigate("Home")}).catch((error) => alert(error));
 
   };
 
@@ -88,7 +87,7 @@ const ChangeDisplayPic = ({ navigation, route }) => {
 
       handleImageUpdate(avatarImage);
       changePic(avatarImage);
-      navigation.navigate("Home")
+
 
 
     } catch (e) {

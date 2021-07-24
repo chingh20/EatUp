@@ -94,18 +94,22 @@ const PostFormat = ({ post, onPress, onComment }) => {
     if (likePost) {
            targetPublicPost.update({
               likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+              likeCount: firebase.firestore.FieldValue.increment(-1),
             })
            targetPrivatePost.update({
                likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+               likeCount: firebase.firestore.FieldValue.increment(-1),
            })
            setLikes(likes - 1)
            setLikePost(false)
     } else {
            targetPublicPost.update({
                likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+               likeCount: firebase.firestore.FieldValue.increment(1),
            })
            targetPrivatePost.update({
               likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+              likeCount: firebase.firestore.FieldValue.increment(1),
            })
            setLikes(likes + 1)
            setLikePost(true)
@@ -123,9 +127,11 @@ const PostFormat = ({ post, onPress, onComment }) => {
     if (wantToGo) {
            targetPublicPost.update({
               wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+              wantToGoCount: firebase.firestore.FieldValue.increment(-1),
             })
            targetPrivatePost.update({
               wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+              wantToGoCount: firebase.firestore.FieldValue.increment(-1),
            })
             userFoodList.update({
               wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
@@ -135,9 +141,11 @@ const PostFormat = ({ post, onPress, onComment }) => {
     } else {
             targetPublicPost.update({
               wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+              wantToGoCount: firebase.firestore.FieldValue.increment(1),
             })
             targetPrivatePost.update({
               wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+              wantToGoCount: firebase.firestore.FieldValue.increment(1),
             })
             userFoodList.update({
               wantToGo: firebase.firestore.FieldValue.arrayUnion(postId),

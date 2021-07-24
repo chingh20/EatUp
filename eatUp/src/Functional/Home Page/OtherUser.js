@@ -33,7 +33,7 @@ export default function OtherUser({ navigation, route }) {
       } else {
         person = firebase.auth().currentUser.displayName;
       }
-      getUsername(person);
+      setUserName(person);
       getUserDetails(person);
       PostPlaces(person);
       WantToGoPlace(person);
@@ -57,7 +57,7 @@ export default function OtherUser({ navigation, route }) {
   const [userData, setUserData] = useState(null);
   const [wantToGo, setWantToGo] = useState(null);
   const [postPlaces, setPostPlaces] = useState(null);
-  const [starMarkerFilter, setStarMarkerFilter] = useState(true);
+  const [crownMarkerFilter, setCrownMarkerFilter] = useState(true);
   const [postMarkerFilter, setPostMarkerFilter] = useState(true);
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
   const [markerPressed, setMarkerPressed] = useState(null);
@@ -80,18 +80,18 @@ export default function OtherUser({ navigation, route }) {
       });
   };
 
-  const starMarkerFilterIcon = starMarkerFilter ? "star" : "star-outline";
+  const crownMarkerFilterIcon = crownMarkerFilter ? "crown" : "crown-outline";
   const postMarkerFilterIcon = postMarkerFilter ? "eye" : "eye-outline";
 
   const onMarkerPressed = (id) => {
     setMarkerPressed(id);
   };
 
-  const onStarMarkerFilterPressed = () => {
-    if (starMarkerFilter) {
-      setStarMarkerFilter(false);
+  const onCrownMarkerFilterPressed = () => {
+    if (crownMarkerFilter) {
+      setCrownMarkerFilter(false);
     } else {
-      setStarMarkerFilter(true);
+      setCrownMarkerFilter(true);
     }
   };
 
@@ -103,9 +103,6 @@ export default function OtherUser({ navigation, route }) {
     }
   };
 
-  const getUsername = (person) => {
-    setUserName(person);
-  };
 
   const getUserDetails = async (person) => {
     await firebase
@@ -141,7 +138,9 @@ export default function OtherUser({ navigation, route }) {
               postLocation,
               postGeoCoordinates,
               likes,
+              likeCount,
               wantToGo,
+              wantToGoCount,
               user,
               timestamp,
               comments,
@@ -157,10 +156,10 @@ export default function OtherUser({ navigation, route }) {
               postGeoCoordinates,
               timestamp: timestamp,
               liked: likes.includes(currentUser),
-              likes: likes.length,
+              likes: likeCount,
               wantToGoUsers: wantToGo,
               wantToGo: wantToGo.includes(currentUser),
-              wantToGoCount: wantToGo.length,
+              wantToGoCount: wantToGoCount,
               comments,
             });
           });
@@ -194,7 +193,9 @@ export default function OtherUser({ navigation, route }) {
               postLocation,
               postGeoCoordinates,
               likes,
+              likeCount,
               wantToGo,
+              wantToGoCount,
               user,
               timestamp,
               comments,
@@ -210,10 +211,10 @@ export default function OtherUser({ navigation, route }) {
               postGeoCoordinates,
               timestamp: timestamp,
               liked: likes.includes(currentUser),
-              likes: likes.length,
+              likes: likeCount,
               wantToGoUsers: wantToGo,
               wantToGo: wantToGo.includes(currentUser),
-              wantToGoCount: wantToGo.length,
+              wantToGoCount: wantToGoCount,
               comments,
             });
           });
@@ -315,7 +316,7 @@ export default function OtherUser({ navigation, route }) {
           clusterColor="#fffbf1"
           clusterTextColor="black"
         >
-          {wantToGo && starMarkerFilter
+          {wantToGo && crownMarkerFilter
             ? wantToGo.map((post) => (
                 <Marker
                   onPress={() => onMarkerPressed(post)}
@@ -370,8 +371,8 @@ export default function OtherUser({ navigation, route }) {
 
       <View style={styles.filter}>
         <IconButton
-          icon={starMarkerFilterIcon}
-          onPress={onStarMarkerFilterPressed}
+          icon={crownMarkerFilterIcon}
+          onPress={onCrownMarkerFilterPressed}
           color="#3e1f0d"
           size={30}
           style={{ margin: 0 }}
@@ -395,9 +396,11 @@ export default function OtherUser({ navigation, route }) {
       <View style={styles.postcontainer}>
         {markerPressed ? (
           <PostViewMapFormat
+            owner = {username}
             markerPost={markerPressed}
             onPress={() => onUserPressed(markerPressed)}
             onCommentPressed={() => onCommentPressed(markerPressed)}
+            refreshWantToGo={WantToGoPlace}
           />
         ) : (
           <View />

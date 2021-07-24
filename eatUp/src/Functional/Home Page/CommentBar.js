@@ -53,6 +53,7 @@ const CommentBar = ({postId, owner, refresh}) => {
 
         firebase.firestore().collection(owner).doc(postId).update({comments: firebase.firestore.FieldValue.increment(1)})
         firebase.firestore().collection("Posts").doc(postId).update({comments: firebase.firestore.FieldValue.increment(1)})
+        refresh();
       })
       .catch((e) => {
         alert(e);
@@ -75,7 +76,7 @@ const CommentBar = ({postId, owner, refresh}) => {
 
     try {
       upload(comment.value);
-      refresh();
+
       handleCommentUpdate("");
     } catch (e) {
       alert(e);

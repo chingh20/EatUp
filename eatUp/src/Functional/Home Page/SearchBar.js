@@ -16,6 +16,7 @@ export default function SearchBar({
   searchUsers,
   searchLocations,
   searchTags,
+  changeSearchNow,
 }) {
   const [searchResult, setSearchResult] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -39,8 +40,9 @@ export default function SearchBar({
   }, [navigation]);
 
   const fetchSearchResult = (search) => {
-    if (search == "") {
+    if (search == "" || search == null) {
       setSearchResult([]);
+      return;
     }
 
     if (search.length > 0 && search != " ") {
@@ -63,8 +65,11 @@ export default function SearchBar({
         firebase
           .firestore()
           .collection("Posts")
+          .where("likeCount", ">=", 0)
+          .orderBy('likeCount', 'desc')
           .where("postLocation", ">=", search)
           .where("postLocation", "<=", search + "\uf8ff")
+
           .get()
           .then((snapshot) => {
             let post = snapshot.docs.map((doc) => {
@@ -78,6 +83,7 @@ export default function SearchBar({
         firebase
           .firestore()
           .collection("Posts")
+
           .where("postTag", ">=", search)
           .where("postTag", "<=", search + "\uf8ff")
           .get()
@@ -164,6 +170,11 @@ export default function SearchBar({
   useEffect(() => {
     getUserFriendNetwork();
   }, []);
+
+  useEffect(() => {
+    fetchSearchResult();
+  },[changeSearchNow]);
+
 
   return (
     <View>

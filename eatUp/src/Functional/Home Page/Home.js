@@ -131,7 +131,9 @@ export default function Home({ navigation, route}, props) {
               postLocation,
               postGeoCoordinates,
               likes,
+              likeCount,
               wantToGo,
+              wantToGoCount,
               user,
               timestamp,
               comments,
@@ -147,10 +149,10 @@ export default function Home({ navigation, route}, props) {
               postGeoCoordinates,
               timestamp: timestamp,
               liked: likes.includes(username),
-              likes: likes.length,
+              likes: likeCount,
               wantToGoUsers: wantToGo,
               wantToGo: wantToGo.includes(username),
-              wantToGoCount: wantToGo.length,
+              wantToGoCount: wantToGoCount,
               comments,
             });
           });
@@ -183,7 +185,9 @@ export default function Home({ navigation, route}, props) {
               postLocation,
               postGeoCoordinates,
               likes,
+              likeCount,
               wantToGo,
+              wantToGoCount,
               user,
               timestamp,
               comments,
@@ -199,9 +203,9 @@ export default function Home({ navigation, route}, props) {
               postGeoCoordinates,
               timestamp: timestamp,
               liked: likes.includes(username),
-              likes: likes.length,
+              likes: likeCount,
               wantToGo: wantToGo.includes(username),
-              wantToGoCount: wantToGo.length,
+              wantToGoCount: wantToGoCount,
               comments,
             });
           });
@@ -274,6 +278,7 @@ export default function Home({ navigation, route}, props) {
       return null;
     }
   };
+
 
   return (
     <SafeAreaView style={styles.homecontainer}>
@@ -412,9 +417,12 @@ export default function Home({ navigation, route}, props) {
       <View style={styles.postcontainer}>
         {markerPressed ? (
           <PostViewMapFormat
+            owner = {username}
             markerPost={markerPressed}
             onPress={() => onUserPressed(markerPressed)}
             onCommentPressed={() => onCommentPressed(markerPressed)}
+            refreshWantToGo = {WantToGoPlace}
+            refreshPostPlaces = {PostPlaces}
           />
         ) : (
           <View />

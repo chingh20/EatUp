@@ -10,23 +10,27 @@ const Search = ({navigation}) => {
    const [searchUsers, setSearchUsers] = useState(true)
    const [searchLocations, setSearchLocations] = useState(false)
    const [searchTags, setSearchTags] = useState(false)
+   const [changeSearch, setChangeSearch] = useState(false)
 
    const onSearchingUsers = () => {
         setSearchUsers(true)
         setSearchLocations(false)
         setSearchTags(false)
+        setChangeSearch(!changeSearch)
    }
 
    const onSearchingLocations = () => {
         setSearchUsers(false)
         setSearchLocations(true)
         setSearchTags(false)
+        setChangeSearch(!changeSearch)
    }
 
    const onSearchingTags = () => {
         setSearchUsers(false)
         setSearchLocations(false)
         setSearchTags(true)
+        setChangeSearch(!changeSearch)
    }
 
   const userSearchFilterIcon = searchUsers ? "account" : "account-outline";
@@ -65,6 +69,7 @@ const Search = ({navigation}) => {
         searchUsers={searchUsers}
         searchLocations={searchLocations}
         searchTags={searchTags}
+        changeSearchNow = {changeSearch}
         />
 
      </View>

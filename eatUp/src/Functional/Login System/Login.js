@@ -47,13 +47,16 @@ const Login = ({ navigation }) => {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (errorCode == "auth/invalid-email") {
-          setEmail({ ...email, error: "Email address is invalid." });
+          setPassword({ ...password, error: "Email address/password is invalid." });
+          setEmail({ ...email, error: "Email address/password is invalid." });
           return;
         } else if (errorCode == "auth/user-not-found") {
-          setEmail({ ...email, error: "Email address is invalid." });
+          setPassword({ ...password, error: "Email address/password is invalid." });
+          setEmail({ ...email, error: "Email address/password is invalid." });
           return;
         } else if (errorCode == "auth/wrong-password") {
-          setPassword({ ...password, error: "Password is incorrect." });;
+          setPassword({ ...password, error: "Email address/password is invalid." });
+          setEmail({ ...email, error: "Email address/password is invalid." });
           return;
         } else {
           alert("An error occurred! Please contact xxx for assistance.")

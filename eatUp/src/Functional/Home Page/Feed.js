@@ -98,7 +98,9 @@ const Feed = (props) => {
                           postDescription,
                           postLocation,
                           likes,
+                          likeCount,
                           wantToGo,
+                          wantToGoCount,
                           user,
                           timestamp,
                           comments
@@ -114,10 +116,10 @@ const Feed = (props) => {
                       postLocation,
                       timestamp: timestamp,
                       liked: likes.includes(username),
-                      likes: likes.length,
+                      likes: likeCount,
                       wantToGoUsers: wantToGo,
                       wantToGo: wantToGo.includes(username),
-                      wantToGoCount: wantToGo.length,
+                      wantToGoCount: wantToGoCount,
                       comments,
                       });
                     });

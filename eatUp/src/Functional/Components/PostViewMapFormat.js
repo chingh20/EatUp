@@ -16,7 +16,7 @@ import { firebase } from "../../firebase/config";
 import moment from "moment";
 import { Divider } from "react-native-elements";
 
-const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
+const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refreshWantToGo, refreshPostPlaces }) => {
   var currentUser = firebase.auth().currentUser;
   const [postUserData, setPostUserData] = useState(null);
   const [likePost, setLikePost] = useState(markerPost.liked);
@@ -25,6 +25,7 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
   );
 
   const [likes, setLikes] = useState(markerPost.likes);
+
 
   const [wantToGo, setWantToGo] = useState(markerPost.wantToGo);
   const [wantToGoIcon, setWantToGoIcon] = useState(
@@ -37,7 +38,6 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
 
   useEffect(() => {
     setLikeIcon(likePost ? "heart" : "heart-outline");
-    //setLikeText(showLikes(likes));
   }, [likePost]);
 
   useEffect(() => {
@@ -45,15 +45,15 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
     setWantToGoText(showWantToGos(wantToGos));
   }, [wantToGo]);
 
-  //  function showLikes(likes) {
-  //        if (likes == 1) {
-  //          return "1";
-  //        } else if (likes > 1) {
-  //          return likes;
-  //        } else {
-  //          return "";
-  //        }
-  //  }
+//    function showLikes(likes) {
+//          if (likes == 1) {
+//            return "1";
+//          } else if (likes > 1) {
+//            return likes;
+//          } else {
+//            return "";
+//          }
+//    }
 
   function showWantToGos(wantToGos) {
     if (wantToGos == 1) {
@@ -102,18 +102,22 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
     if (likePost) {
       targetPublicPost.update({
         likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+        likeCount: firebase.firestore.FieldValue.increment(-1),
       });
       targetPrivatePost.update({
         likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+        likeCount: firebase.firestore.FieldValue.increment(-1),
       });
       setLikes(likes - 1);
       setLikePost(false);
     } else {
       targetPublicPost.update({
         likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+        likeCount: firebase.firestore.FieldValue.increment(1),
       });
       targetPrivatePost.update({
         likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+        likeCount: firebase.firestore.FieldValue.increment(1),
       });
       setLikes(likes + 1);
       setLikePost(true);
@@ -137,21 +141,29 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
     if (wantToGo) {
       targetPublicPost.update({
         wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+        wantToGoCount: firebase.firestore.FieldValue.increment(-1),
       });
       targetPrivatePost.update({
         wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+        wantToGoCount: firebase.firestore.FieldValue.increment(-1),
       });
       userFoodList.update({
         wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
       });
       setWantToGos(wantToGos - 1);
       setWantToGo(false);
+      if (owner == currentUser.displayName) {
+        setDeleted(true);
+        refreshWantToGo();
+      }
     } else {
       targetPublicPost.update({
         wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+        wantToGoCount: firebase.firestore.FieldValue.increment(1),
       });
       targetPrivatePost.update({
         wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+        wantToGoCount: firebase.firestore.FieldValue.increment(1),
       });
       userFoodList.update({
         wantToGo: firebase.firestore.FieldValue.arrayUnion(postId),
@@ -183,6 +195,7 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
             .delete()
             .then(() => {
               firebase.firestore().collection("Posts").doc(postId).delete();
+              firebase.firestore().collection("Posts").doc(postId).delete();
               firebase
                 .firestore()
                 .collection(currentUsername)
@@ -205,6 +218,11 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
                   posts: firebase.firestore.FieldValue.arrayRemove(postId),
                 });
               setDeleted(true);
+              if (owner == currentUsername) {
+              refreshPostPlaces();
+              } else {
+              refreshWantToGo();
+              }
             })
             .catch((error) => {
               alert(error);
@@ -273,6 +291,7 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
             </View>
           </View>
           <View style={styles.likeBar}>
+            <Text>{likes == 0? null: likes}</Text>
             <IconButton
               icon={likeIcon}
               size={20}
@@ -286,6 +305,7 @@ const PostViewMapFormat = ({ markerPost, onPress, onCommentPressed }) => {
               }
             />
 
+            <Text> {markerPost.comments == 0? null : markerPost.comments} </Text>
             <IconButton
               icon="comment"
               size={20}
