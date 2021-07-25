@@ -103,28 +103,28 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
       targetPublicPost.update({
         likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         likeCount: firebase.firestore.FieldValue.increment(-1),
-      });
+      }).catch((e) => alert(e));
       targetPrivatePost.update({
         likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         likeCount: firebase.firestore.FieldValue.increment(-1),
-      });
+      }).catch((e) => alert(e));
       setLikes(likes - 1);
       setLikePost(false);
     } else {
       targetPublicPost.update({
         likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         likeCount: firebase.firestore.FieldValue.increment(1),
-      });
+      }).catch((e) => alert(e));
       targetPrivatePost.update({
         likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         likeCount: firebase.firestore.FieldValue.increment(1),
-      });
+      }).catch((e) => alert(e));
       setLikes(likes + 1);
       setLikePost(true);
     }
   };
 
-  const onWantToGo = (currentUsername, postUser, postId) => {
+  const onWantToGo = (currentUsername, postUser, postId, owner) => {
     const targetPublicPost = firebase
       .firestore()
       .collection("Posts")
@@ -142,17 +142,18 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
       targetPublicPost.update({
         wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         wantToGoCount: firebase.firestore.FieldValue.increment(-1),
-      });
+      }).catch((e) => alert(e));
       targetPrivatePost.update({
         wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
         wantToGoCount: firebase.firestore.FieldValue.increment(-1),
-      });
+      }).catch((e) => alert(e));
       userFoodList.update({
         wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
-      });
+      }).catch((e) => alert(e));
       setWantToGos(wantToGos - 1);
       setWantToGo(false);
-      if (owner == currentUser.displayName) {
+      if (owner == currentUsername) {
+      alert('yes')
         setDeleted(true);
         refreshWantToGo();
       }
@@ -160,14 +161,14 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
       targetPublicPost.update({
         wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         wantToGoCount: firebase.firestore.FieldValue.increment(1),
-      });
+      }).catch((e) => alert(e));
       targetPrivatePost.update({
         wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
         wantToGoCount: firebase.firestore.FieldValue.increment(1),
-      });
+      }).catch((e) => alert(e));
       userFoodList.update({
         wantToGo: firebase.firestore.FieldValue.arrayUnion(postId),
-      });
+      }).catch((e) => alert(e));
       setWantToGos(wantToGos + 1);
       setWantToGo(true);
     }
@@ -177,7 +178,8 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
     currentUsername,
     postId,
     postPath,
-    postWantToGoUsers
+    postWantToGoUsers,
+    owner
   ) => {
     Alert.alert("DELETE", "Are you sure to delete this post?", [
       {
@@ -195,7 +197,6 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
             .delete()
             .then(() => {
               firebase.firestore().collection("Posts").doc(postId).delete();
-              firebase.firestore().collection("Posts").doc(postId).delete();
               firebase
                 .firestore()
                 .collection(currentUsername)
@@ -208,20 +209,20 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
                   .doc(person)
                   .update({
                     wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
-                  });
+                  }).catch((e) => {alert(e)});
               });
               firebase
                 .firestore()
                 .collection("users")
                 .doc(currentUsername)
                 .update({
-                  posts: firebase.firestore.FieldValue.arrayRemove(postId),
+                  posts: firebase. firestore.FieldValue.arrayRemove(postId),
                 });
               setDeleted(true);
               if (owner == currentUsername) {
               refreshPostPlaces();
               } else {
-              refreshWantToGo();
+              refreshWantToGo(owner);
               }
             })
             .catch((error) => {
@@ -322,7 +323,8 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
                   onWantToGo(
                     currentUser.displayName,
                     markerPost.user,
-                    markerPost.id
+                    markerPost.id,
+                    owner
                   )
                 }
               />
@@ -338,7 +340,8 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
                     currentUser.displayName,
                     markerPost.id,
                     markerPost.postPhoto,
-                    markerPost.wantToGoUsers
+                    markerPost.wantToGoUsers,
+                    owner
                   )
                 }
               />

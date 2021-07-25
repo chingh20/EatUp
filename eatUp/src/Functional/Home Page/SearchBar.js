@@ -40,6 +40,7 @@ export default function SearchBar({
   }, [navigation]);
 
   const fetchSearchResult = (search) => {
+    setSearchResult([]);
     if (search == "" || search == null) {
       setSearchResult([]);
       return;
@@ -60,16 +61,14 @@ export default function SearchBar({
               return { id, ...data };
             });
             setSearchResult(user);
-          }).catch((e) => alert(e))
+          })
+          .catch((e) => alert(e));
       } else if (searchLocations) {
         firebase
           .firestore()
           .collection("Posts")
-          .where("likeCount", ">=", 0)
-          .orderBy('likeCount', 'desc')
-          .where("postLocation", ">=", search)
+          .where("postLocation", "==", search)
           .where("postLocation", "<=", search + "\uf8ff")
-
           .get()
           .then((snapshot) => {
             let post = snapshot.docs.map((doc) => {
@@ -77,13 +76,12 @@ export default function SearchBar({
               const id = doc.id;
               return { id, ...data };
             });
-            setSearchResult(post);
+            setSearchResult(mergeSort(post));
           });
       } else if (searchTags) {
         firebase
           .firestore()
           .collection("Posts")
-
           .where("postTag", ">=", search)
           .where("postTag", "<=", search + "\uf8ff")
           .get()
@@ -93,7 +91,7 @@ export default function SearchBar({
               const id = doc.id;
               return { id, ...data };
             });
-            setSearchResult(post);
+            setSearchResult(mergeSort(post));
           });
       } else {
         setSearchResult([]);
@@ -163,6 +161,47 @@ export default function SearchBar({
     });
   };
 
+  function merge(left, right) {
+    let sortedArr = []; // the sorted elements will go here
+
+    while (left.length && right.length) {
+      // insert the smallest element to the sortedArr
+      if (left[0].likeCount > right[0].likeCount) {
+        sortedArr.push(left.shift());
+      } else if (left[0].likeCount < right[0].likeCount) {
+        sortedArr.push(right.shift());
+      } else {
+        if (left[0].wantToGoCount > right[0].wantToGoCount) {
+          sortedArr.push(left.shift());
+        } else if (left[0].wantToGoCount < right[0].wantToGoCount) {
+          sortedArr.push(right.shift());
+        } else {
+          if (left[0].timestamp > right[0].timestamp) {
+            sortedArr.push(left.shift());
+          } else {
+            sortedArr.push(right.shift());
+          }
+        }
+      }
+    }
+
+    // use spread operator and create a new array, combining the three arrays
+    return [...sortedArr, ...left, ...right];
+  }
+
+  function mergeSort(arr) {
+    const half = arr.length / 2;
+
+    // the base case is array length <=1
+    if (arr.length <= 1) {
+      return arr;
+    }
+
+    const left = arr.splice(0, half); // the first half of the array
+    const right = arr;
+    return merge(mergeSort(left), mergeSort(right));
+  }
+
   useEffect(() => {
     getUserDetails();
   }, []);
@@ -172,9 +211,9 @@ export default function SearchBar({
   }, []);
 
   useEffect(() => {
-    fetchSearchResult();
-  },[changeSearchNow]);
-
+    setSearchResult(null);
+    fetchSearchResult(searchText);
+  }, [changeSearchNow]);
 
   return (
     <View>

@@ -24,6 +24,7 @@ const Feed = (props) => {
   React.useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', () => {
         alert('Refreshed');
+        setPost(null);
         fetchPost();
         getUserDetails();
       });
@@ -39,6 +40,7 @@ const Feed = (props) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     alert('Refreshed');
+    setPost(null);
     fetchPost();
     getUserDetails();
     wait(2000).then(() => setRefreshing(false));
@@ -48,6 +50,7 @@ const Feed = (props) => {
   const [post, setPost] = useState([]);
   const [userData, setUserData] = useState(null);
   const [userFriendNetwork, setUserFriendNetwork] = useState(null);
+  const [toggle, setToggle] = useState(true);
 
   const getUserFriendNetwork = async () => {
     await firebase
@@ -81,11 +84,11 @@ const Feed = (props) => {
       });
   };
 
-  const fetchPost = async () => {
+  const fetchPost =  async () => {
           try {
             const list = [];
 
-            await firebase.firestore()
+             await firebase.firestore()
               .collection('Posts')
               .orderBy('timestamp', 'desc')
               .get()
@@ -98,9 +101,7 @@ const Feed = (props) => {
                           postDescription,
                           postLocation,
                           likes,
-                          likeCount,
                           wantToGo,
-                          wantToGoCount,
                           user,
                           timestamp,
                           comments
@@ -116,14 +117,14 @@ const Feed = (props) => {
                       postLocation,
                       timestamp: timestamp,
                       liked: likes.includes(username),
-                      likes: likeCount,
+                      likes: likes.length,
                       wantToGoUsers: wantToGo,
                       wantToGo: wantToGo.includes(username),
-                      wantToGoCount: wantToGoCount,
+                      wantToGoCount: wantToGo.length,
                       comments,
                       });
                     });
-                  })
+                  }).catch((e) => alert(e));
 
               setPost(list);
               if (loading) {
