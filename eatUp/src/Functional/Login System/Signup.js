@@ -44,32 +44,6 @@ const Signup = ({ navigation }) => {
   const handlePasswordUpdate = (text) =>
     setPassword({ value: text, error: "" });
 
-  const changePic = async () => {
-    var reference = await storage
-      .ref()
-      .child(`profilePhotos/${username.value}`);
-    let uri = defaultUserImageUri;
-    const blob = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        resolve(xhr.response);
-      };
-      xhr.onerror = function (e) {
-        reject(new TypeError("Network request failed"));
-      };
-      xhr.responseType = "blob";
-      xhr.open("GET", uri, true);
-      xhr.send(null);
-    });
-
-    await reference.put(blob).catch((error) => {
-      alert(error);
-    });
-
-    let url = await reference.getDownloadURL();
-    return url;
-  };
-
   const registerUser = async () => {
     const usersRef = firebase.firestore().collection("users");
     const userProfile = await usersRef.doc(username.value).get();
@@ -84,14 +58,13 @@ const Signup = ({ navigation }) => {
           });
 
           const uid = res.user.uid;
-          const pic = changePic();
 
           const data = {
             id: uid,
             email: email.value,
             username: username.value,
             mapTheme: "default",
-            displayPicture: pic,
+            displayPicture: defaultUserImageUri,
             customTags: [],
             wantToGo: [],
             posts: [],
