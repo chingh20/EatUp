@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { firebase } from "../../firebase/config";
 import UserSearchListFormat from "../Components/UserSearchListFormat";
-import PostFormat from "../Components/PostFormat";
+import SearchPostFormat from "../Components/SearchPostFormat";
 
 export default function SearchBar({
   navigation,
@@ -243,7 +243,7 @@ export default function SearchBar({
         <FlatList
           data={searchResult}
           renderItem={({ item }) => (
-            <PostFormat
+            <SearchPostFormat
               post={item}
               onPress={() => onPressed(item)}
               onComment={() => onCommentPressed(item)}

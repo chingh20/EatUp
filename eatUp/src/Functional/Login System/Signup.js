@@ -22,6 +22,7 @@ const Signup = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [username, setUsername] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+  const defaultUserImageUri = Image.resolveAssetSource(defaultPicture).uri;
 
   const onSignupPressed = () => {
     const emailError = emailCheck(email.value);
@@ -43,6 +44,32 @@ const Signup = ({ navigation }) => {
   const handlePasswordUpdate = (text) =>
     setPassword({ value: text, error: "" });
 
+  const changePic = async () => {
+    var reference = await storage
+      .ref()
+      .child(`profilePhotos/${username.value}`);
+    let uri = defaultUserImageUri;
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+
+    await reference.put(blob).catch((error) => {
+      alert(error);
+    });
+
+    let url = await reference.getDownloadURL();
+    return url;
+  };
+
   const registerUser = async () => {
     const usersRef = firebase.firestore().collection("users");
     const userProfile = await usersRef.doc(username.value).get();
@@ -57,13 +84,14 @@ const Signup = ({ navigation }) => {
           });
 
           const uid = res.user.uid;
+          const pic = changePic();
 
           const data = {
             id: uid,
             email: email.value,
             username: username.value,
             mapTheme: "default",
-            displayPicture: Image.resolveAssetSource(defaultPicture).uri,
+            displayPicture: pic,
             customTags: [],
             wantToGo: [],
             posts: [],
@@ -73,14 +101,17 @@ const Signup = ({ navigation }) => {
             .doc(username.value)
             .set(data)
             .then(() => {
+              const friendNetworkFields = {
+                friends: [],
+                friendRequests: [],
+                requesting: [],
+              };
 
-  const friendNetworkFields = {
-     friends: [],
-     friendRequests: [],
-     requesting: [],
-  };
-
-   firebase.firestore().collection("FriendNetwork").doc(username.value).set(friendNetworkFields);
+              firebase
+                .firestore()
+                .collection("FriendNetwork")
+                .doc(username.value)
+                .set(friendNetworkFields);
 
               alert("Welcome to EATUP, " + username.value + "!");
               navigation.navigate("Home", { data });
@@ -94,7 +125,10 @@ const Signup = ({ navigation }) => {
           var errorCode = error.code;
           var errorMessage = error.message;
           if (errorCode == "auth/weak-password") {
-            setPassword({ ...password, error: "Password should be more than 8 characters!" });
+            setPassword({
+              ...password,
+              error: "Password should be more than 8 characters!",
+            });
             return;
           } else if (errorCode == "auth/email-already-in-use") {
             setEmail({ ...email, error: "Email address is invalid." });
@@ -107,10 +141,9 @@ const Signup = ({ navigation }) => {
           }
         });
     } else {
-    setUsername({ ...username, error: "Choose another username!" });
+      setUsername({ ...username, error: "Choose another username!" });
     }
   };
-
 
   return (
     <SafeAreaView style={styles.container}>

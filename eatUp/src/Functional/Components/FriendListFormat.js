@@ -15,6 +15,7 @@ import { IconButton } from 'react-native-paper';
 import { firebase } from '../../firebase/config';
 import moment from 'moment';
 import { Divider } from 'react-native-elements'
+import defaultPicture from "../../../assets/default-user-image.png";
 
 const FriendListFormat = ({friends, navigation, friendArray,  updateFriends}) => {
 
@@ -86,9 +87,7 @@ const unfriend = () => {
         <Image style={styles.friendImage}
           source={{
             uri: userFriendData
-              ? userFriendData.displayPicture ||
-                'https://reactnative.dev/img/tiny_logo.png'
-              : 'https://reactnative.dev/img/tiny_logo.png'
+              ? userFriendData.displayPicture : null
               }}
         />
         <View style={styles.friendInfoText}>
