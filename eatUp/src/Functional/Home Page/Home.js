@@ -23,7 +23,7 @@ import Search from "./Search";
 import { mapStyle, mapStyle2 } from "./MapTheme";
 import PostViewMapFormat from "../Components/PostViewMapFormat";
 
-export default function Home({ navigation, route}, props) {
+export default function Home({ navigation, route }, props) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       alert("Refreshed");
@@ -56,7 +56,6 @@ export default function Home({ navigation, route}, props) {
   const [postMarkerFilter, setPostMarkerFilter] = useState(true);
   const [backToInitialRegion, setBackToInitialRegion] = useState(false);
   const [markerPressed, setMarkerPressed] = useState(null);
-
 
   const username = firebase.auth().currentUser.displayName;
 
@@ -275,7 +274,6 @@ export default function Home({ navigation, route}, props) {
     }
   };
 
-
   return (
     <SafeAreaView style={styles.homecontainer}>
       <View style={styles.upper}>
@@ -413,12 +411,12 @@ export default function Home({ navigation, route}, props) {
       <View style={styles.postcontainer}>
         {markerPressed ? (
           <PostViewMapFormat
-            owner = {username}
+            owner={username}
             markerPost={markerPressed}
             onPress={() => onUserPressed(markerPressed)}
             onCommentPressed={() => onCommentPressed(markerPressed)}
-            refreshWantToGo = {WantToGoPlace}
-            refreshPostPlaces = {PostPlaces}
+            refreshWantToGo={WantToGoPlace}
+            refreshPostPlaces={PostPlaces}
           />
         ) : (
           <View />

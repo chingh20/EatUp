@@ -24,7 +24,6 @@ const ChangeDisplayPic = ({ navigation, route }) => {
 
   const changePic = async (avatarImage) => {
     var reference = await storage.ref().child(`profilePhotos/${username}`);
-  //  let uri = image.value;
     let uri = avatarImage;
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -44,10 +43,17 @@ const ChangeDisplayPic = ({ navigation, route }) => {
     });
 
     let url = await reference.getDownloadURL();
-    firebase.firestore().collection("users").doc(username).update({
-          displayPicture: url,
-    }).then(()=>{navigation.navigate("Home")}).catch((error) => alert(error));
-
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(username)
+      .update({
+        displayPicture: url,
+      })
+      .then(() => {
+        navigation.navigate("Home");
+      })
+      .catch((error) => alert(error));
   };
 
   const selectImage = async () => {
@@ -87,9 +93,6 @@ const ChangeDisplayPic = ({ navigation, route }) => {
 
       handleImageUpdate(avatarImage);
       changePic(avatarImage);
-
-
-
     } catch (e) {
       console.error(e);
     }
