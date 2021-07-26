@@ -19,12 +19,12 @@ import { Divider } from "react-native-elements";
 const SearchPostFormat = ({ post, onPress, onComment }) => {
   var currentUser = firebase.auth().currentUser;
   const [userData, setUserData] = useState(null);
-  const [likePost, setLikePost] = useState(post.likes.includes(currentUser.displayName));
-  const [likeIcon, setLikeIcon] = useState(post.likes.includes(currentUser.displayName) ? "heart" : "heart-outline");
+  const [likePost, setLikePost] = useState(post.likes? post.likes.includes(currentUser.displayName):null);
+  const [likeIcon, setLikeIcon] = useState(post.likes? (post.likes.includes(currentUser.displayName) ? "heart" : "heart-outline"):null);
   const [likes, setLikes] = useState(post.likeCount);
   const [likeText, setLikeText] = useState('');
-  const [wantToGo, setWantToGo] = useState(post.wantToGo.includes(currentUser.displayName));
-  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo.includes(currentUser.displayName) ? "crown" : "crown-outline");
+  const [wantToGo, setWantToGo] = useState(post.wantToGo? post.wantToGo.includes(currentUser.displayName) : null);
+  const [wantToGoIcon, setWantToGoIcon] = useState(post.wantToGo? (post.wantToGo.includes(currentUser.displayName) ? "crown" : "crown-outline"):null);
   const [wantToGos, setWantToGos] = useState(post.wantToGoCount);
   const [wantToGoText, setWantToGoText] = useState('');
   const [deleted, setDeleted] = useState(false);

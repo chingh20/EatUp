@@ -1,14 +1,15 @@
 # EatUp
 ## Jan-Ching AfterFood Orbital 2021
 
-- [1. Introduction](#introducton)
+- [1. Introduction and Guides](#introducton)
 - [2. User Stories](#user-stories)
 - [3. Scope of Project and Timeline of Implementations](#scope-of-project)
 - [4. Program Flow, Tech Stack and Software Testing](#program-flow)
 - [5. Project Log](#project-log)
 
 
-## <a name="introducton"></a>1. Introduction
+## <a name="introducton"></a>1. Introduction and Guides
+
 **Proposed Level of Achievement:**
 Apollo 11
 
@@ -19,6 +20,10 @@ https://expo.io/@ching123/eatUp
 
 
 https://exp.host/@ching123/eatUp/index.exp?sdkVersion=41.0.
+
+
+**User and Developer Guides:**
+https://docs.google.com/document/d/1C-qkibHh_wFY6i3Nr2pELqJOzTjlWIeYwV8EUnvGHwI/edit?usp=sharing
 
 
 Recommended to use on Android Mobile Phone.
@@ -136,9 +141,13 @@ Home page
 - Customised map markers that contains user's posts linked to that location
 - Map markers for user's "Want to go!" places
 - Able to filter the markers on the user's map
-- Map markers show the Location name of the post when pressed
+- Map markers show the Location name and cuisine tag of the post when pressed
 - Display Picture available
-- Show number of followers
+- Show number of friends
+- Able to return to initial position for the map
+- Show full post linked to that marker when pressed
+- Able to like and comment on the post 
+- Able to remove "Want to go!" markers and delete own posts
 
 
 Change Display Picture
@@ -148,59 +157,34 @@ Change Display Picture
 
 Add Post
 - Able to publish posts from Gallery or Camera with Live Location saved
+- Able to add new customized tags
+- Able to choose the previously added customized tags for future posts
 
 
 Feeds
 - Complete public post feeds view
 - Able to set posts as "Want to go!" places and like posts
+- Able to delete own post
+- Able to comment on posts, delete own comments and like other's comments
+- Able to view other users' maps if they are friends by pressing the username from feed/ comments
 
 
 Search engine
-- Deploy search engine to other users
-- Able to follow the result of the search if the target has not been added to user's friend list
-- Able to unfollow following users
+- Deploy search engine to other users, post Location and post Cuisine Tag
+- Returns a list of Posts for Location/ Cuisine tag Search, sorted by most Likes
+- Returns a list of username for User Search
+- Able to send friend request the result of the user search if the target has not been added to user's friend list
+- Able to unfreind current friends
+- Able to retrieve friend requests
+- Able to accept/ decline friend requests
+- Able to navigate to other user's maps if they are friends, by pressing on the username
 
 
 Friends
 - Deploy search engine to filter friends
 - Able to unfollow following users
+- Able to view incoming friend requests
 
-
-
-_Features to be completed by end of July:_
-
-HomePage
-- Able to return to initial position for the map
-- Show full post linked to that marker when pressed
-
-
-Add Post
-- Add tagging friends feature
-
-
-Post Feeds
-- Add delete post function
-- Add comment post function
-- Able to view other users' maps
-
-
-Search engine
-- To deploy search engine to find food places
-- Able to navigate to other user's maps
-
-
-Settings
-- Complete theme selection
-
-
-Recommendation 
-- To deploy Love of the Day
-- To deploy Try Now
-- To deploy Cuisine Mix
-- To Eat Again
-
-
-*We will include further timeline for more extension features later based on our progress of the above core features*
 
 
 
@@ -219,7 +203,12 @@ Recommendation
 
 ## <a name="project-log"></a>5. Project Log
 
+
+
 **Milestone 1 - Ideation:** https://docs.google.com/document/d/1bwHSE8-z5ftegvH8m3DMPwBO0ncLpUE5cHEylacY_N0/edit?usp=sharing
 
 
 **Milestone 2 - Prototyping:** https://docs.google.com/document/d/1A_5HZFt_O3Rno-n-tJrWsMFIjSOIkOtLiBsFgz32H5o/edit?usp=sharing
+
+
+**Milestone 3 - Refinement:** https://docs.google.com/document/d/14jwHwYiffIhQjgfFEVOpPy8GlKfALfLxFTeMME5MiME/edit?usp=sharing
