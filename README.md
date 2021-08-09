@@ -19,7 +19,7 @@ Link to our application:
 https://expo.io/@ching123/eatUp
 
 
-https://exp.host/@ching123/eatUp/index.exp?sdkVersion=41.0.
+https://exp.host/@ching123/eatUp/index.exp?sdkVersion=41.0.0 
 
 
 **User and Developer Guides:**
