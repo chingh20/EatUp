@@ -27,7 +27,7 @@ https://docs.google.com/document/d/1C-qkibHh_wFY6i3Nr2pELqJOzTjlWIeYwV8EUnvGHwI/
 
 
 Recommended to use on Android Mobile Phone.
-![EatUp-poster](https://github.com/chingh20/EatUp/blob/5b35742227cdae4c9a4ae849a127fee8ea840d3c/Images/EATUP_Poster_(1).jpg)
+![EatUp-poster](https://github.com/chingh20/EatUp/blob/c1eefc2638259cd979d6c06b3cab7fa4ce3e6423/Images/EATUP%20Poster%20(1).png)
 
 **Motivation**
 
