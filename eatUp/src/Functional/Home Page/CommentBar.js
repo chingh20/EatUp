@@ -57,7 +57,7 @@ const CommentBar = ({postId, owner, refresh}) => {
       })
       .catch((e) => {
         alert(e);
-        alert("Error occurred! Please contact xxx for assistance.")
+        alert("Error occurred! Please try again.")
       });
   };
 

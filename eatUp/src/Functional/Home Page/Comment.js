@@ -25,7 +25,6 @@ const Comment = ({ navigation, route }) => {
 
   React.useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
-        alert('Refreshed');
         fetchComments();
       });
       return unsubscribe;
@@ -39,7 +38,6 @@ const Comment = ({ navigation, route }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    alert('Refreshed');
     fetchComments();
     wait(2000).then(() => setRefreshing(false));
   }, []);
@@ -114,8 +112,7 @@ const Comment = ({ navigation, route }) => {
        }
 
       const refreshComments = () => {
-                   fetchComments();
-                   alert("refreshed!");
+             fetchComments();
       }
 
       return (

@@ -19,7 +19,6 @@ import uuid from "uuid";
 import ModalSelector from "react-native-modal-selector";
 import * as Location from "expo-location";
 
-
 export default function Post({ navigation, route }) {
   var username = firebase.auth().currentUser.displayName;
 
@@ -66,31 +65,38 @@ export default function Post({ navigation, route }) {
       timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
     };
 
-    firebase.firestore().collection(username).doc(id).set(uploadData).then(() => {
+    firebase
+      .firestore()
+      .collection(username)
+      .doc(id)
+      .set(uploadData)
+      .then(() => {
         firebase.firestore().collection("Posts").doc(id).set(uploadData);
 
         if (newTag.value != "") {
-         firebase
-              .firestore()
-              .collection("users")
-              .doc(username)
-              .update({
-                posts: firebase.firestore.FieldValue.arrayUnion(id),
-                customTags: firebase.firestore.FieldValue.arrayUnion(newTag.value),
-              });
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(username)
+            .update({
+              posts: firebase.firestore.FieldValue.arrayUnion(id),
+              customTags: firebase.firestore.FieldValue.arrayUnion(
+                newTag.value
+              ),
+            });
         } else {
-         firebase
-              .firestore()
-              .collection("users")
-              .doc(username)
-              .update({
-                posts: firebase.firestore.FieldValue.arrayUnion(id),
-              });
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(username)
+            .update({
+              posts: firebase.firestore.FieldValue.arrayUnion(id),
+            });
         }
-
-     })
-     .catch((e)=>{alert(e)})
-
+      })
+      .catch((e) => {
+        alert(e);
+      });
   };
 
   const selectImage = async () => {
@@ -114,16 +120,16 @@ export default function Post({ navigation, route }) {
   const [userData, setUserData] = useState(null);
   const [newTag, setNewTag] = useState({ value: "", error: "" });
 
-
   const handleTagUpdate = (text) => {
-      setTag({ value: text, error: "" });
-  }
+    setTag({ value: text, error: "" });
+  };
   const handleNewTagUpdate = (text) => {
-      setNewTag({ value: text, error: "" });
-  }
+    setNewTag({ value: text, error: "" });
+  };
 
   const handleImageUpdate = (image) => setImage({ value: image, error: "" });
-  const handleLocationUpdate = (text) => setLocation({ value: text, error: "" });
+  const handleLocationUpdate = (text) =>
+    setLocation({ value: text, error: "" });
   const handleDescriptionUpdate = (text) =>
     setDescription({ value: text, error: "" });
   const handleGeolocationUpdate = (geoPoint) =>
@@ -165,7 +171,9 @@ export default function Post({ navigation, route }) {
     }
   }, [route.params]);
 
-  useEffect(() => {getUserDetails()},[])
+  useEffect(() => {
+    getUserDetails();
+  }, []);
   let text = "";
   if (!geolocation.value) {
     text = "Waiting for geolocation...";
@@ -173,7 +181,8 @@ export default function Post({ navigation, route }) {
 
   const onSubmit = async () => {
     const tagError = titleCheck(tag.value);
-    const newTagError = (tag.value == "New Tags!") ? titleCheck(newTag.value) : null;
+    const newTagError =
+      tag.value == "New Tags!" ? titleCheck(newTag.value) : null;
     const imageError = imageCheck(image.value);
     const locationError = titleCheck(location.value);
     const descriptionError = titleCheck(description.value);
@@ -187,7 +196,6 @@ export default function Post({ navigation, route }) {
       descriptionError ||
       geolocationError
     ) {
-
       setNewTag({ ...newTag, error: newTagError });
       setImage({ ...image, error: imageError });
       setLocation({ ...location, error: locationError });
@@ -199,7 +207,7 @@ export default function Post({ navigation, route }) {
     try {
       const post = {
         photo: image.value,
-        tag: newTag.value? newTag.value : tag.value,
+        tag: newTag.value ? newTag.value : tag.value,
         location: location.value,
         description: description.value,
         geoCoordinates: geolocation
@@ -211,7 +219,6 @@ export default function Post({ navigation, route }) {
       };
 
       upload(post);
-
 
       handleImageUpdate(null);
       handleLocationUpdate("");
@@ -225,159 +232,167 @@ export default function Post({ navigation, route }) {
     }
   };
 
-
   const getUserDetails = async () => {
-   if (username == null) return;
+    if (username == null) return;
     await firebase
       .firestore()
       .collection("users")
       .doc(username)
       .get()
       .then((documentSnapshot) => {
-         setUserData(documentSnapshot.data());
+        setUserData(documentSnapshot.data());
       })
       .catch((e) => {
         alert(e);
       });
   };
 
-    const defaultData = [
-      { key: 0, label: "Indian" },
-      { key: 1, label: "Chinese" },
-      { key: 2, label: "Korean" },
-      { key: 3, label: "Western" },
-      { key: 4, label: "Fast Food" },
-      { key: 5, label: "Drinks" },
-      { key: 6, label: "Desserts" },
-      { key: 7, label: "Japanese" },
-      { key: 8, label: "New Tags!" },
-    ];
+  const defaultData = [
+    { key: 0, label: "Indian" },
+    { key: 1, label: "Chinese" },
+    { key: 2, label: "Korean" },
+    { key: 3, label: "Western" },
+    { key: 4, label: "Fast Food" },
+    { key: 5, label: "Drinks" },
+    { key: 6, label: "Desserts" },
+    { key: 7, label: "Japanese" },
+    { key: 8, label: "New Tags!" },
+  ];
 
   const modalSelectorData = (tags) => {
+    const totalTags = tags.length;
+    if (totalTags > 0) {
+      let index = 0;
+      const data = [
+        { key: index++, label: "Indian" },
+        { key: index++, label: "Chinese" },
+        { key: index++, label: "Korean" },
+        { key: index++, label: "Western" },
+        { key: index++, label: "Fast Food" },
+        { key: index++, label: "Drinks" },
+        { key: index++, label: "Desserts" },
+        { key: index++, label: "Japanese" },
+      ];
 
-   const totalTags = tags.length
-   if (totalTags > 0) {
-       let index = 0;
-       const data = [
-         { key: index++, label: "Indian" },
-         { key: index++, label: "Chinese" },
-         { key: index++, label: "Korean" },
-         { key: index++, label: "Western" },
-         { key: index++, label: "Fast Food" },
-         { key: index++, label: "Drinks" },
-         { key: index++, label: "Desserts" },
-         { key: index++, label: "Japanese" },
-       ];
-
-     for (let i = 0; i < totalTags; i++) {
-        data.push({ key: index++, label: tags[i] })
-     }
-     data.push({ key: index++, label: "New Tags!" })
-     return data;
-   } else {
-     return defaultData;
-   }
-  }
+      for (let i = 0; i < totalTags; i++) {
+        data.push({ key: index++, label: tags[i] });
+      }
+      data.push({ key: index++, label: "New Tags!" });
+      return data;
+    } else {
+      return defaultData;
+    }
+  };
 
   return (
-    <SafeAreaView style= {styles.container}>
-       <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.container}
-       >
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="always"
         >
-        <View>
-       <View style={styles.imageContainer}>
-          {image.value ? (
-            <View>
-              <Image
-                source={{ uri: image.value }}
-                style={{ width: 300, height: 300 }}
-              />
-              <View style={styles.retake}>
-                <TouchableOpacity style={styles.nobutton} onPress={selectImage}>
-                  <Text style={styles.nobtnText}> Choose Again </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.nobutton} onPress={takePicture}>
-                  <Text style={styles.nobtnText}> Camera </Text>
-               </TouchableOpacity>
-              </View>
+          <View>
+            <View style={styles.imageContainer}>
+              {image.value ? (
+                <View>
+                  <Image
+                    source={{ uri: image.value }}
+                    style={{ width: 300, height: 300 }}
+                  />
+                  <View style={styles.retake}>
+                    <TouchableOpacity
+                      style={styles.nobutton}
+                      onPress={selectImage}
+                    >
+                      <Text style={styles.nobtnText}> Choose Again </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.nobutton}
+                      onPress={takePicture}
+                    >
+                      <Text style={styles.nobtnText}> Camera </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <View>
+                  <TouchableOpacity style={styles.button} onPress={selectImage}>
+                    <Text style={styles.btnText}> Pick from Gallery </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={takePicture}>
+                    <Text style={styles.btnText}> Camera </Text>
+                  </TouchableOpacity>
+                  <Text style={styles.errorText}> {image.error}</Text>
+                </View>
+              )}
             </View>
-          ) : (
-            <View >
-              <TouchableOpacity style={styles.button} onPress={selectImage}>
-                <Text style={styles.btnText}> Pick from Gallery </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={takePicture}>
-                <Text style={styles.btnText}> Camera </Text>
-              </TouchableOpacity>
-              <Text style={styles.errorText}> {image.error}</Text>
-            </View>
-          )}
-          </View>
-          <View style={styles.detailContainer}>
-            <ModalSelector
-              data={userData? modalSelectorData(userData.customTags) : defaultData}
-              initValue="Select the type of food!"
-              touchableStyle={styles.picker}
-              accessible={true}
-              supportedOrientations={["portrait"]}
-              scrollViewAccessibilityLabel={"Scrollable options"}
-              cancelButtonAccessibilityLabel={"Cancel Button"}
-              onChange={(option) => {
-                handleTagUpdate(option.label);
-              }}
-            >
+            <View style={styles.detailContainer}>
+              <ModalSelector
+                data={
+                  userData
+                    ? modalSelectorData(userData.customTags)
+                    : defaultData
+                }
+                initValue="Select the type of food!"
+                touchableStyle={styles.picker}
+                accessible={true}
+                supportedOrientations={["portrait"]}
+                scrollViewAccessibilityLabel={"Scrollable options"}
+                cancelButtonAccessibilityLabel={"Cancel Button"}
+                onChange={(option) => {
+                  handleTagUpdate(option.label);
+                }}
+              >
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Select the type of food!"
+                  editable={true}
+                  value={tag.value}
+                  error={!!tag.error}
+                  errorText={tag.error}
+                />
+              </ModalSelector>
+
+              {tag.value == "New Tags!" ? (
+                <TextInput
+                  placeholder="Enter your new tag!"
+                  style={styles.textInput}
+                  value={newTag.value}
+                  onChangeText={handleNewTagUpdate}
+                  error={!!newTag.error}
+                  errorText={newTag.error}
+                />
+              ) : null}
+
               <TextInput
+                placeholder="Enter location of the post"
                 style={styles.textInput}
-                placeholder="Select the type of food!"
-                editable={true}
-                value={tag.value}
-                error={!!tag.error}
-                errorText={tag.error}
+                value={location.value}
+                onChangeText={handleLocationUpdate}
+                error={!!location.error}
+                errorText={location.error}
               />
-            </ModalSelector>
 
-            {tag.value == "New Tags!" ?
-             <TextInput
-               placeholder="Enter your new tag!"
-               style={styles.textInput}
-               value={newTag.value}
-               onChangeText={handleNewTagUpdate}
-               error={!!newTag.error}
-               errorText={newTag.error}
-             /> : null
-            }
+              <TextInput
+                placeholder="Enter description"
+                style={styles.textInput}
+                value={description.value}
+                onChangeText={handleDescriptionUpdate}
+                error={!!description.error}
+                errorText={description.error}
+              />
 
-            <TextInput
-              placeholder="Enter location of the post"
-              style={styles.textInput}
-              value={location.value}
-              onChangeText={handleLocationUpdate}
-              error={!!location.error}
-              errorText={location.error}
-            />
-
-            <TextInput
-              placeholder="Enter description"
-              style={styles.textInput}
-              value={description.value}
-              onChangeText={handleDescriptionUpdate}
-              error={!!description.error}
-              errorText={description.error}
-            />
-
-          <Text>{text} </Text>
+              <Text>{text} </Text>
               <Text style={styles.errorText}>{geolocation.error}</Text>
               <TouchableOpacity style={styles.button} onPress={onSubmit}>
-              <Text style={styles.btnText}> Add post </Text>
-          </TouchableOpacity>
-        </View>
-        </View>
-      </ScrollView>
+                <Text style={styles.btnText}> Add post </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -388,7 +403,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-  flexGrow: 2,
+    flexGrow: 2,
   },
   container: {
     flex: 2.5,

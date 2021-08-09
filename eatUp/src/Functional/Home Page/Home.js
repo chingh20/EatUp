@@ -26,7 +26,6 @@ import PostViewMapFormat from "../Components/PostViewMapFormat";
 export default function Home({ navigation, route }, props) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      alert("Refreshed");
       getUserDetails();
       getUserFriendNetwork();
       PostPlaces();
@@ -280,13 +279,6 @@ export default function Home({ navigation, route }, props) {
         <IconButton
           icon="arrow-left-circle"
           onPress={LogoutUser}
-          color="#3e1f0d"
-          size={30}
-          style={{ margin: 0 }}
-        />
-        <IconButton
-          icon="cog-outline"
-          onPress={() => navigation.navigate("Settings")}
           color="#3e1f0d"
           size={30}
           style={{ margin: 0 }}

@@ -16,7 +16,14 @@ import { firebase } from "../../firebase/config";
 import moment from "moment";
 import { Divider } from "react-native-elements";
 
-const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refreshWantToGo, refreshPostPlaces }) => {
+const PostViewMapFormat = ({
+  owner,
+  markerPost,
+  onPress,
+  onCommentPressed,
+  refreshWantToGo,
+  refreshPostPlaces,
+}) => {
   var currentUser = firebase.auth().currentUser;
   const [postUserData, setPostUserData] = useState(null);
   const [likePost, setLikePost] = useState(markerPost.liked);
@@ -25,7 +32,6 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
   );
 
   const [likes, setLikes] = useState(markerPost.likes);
-
 
   const [wantToGo, setWantToGo] = useState(markerPost.wantToGo);
   const [wantToGoIcon, setWantToGoIcon] = useState(
@@ -44,16 +50,6 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
     setWantToGoIcon(wantToGo ? "crown" : "crown-outline");
     setWantToGoText(showWantToGos(wantToGos));
   }, [wantToGo]);
-
-//    function showLikes(likes) {
-//          if (likes == 1) {
-//            return "1";
-//          } else if (likes > 1) {
-//            return likes;
-//          } else {
-//            return "";
-//          }
-//    }
 
   function showWantToGos(wantToGos) {
     if (wantToGos == 1) {
@@ -100,25 +96,33 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
       .collection(postUser)
       .doc(postId);
     if (likePost) {
-      targetPublicPost.update({
-        likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        likeCount: firebase.firestore.FieldValue.increment(-1),
-      }).catch((e) => alert(e));
-      targetPrivatePost.update({
-        likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        likeCount: firebase.firestore.FieldValue.increment(-1),
-      }).catch((e) => alert(e));
+      targetPublicPost
+        .update({
+          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+          likeCount: firebase.firestore.FieldValue.increment(-1),
+        })
+        .catch((e) => alert(e));
+      targetPrivatePost
+        .update({
+          likes: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+          likeCount: firebase.firestore.FieldValue.increment(-1),
+        })
+        .catch((e) => alert(e));
       setLikes(likes - 1);
       setLikePost(false);
     } else {
-      targetPublicPost.update({
-        likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        likeCount: firebase.firestore.FieldValue.increment(1),
-      }).catch((e) => alert(e));
-      targetPrivatePost.update({
-        likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        likeCount: firebase.firestore.FieldValue.increment(1),
-      }).catch((e) => alert(e));
+      targetPublicPost
+        .update({
+          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+          likeCount: firebase.firestore.FieldValue.increment(1),
+        })
+        .catch((e) => alert(e));
+      targetPrivatePost
+        .update({
+          likes: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+          likeCount: firebase.firestore.FieldValue.increment(1),
+        })
+        .catch((e) => alert(e));
       setLikes(likes + 1);
       setLikePost(true);
     }
@@ -139,36 +143,47 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
       .doc(currentUsername);
 
     if (wantToGo) {
-      targetPublicPost.update({
-        wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        wantToGoCount: firebase.firestore.FieldValue.increment(-1),
-      }).catch((e) => alert(e));
-      targetPrivatePost.update({
-        wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
-        wantToGoCount: firebase.firestore.FieldValue.increment(-1),
-      }).catch((e) => alert(e));
-      userFoodList.update({
-        wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
-      }).catch((e) => alert(e));
+      targetPublicPost
+        .update({
+          wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+          wantToGoCount: firebase.firestore.FieldValue.increment(-1),
+        })
+        .catch((e) => alert(e));
+      targetPrivatePost
+        .update({
+          wantToGo: firebase.firestore.FieldValue.arrayRemove(currentUsername),
+          wantToGoCount: firebase.firestore.FieldValue.increment(-1),
+        })
+        .catch((e) => alert(e));
+      userFoodList
+        .update({
+          wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
+        })
+        .catch((e) => alert(e));
       setWantToGos(wantToGos - 1);
       setWantToGo(false);
       if (owner == currentUsername) {
-      alert('yes')
         setDeleted(true);
         refreshWantToGo();
       }
     } else {
-      targetPublicPost.update({
-        wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        wantToGoCount: firebase.firestore.FieldValue.increment(1),
-      }).catch((e) => alert(e));
-      targetPrivatePost.update({
-        wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
-        wantToGoCount: firebase.firestore.FieldValue.increment(1),
-      }).catch((e) => alert(e));
-      userFoodList.update({
-        wantToGo: firebase.firestore.FieldValue.arrayUnion(postId),
-      }).catch((e) => alert(e));
+      targetPublicPost
+        .update({
+          wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+          wantToGoCount: firebase.firestore.FieldValue.increment(1),
+        })
+        .catch((e) => alert(e));
+      targetPrivatePost
+        .update({
+          wantToGo: firebase.firestore.FieldValue.arrayUnion(currentUsername),
+          wantToGoCount: firebase.firestore.FieldValue.increment(1),
+        })
+        .catch((e) => alert(e));
+      userFoodList
+        .update({
+          wantToGo: firebase.firestore.FieldValue.arrayUnion(postId),
+        })
+        .catch((e) => alert(e));
       setWantToGos(wantToGos + 1);
       setWantToGo(true);
     }
@@ -209,25 +224,28 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
                   .doc(person)
                   .update({
                     wantToGo: firebase.firestore.FieldValue.arrayRemove(postId),
-                  }).catch((e) => {alert(e)});
+                  })
+                  .catch((e) => {
+                    alert(e);
+                  });
               });
               firebase
                 .firestore()
                 .collection("users")
                 .doc(currentUsername)
                 .update({
-                  posts: firebase. firestore.FieldValue.arrayRemove(postId),
+                  posts: firebase.firestore.FieldValue.arrayRemove(postId),
                 });
               setDeleted(true);
               if (owner == currentUsername) {
-              refreshPostPlaces();
+                refreshPostPlaces();
               } else {
-              refreshWantToGo(owner);
+                refreshWantToGo(owner);
               }
             })
             .catch((error) => {
               alert(error);
-              alert("Delete unsuccessful! Please contact xxx for assistance!");
+              alert("Delete unsuccessful! Please try again.");
             });
         },
       },
@@ -292,7 +310,7 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
             </View>
           </View>
           <View style={styles.likeBar}>
-            <Text>{likes == 0? null: likes}</Text>
+            <Text>{likes == 0 ? null : likes}</Text>
             <IconButton
               icon={likeIcon}
               size={20}
@@ -306,7 +324,10 @@ const PostViewMapFormat = ({ owner, markerPost, onPress, onCommentPressed, refre
               }
             />
 
-            <Text> {markerPost.comments == 0? null : markerPost.comments} </Text>
+            <Text>
+              {" "}
+              {markerPost.comments == 0 ? null : markerPost.comments}{" "}
+            </Text>
             <IconButton
               icon="comment"
               size={20}

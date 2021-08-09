@@ -36,30 +36,38 @@ const Login = ({ navigation }) => {
             }
             const user = userdoc.data();
             navigation.navigate("Home", { user });
-            alert("Login");
           })
-           .catch((e) => {
-                  alert(e)
-                  alert("An error occurred! Please contact xxx for assistance.")
-           });
+          .catch((e) => {
+            alert(e);
+            alert("An error occurred! Please try again.");
+          });
       })
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (errorCode == "auth/invalid-email") {
-          setPassword({ ...password, error: "Email address/password is invalid." });
+          setPassword({
+            ...password,
+            error: "Email address/password is invalid.",
+          });
           setEmail({ ...email, error: "Email address/password is invalid." });
           return;
         } else if (errorCode == "auth/user-not-found") {
-          setPassword({ ...password, error: "Email address/password is invalid." });
+          setPassword({
+            ...password,
+            error: "Email address/password is invalid.",
+          });
           setEmail({ ...email, error: "Email address/password is invalid." });
           return;
         } else if (errorCode == "auth/wrong-password") {
-          setPassword({ ...password, error: "Email address/password is invalid." });
+          setPassword({
+            ...password,
+            error: "Email address/password is invalid.",
+          });
           setEmail({ ...email, error: "Email address/password is invalid." });
           return;
         } else {
-          alert("An error occurred! Please contact xxx for assistance.")
+          alert("An error occurred! Please try again.");
         }
       });
   };

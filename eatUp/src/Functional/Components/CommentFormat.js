@@ -45,7 +45,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
 
   const onLikeComment = (currentUsername, postUser, postId, commentId) => {
     if (!currentUsername || !postUser || !postId || !commentId) {
-      alert("Error occurred! Please contact xxx for assistance.");
+      alert("Error occurred! Please try again.");
       return;
     }
     const targetPublicPostComment = firebase
@@ -68,7 +68,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
         })
        .catch((e) => {
              alert(e)
-             alert("An error occurred! Please contact xxx for assistance.")
+             alert("An error occurred! Please try again.")
         });
       targetPrivatePostComment
         .update({
@@ -76,7 +76,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
         })
         .catch((e) => {
               alert(e)
-              alert("An error occurred! Please contact xxx for assistance.")
+              alert("An error occurred! Please try again.")
         });
       setLikes(likes - 1);
       setLikeComment(false);
@@ -87,7 +87,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
         })
         .catch((e) => {
               alert(e)
-              alert("An error occurred! Please contact xxx for assistance.")
+              alert("An error occurred! Please try again.")
         });
       targetPrivatePostComment
         .update({
@@ -95,7 +95,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
         })
         .catch((e) => {
              alert(e)
-             alert("An error occurred! Please contact xxx for assistance.")
+             alert("An error occurred! Please try again.")
         });
       setLikes(likes + 1);
       setLikeComment(true);
@@ -151,7 +151,7 @@ const CommentFormat = ({ owner, postId, commentDoc, onPress }) => {
             })
             .catch((error) => {
               alert(error);
-              alert("Delete unsuccessful! Please contact xxx for assistance!");
+              alert("Delete unsuccessful! Please try again.");
             });
         },
       },

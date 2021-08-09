@@ -103,7 +103,6 @@ export default function OtherUser({ navigation, route }) {
     }
   };
 
-
   const getUserDetails = async (person) => {
     await firebase
       .firestore()
@@ -231,7 +230,6 @@ export default function OtherUser({ navigation, route }) {
       return;
     }
     if (markerPressed.user == currentUser) {
-      alert(currentUser);
       navigation.navigate("Home");
       return;
     }
@@ -392,7 +390,7 @@ export default function OtherUser({ navigation, route }) {
       <View style={styles.postcontainer}>
         {markerPressed ? (
           <PostViewMapFormat
-            owner = {username}
+            owner={username}
             markerPost={markerPressed}
             onPress={() => onUserPressed(markerPressed)}
             onCommentPressed={() => onCommentPressed(markerPressed)}
