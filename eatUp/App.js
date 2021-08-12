@@ -26,6 +26,7 @@ export default class App extends React.Component {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Start" component={Start} />
+          <Stack.Screen name="ChangeDisplayPic" component={ChangeDisplayPic} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
